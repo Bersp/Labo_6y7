@@ -1,0 +1,357 @@
+<rdf:RDF
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:z="http://www.zotero.org/namespaces/export#"
+ xmlns:bib="http://purl.org/net/biblio#"
+ xmlns:dcterms="http://purl.org/dc/terms/"
+ xmlns:foaf="http://xmlns.com/foaf/0.1/"
+ xmlns:link="http://purl.org/rss/1.0/modules/link/"
+ xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:prism="http://prismstandard.org/namespaces/1.2/basic/"
+ xmlns:vcard="http://nwalsh.com/rdf/vCard#">
+   <bib:Book rdf:about="#item_3"><z:itemType>book</z:itemType></bib:Book>
+    <bib:Article rdf:about="https://royalsocietypublishing.org/doi/10.1098/rspa.1954.0218">
+        <z:itemType>journalArticle</z:itemType>
+        <dcterms:isPartOf rdf:resource="urn:issn:0080-4630,%202053-9169"/>
+        <bib:authors>
+            <rdf:Seq>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Bengamin</foaf:surname>
+                        <foaf:givenName>T. B.</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Ursell</foaf:surname>
+                        <foaf:givenName>F.</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+            </rdf:Seq>
+        </bib:authors>
+        <link:link rdf:resource="#item_7"/>
+        <dc:title>The stability of the plane free surface of a liquid in vertical periodic motion</dc:title>
+        <dcterms:abstract>A vessel containing a heavy liquid vibrates vertically with constant frequency and amplitude. It has been observed that for some combinations of frequency and amplitude standing waves are formed at the free surface of the liquid, while for other combinations the free surface remains plane. In this paper the stability of the plane free surface is investigated theoretically when the vessel is a vertical cylinder with a horizontal base, and the liquid is an ideal frictionless fluid making a constant angle of contact of 90° with the walls of the vessel. When the cross-section of the cylinder and the frequency and amplitude of vibration of the vessel are prescribed, the theory predicts that the
+              m
+              th mode will be excited when the corresponding pair of parameters (p
+              m
+              , q
+              m
+              ) lies in an unstable region of the stability chart; the surface is stable if none of the modes is excited. (The corresponding frequencies are also shown on the chart.) The theory explains the disagreement between the experiments of Faraday and Rayleigh on the one hand, and of Matthiessen on the other. An experiment was made to check the application of the theory to a real fluid (water). The agreement was satisfactory; the small discrepancy is ascribed to wetting effects for which no theoretical estimate could be given.</dcterms:abstract>
+        <dc:date>1954-09-22</dc:date>
+        <z:language>en</z:language>
+        <z:libraryCatalog>DOI.org (Crossref)</z:libraryCatalog>
+        <dc:identifier>
+            <dcterms:URI>
+                <rdf:value>https://royalsocietypublishing.org/doi/10.1098/rspa.1954.0218</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2021-04-11 18:43:08</dcterms:dateSubmitted>
+        <bib:pages>505-515</bib:pages>
+    </bib:Article>
+    <bib:Journal rdf:about="urn:issn:0080-4630,%202053-9169">
+        <prism:volume>225</prism:volume>
+        <dc:title>Proceedings of the Royal Society of London. Series A. Mathematical and Physical Sciences</dc:title>
+        <dc:identifier>DOI 10.1098/rspa.1954.0218</dc:identifier>
+        <prism:number>1163</prism:number>
+        <dcterms:alternative>Proc. R. Soc. Lond. A</dcterms:alternative>
+        <dc:identifier>ISSN 0080-4630, 2053-9169</dc:identifier>
+    </bib:Journal>
+    <z:Attachment rdf:about="#item_7">
+        <z:itemType>attachment</z:itemType>
+        <rdf:resource rdf:resource="files/7/1954 - The stability of the plane free surface of a liqui.pdf"/>
+        <dc:title>1954 - The stability of the plane free surface of a liqui.pdf</dc:title>
+        <link:type>application/pdf</link:type>
+    </z:Attachment>
+    <bib:Article rdf:about="https://link.aps.org/doi/10.1103/RevModPhys.65.851">
+        <z:itemType>journalArticle</z:itemType>
+        <dcterms:isPartOf rdf:resource="urn:issn:0034-6861,%201539-0756"/>
+        <bib:authors>
+            <rdf:Seq>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Cross</foaf:surname>
+                        <foaf:givenName>M. C.</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Hohenberg</foaf:surname>
+                        <foaf:givenName>P. C.</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+            </rdf:Seq>
+        </bib:authors>
+        <link:link rdf:resource="#item_8"/>
+        <dc:title>Pattern formation outside of equilibrium</dc:title>
+        <dc:date>1993-7-1</dc:date>
+        <z:language>en</z:language>
+        <z:libraryCatalog>DOI.org (Crossref)</z:libraryCatalog>
+        <dc:identifier>
+            <dcterms:URI>
+                <rdf:value>https://link.aps.org/doi/10.1103/RevModPhys.65.851</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2021-04-11 18:43:14</dcterms:dateSubmitted>
+        <bib:pages>851-1112</bib:pages>
+    </bib:Article>
+    <bib:Journal rdf:about="urn:issn:0034-6861,%201539-0756">
+        <prism:volume>65</prism:volume>
+        <dc:title>Reviews of Modern Physics</dc:title>
+        <dc:identifier>DOI 10.1103/RevModPhys.65.851</dc:identifier>
+        <prism:number>3</prism:number>
+        <dcterms:alternative>Rev. Mod. Phys.</dcterms:alternative>
+        <dc:identifier>ISSN 0034-6861, 1539-0756</dc:identifier>
+    </bib:Journal>
+    <z:Attachment rdf:about="#item_8">
+        <z:itemType>attachment</z:itemType>
+        <rdf:resource rdf:resource="files/8/Cross and Hohenberg - 1993 - Pattern formation outside of equilibrium.pdf"/>
+        <dc:title>Cross and Hohenberg - 1993 - Pattern formation outside of equilibrium.pdf</dc:title>
+        <link:type>application/pdf</link:type>
+    </z:Attachment>
+    <bib:Article rdf:about="#item_14">
+        <z:itemType>journalArticle</z:itemType>
+        <dcterms:isPartOf>
+           <bib:Journal></bib:Journal>
+        </dcterms:isPartOf>
+        <bib:authors>
+            <rdf:Seq>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Cross</foaf:surname>
+                        <foaf:givenName>Michael</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Greenside</foaf:surname>
+                        <foaf:givenName>Henry</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+            </rdf:Seq>
+        </bib:authors>
+        <link:link rdf:resource="#item_9"/>
+        <dc:title>Pattern formation and dynamics in nonequilibrium systems</dc:title>
+        <z:language>en</z:language>
+        <z:libraryCatalog>Zotero</z:libraryCatalog>
+        <bib:pages>553</bib:pages>
+    </bib:Article>
+    <z:Attachment rdf:about="#item_9">
+        <z:itemType>attachment</z:itemType>
+        <rdf:resource rdf:resource="files/9/Cross and Greenside - PATTERN FORMATION AND DYNAMICS IN NONEQUILIBRIUM S.pdf"/>
+        <dc:title>Cross and Greenside - PATTERN FORMATION AND DYNAMICS IN NONEQUILIBRIUM S.pdf</dc:title>
+        <link:type>application/pdf</link:type>
+    </z:Attachment>
+    <bib:Thesis rdf:about="#item_15">
+        <z:itemType>thesis</z:itemType>
+        <bib:authors>
+            <rdf:Seq>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Alonso</foaf:surname>
+                        <foaf:givenName>Pablo G Terren</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+            </rdf:Seq>
+        </bib:authors>
+        <link:link rdf:resource="#item_11"/>
+        <dc:title>Estudio de la inestabilidad de Faraday y gotas no coalescentes</dc:title>
+        <z:language>es</z:language>
+        <z:libraryCatalog>Zotero</z:libraryCatalog>
+    </bib:Thesis>
+    <z:Attachment rdf:about="#item_11">
+        <z:itemType>attachment</z:itemType>
+        <rdf:resource rdf:resource="files/11/Alonso - Estudio de la inestabilidad de Faraday y gotas no .pdf"/>
+        <dc:title>Alonso - Estudio de la inestabilidad de Faraday y gotas no coalescentes .pdf</dc:title>
+        <link:type>application/pdf</link:type>
+    </z:Attachment>
+    <bib:Thesis rdf:about="#item_16">
+        <z:itemType>thesis</z:itemType>
+        <bib:authors>
+            <rdf:Seq>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Kucher</foaf:surname>
+                        <foaf:givenName>S. S.</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+            </rdf:Seq>
+        </bib:authors>
+        <link:link rdf:resource="#item_12"/>
+        <dc:title>Tesis de Samantha Kucher.pdf</dc:title>
+    </bib:Thesis>
+    <z:Attachment rdf:about="#item_12">
+        <z:itemType>attachment</z:itemType>
+        <rdf:resource rdf:resource="files/12/Tesis de Samantha Kucher.pdf"/>
+        <dc:title>Tesis de Samantha Kucher.pdf</dc:title>
+        <link:type>application/pdf</link:type>
+    </z:Attachment>
+    <bib:Article rdf:about="https://www.cambridge.org/core/product/identifier/S0022112090003603/type/journal_article">
+        <z:itemType>journalArticle</z:itemType>
+        <dcterms:isPartOf rdf:resource="urn:issn:0022-1120,%201469-7645"/>
+        <bib:authors>
+            <rdf:Seq>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Douady</foaf:surname>
+                        <foaf:givenName>S.</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+            </rdf:Seq>
+        </bib:authors>
+        <link:link rdf:resource="#item_17"/>
+        <dc:title>Experimental study of the Faraday instability</dc:title>
+        <dcterms:abstract>An experimental study of surface waves parametrically excited by vertical vibrations is presented. The shape of the eigenmodes in a closed vessel, and the importance of the free-surface boundary conditions, are discussed. Stability boundaries, wave amplitude, and perturbation characteristic time of decay are measured and found to be in agreement with an amplitude equation derived by symmetry. The measurement of the amplitude equation coefficients explains why the observed transition is always supercritical, and shows the effect of the edge constraint on the dissipation and eigen frequency of the various modes. The fluid surface tension is obtained from the dispersion relation measurement. Several visualization methods in large-aspect-ratio cells are presented.</dcterms:abstract>
+        <dc:date>12/1990</dc:date>
+        <z:language>en</z:language>
+        <z:libraryCatalog>DOI.org (Crossref)</z:libraryCatalog>
+        <dc:identifier>
+            <dcterms:URI>
+                <rdf:value>https://www.cambridge.org/core/product/identifier/S0022112090003603/type/journal_article</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2021-04-11 19:04:23</dcterms:dateSubmitted>
+        <bib:pages>383-409</bib:pages>
+    </bib:Article>
+    <bib:Journal rdf:about="urn:issn:0022-1120,%201469-7645">
+        <prism:volume>221</prism:volume>
+        <dc:title>Journal of Fluid Mechanics</dc:title>
+        <dc:identifier>DOI 10.1017/S0022112090003603</dc:identifier>
+        <dcterms:alternative>J. Fluid Mech.</dcterms:alternative>
+        <dc:identifier>ISSN 0022-1120, 1469-7645</dc:identifier>
+    </bib:Journal>
+    <z:Attachment rdf:about="#item_17">
+        <z:itemType>attachment</z:itemType>
+        <rdf:resource rdf:resource="files/17/Douady - 1990 - Experimental study of the Faraday instability.pdf"/>
+        <dc:title>Douady - 1990 - Experimental study of the Faraday instability.pdf</dc:title>
+        <link:type>application/pdf</link:type>
+    </z:Attachment>
+    <bib:Article rdf:about="https://link.aps.org/doi/10.1103/PhysRevLett.108.034502">
+        <z:itemType>journalArticle</z:itemType>
+        <dcterms:isPartOf rdf:resource="urn:issn:0031-9007,%201079-7114"/>
+        <bib:authors>
+            <rdf:Seq>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Shats</foaf:surname>
+                        <foaf:givenName>M.</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Xia</foaf:surname>
+                        <foaf:givenName>H.</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Punzmann</foaf:surname>
+                        <foaf:givenName>H.</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+            </rdf:Seq>
+        </bib:authors>
+        <link:link rdf:resource="#item_19"/>
+        <dc:title>Parametrically Excited Water Surface Ripples as Ensembles of Oscillons</dc:title>
+        <dc:date>2012-1-19</dc:date>
+        <z:language>en</z:language>
+        <z:libraryCatalog>DOI.org (Crossref)</z:libraryCatalog>
+        <dc:identifier>
+            <dcterms:URI>
+                <rdf:value>https://link.aps.org/doi/10.1103/PhysRevLett.108.034502</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2021-04-11 19:04:40</dcterms:dateSubmitted>
+        <bib:pages>034502</bib:pages>
+    </bib:Article>
+    <bib:Journal rdf:about="urn:issn:0031-9007,%201079-7114">
+        <prism:volume>108</prism:volume>
+        <dc:title>Physical Review Letters</dc:title>
+        <dc:identifier>DOI 10.1103/PhysRevLett.108.034502</dc:identifier>
+        <prism:number>3</prism:number>
+        <dcterms:alternative>Phys. Rev. Lett.</dcterms:alternative>
+        <dc:identifier>ISSN 0031-9007, 1079-7114</dc:identifier>
+    </bib:Journal>
+    <z:Attachment rdf:about="#item_19">
+        <z:itemType>attachment</z:itemType>
+        <rdf:resource rdf:resource="files/19/Shats et al. - 2012 - Parametrically Excited Water Surface Ripples as En.pdf"/>
+        <dc:title>Shats et al. - 2012 - Parametrically Excited Water Surface Ripples as En.pdf</dc:title>
+        <link:type>application/pdf</link:type>
+    </z:Attachment>
+    <rdf:Description rdf:about="urn:isbn:978-1-4244-4452-6">
+        <z:itemType>conferencePaper</z:itemType>
+        <dcterms:isPartOf>
+            <bib:Journal>
+                <dc:identifier>ISBN 978-1-4244-4452-6</dc:identifier>
+                <dc:title>2009 IEEE International Workshop on Open-source Software for Scientific Computation (OSSC)</dc:title>
+                <dc:identifier>DOI 10.1109/OSSC.2009.5416839</dc:identifier>
+            </bib:Journal>
+        </dcterms:isPartOf>
+        <dc:publisher>
+            <foaf:Organization>
+                <vcard:adr>
+                    <vcard:Address>
+                       <vcard:locality>Guiyang</vcard:locality>
+                    </vcard:Address>
+                </vcard:adr>
+                <foaf:name>IEEE</foaf:name>
+            </foaf:Organization>
+        </dc:publisher>
+        <bib:authors>
+            <rdf:Seq>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Coisson</foaf:surname>
+                        <foaf:givenName>Roberto</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Vernizzi</foaf:surname>
+                        <foaf:givenName>Graziano</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Yang</foaf:surname>
+                        <foaf:givenName>Xiaoke</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+            </rdf:Seq>
+        </bib:authors>
+        <link:link rdf:resource="#item_23"/>
+        <dc:title>Mathieu functions and numerical solutions of the Mathieu equation</dc:title>
+        <dcterms:abstract>We review the full spectrum of solutions to the Mathieu differential equation y + [a − 2q cos(2z)]y = 0, and we describe a numerical algorithm which allows a ﬂexible approach to the computation of all the Mathieu functions. We use an elegant and compact matrix notation which can be readily implemented on any computing platform. We give some explicit examples (written in the programming language Scilab) that provide a ready-to-use package for solving the Mathieu differential equation and related applications in several ﬁelds.</dcterms:abstract>
+        <dc:date>9/2009</dc:date>
+        <z:language>en</z:language>
+        <z:libraryCatalog>DOI.org (Crossref)</z:libraryCatalog>
+        <dc:identifier>
+            <dcterms:URI>
+               <rdf:value>http://ieeexplore.ieee.org/document/5416839/</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2021-04-11 20:31:07</dcterms:dateSubmitted>
+        <bib:pages>3-10</bib:pages>
+        <bib:presentedAt>
+            <bib:Conference>
+                <dc:title>2009 IEEE International Workshop on Open-source Software for Scientific Computation (OSSC 2009)</dc:title>
+            </bib:Conference>
+        </bib:presentedAt>
+    </rdf:Description>
+    <z:Attachment rdf:about="#item_23">
+        <z:itemType>attachment</z:itemType>
+        <rdf:resource rdf:resource="files/23/Coisson et al. - 2009 - Mathieu functions and numerical solutions of the M.pdf"/>
+        <dc:title>Coisson et al. - 2009 - Mathieu functions and numerical solutions of the M.pdf</dc:title>
+        <link:type>application/pdf</link:type>
+    </z:Attachment>
+    <z:Collection rdf:about="#collection_1">
+        <dc:title>Labo_6y7</dc:title>
+        <dcterms:hasPart rdf:resource="https://royalsocietypublishing.org/doi/10.1098/rspa.1954.0218"/>
+        <dcterms:hasPart rdf:resource="https://link.aps.org/doi/10.1103/RevModPhys.65.851"/>
+        <dcterms:hasPart rdf:resource="#item_14"/>
+        <dcterms:hasPart rdf:resource="#item_15"/>
+        <dcterms:hasPart rdf:resource="#item_16"/>
+        <dcterms:hasPart rdf:resource="https://www.cambridge.org/core/product/identifier/S0022112090003603/type/journal_article"/>
+        <dcterms:hasPart rdf:resource="https://link.aps.org/doi/10.1103/PhysRevLett.108.034502"/>
+        <dcterms:hasPart rdf:resource="urn:isbn:978-1-4244-4452-6"/>
+    </z:Collection>
+</rdf:RDF>
