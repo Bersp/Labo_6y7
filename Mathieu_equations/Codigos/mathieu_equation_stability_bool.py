@@ -8,7 +8,7 @@ res = 11
 res_lim = (res-1)//2
 
 # Término (mu - 2*k)^2 de Delta(mu). Se calcula antes por optimización
-delta_k_term = np.array([(2*k)**2  for k in range(-res_lim, res_lim+1)])
+delta_k_term = np.array([(2*k)**2 for k in range(-res_lim, res_lim+1)])
 
 # Se calcula la identidad de res*res antes por optimización
 identity = np.identity(res)
@@ -47,5 +47,9 @@ M = mu(qq, pp)
 
 # Plot
 fig, ax = plt.subplots(figsize=(8, 9))
-im = ax.imshow(M[::-1], cmap='Blues', extent=[*qlims, *plims])
+ax.imshow(M[::-1], cmap='Blues', extent=[*qlims, *plims])
+
+ax.set_xlabel(r'$q(k, f\,; \Omega, h)$', fontsize=16)
+ax.set_ylabel(r'$p(k\,; \Omega, h, \rho, \sigma)$', fontsize=16)
+
 plt.show()

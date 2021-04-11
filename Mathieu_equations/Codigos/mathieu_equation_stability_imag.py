@@ -45,12 +45,15 @@ def mu(q, p):
     else:
         return mu_odd(q, p)
 
-N = 200
+N = 50
 q = np.linspace(0.001, 11.99, N).astype('complex')
 p = np.linspace(0.001, 13.99, N).astype('complex')
 
 pp, qq = np.meshgrid(p, q)
 M = mu(pp, qq)
+
+qlims = [0.001, 12]
+plims = [0.001, 14]
 
 # Plot
 fig, ax = plt.subplots(figsize=(8, 9))
