@@ -33,6 +33,22 @@
 - Shats - Parametrically excited water surface ripples as ensembles of oscillons
 	- Es el PRL que muestra que la superficie está formada por oscilones y no por superposición de ondas.
 
+- Cobelli et al. - 2009 - Global measurement of water waves by Fourier trans
+	- Método de medición desarrollado por Pablo.
+	- Técnica explicada.
+	- Ejemplos en casos.
+
+- Maurel et al. - 2009 - Experimental and theoretical inspection of the pha
+	- Cuentas desarrolladas del método de medición FTP. 
+	- Paper de Pablo. 
+
+- Wildeman - 2018 - Real-time quantitative Schlieren imaging by fast F
+	- Técnica mejorada: mezcla de FTP con FCD. 
+
+- Moisy et al. - 2009 - A synthetic Schlieren method for the measurement o
+	- Método FCD (que no usamos). 
+	- Sólo para conocer otra técnica posible. 
+	
 # Estabilidad de Mathieu
 
 - Tesis de Alonso
