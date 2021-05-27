@@ -6,7 +6,7 @@ import serial
 def main():
 
     # Settings
-    serial_port = '/dev/ttyACM0'
+    serial_port = '/dev/pts/6'
     baud_rate = 115200
     ser = serial.Serial(serial_port, baud_rate)
 
@@ -25,7 +25,8 @@ def main():
     while counter < buffer_len:
         line = read_serial_line(ser)
         print(line)
-        f.write(line)
+        with open(output_file, 'a') as f:
+            f.write(line)
 
         counter += 1
     del counter
