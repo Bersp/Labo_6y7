@@ -4,6 +4,8 @@ from numba import jit
 import matplotlib.pyplot as plt
 import numpy as np
 
+from matplotlib.colors import ListedColormap
+
 res = 11
 res_lim = (res-1)//2
 
@@ -47,9 +49,13 @@ M = mu(qq, pp)
 
 # Plot
 fig, ax = plt.subplots(figsize=(8, 9))
-ax.imshow(M[::-1], cmap='Blues', extent=[*qlims, *plims])
+custom_colormap = ListedColormap(np.array([[1, 1, 1, 1], [0.2, 0.2, 0.2, 1]]))
+ax.imshow(M[::-1], cmap=custom_colormap, extent=[*qlims, *plims])
 
 ax.set_xlabel(r'$q(k, f\,; \Omega, h)$', fontsize=16)
 ax.set_ylabel(r'$p(k\,; \Omega, h, \rho, \sigma)$', fontsize=16)
+
+plt.savefig('img/mathieu_equation_stability.png', dpi=600, bbox_inches='tight',
+            transparent=True)
 
 plt.show()
