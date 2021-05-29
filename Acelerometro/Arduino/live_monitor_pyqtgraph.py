@@ -12,22 +12,21 @@ curve = p.plot()
 
 #  raw=serial.Serial('ACM0', 115200)
 
-with open('data/data_baud115200_bw1600_20Hz_4vpp.txt') as f:
-    lines = f.readlines()
-def get_lines():
-    for l in lines:
-        yield l
+#  with open('data.csv') as f:
+    #  lines = f.readlines()
+#  def get_lines():
+    #  for l in lines:
+        #  yield l
 
-lin_gen = get_lines()
+#  lin_gen = get_lines()
 
-data = [next(get_lines()).split(', ')[3]]
+data = [0]
 def update():
     global curve, data
-    #  line = raw.readline()
-    line = next(lin_gen).split(',')
-    data.append(float(line[3]))
-    xdata = np.array(data, dtype='float64')
-    curve.setData(xdata)
+    z = []
+    while len(z) != 500:
+        t, x, y, z = np.loadtxt('data.csv', delimiter=',', unpack=True)
+    curve.setData(t, z)
     app.processEvents()
 
 timer = QtCore.QTimer()

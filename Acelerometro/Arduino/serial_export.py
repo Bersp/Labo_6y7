@@ -6,36 +6,38 @@ import serial
 def main():
 
     # Settings
-    serial_port = '/dev/pts/6'
+    serial_port = '/dev/pts/5'
     baud_rate = 115200
     ser = serial.Serial(serial_port, baud_rate)
 
     START_TOKEN = 'START'
-    buffer_len = 5_000
+    buffer_len = 500
 
     output_file = 'data.csv'
 
     # Espero a que descargue la info cargada de la última realización
-    wait_start_token(ser, START_TOKEN)
+    #  wait_start_token(ser, START_TOKEN)
 
-    f = open(output_file, 'w')
+    with open(output_file, 'w') as f:
+        f.write('')
+
+    data = ''
 
     # Guardo los primeros 1000 datos antes de empezar a eliminar
     counter = 0
     while counter < buffer_len:
         line = read_serial_line(ser)
-        print(line)
-        with open(output_file, 'a') as f:
-            f.write(line)
+        data += line
+        with open(output_file, 'w') as f:
+            f.writelines(data)
 
         counter += 1
     del counter
-
     while True:
-        # NOTE: Falta buscar cómo eliminar la primera línea de forma razonable
         line = read_serial_line(ser)
-        print(line)
-        f.write(line)
+        data = data.split('\n', 1)[1] + line
+        with open(output_file, 'w') as f:
+            f.writelines(data)
 
 def wait_start_token(ser, START_TOKEN):
     line = read_serial_line(ser)

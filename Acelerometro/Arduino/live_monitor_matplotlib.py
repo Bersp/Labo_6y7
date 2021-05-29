@@ -1,29 +1,38 @@
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
+import os
 import numpy as np
-
-fig, ax = plt.subplots()
-
-t, x, y, z = np.loadtxt('data.csv', delimiter=',', unpack=True)
-line, = plt.plot(t, z)
 
 def get_data():
     while True:
-        try:
-            t, x, y, z = np.loadtxt('data.csv', delimiter=',', unpack=True)
-        except:  # Cuando el archivo está vacío numpy lanza un warning que
-            pass # intenta detener la ejetución. TODO: Hacer esto mejor.
-        yield t, z
+        z = []
+        while len(z) != 500:
+            try:
+                t, x, y, z = np.loadtxt(filename, delimiter=',', unpack=True)
+            except:
+                t = [None]
+
+        if t[0]:
+            yield t, z
 
 def update(data):
-    t, z = data
-    line.set_data(t, z)
+    if data:
+        t, z = data
+        line.set_data(t, z)
 
-    ax.relim()
-    ax.autoscale()
+        max_t = np.max(t)
+        ax.set_xlim(max_t-100, max_t)
+
+filename = 'data.csv'
+t, x, y, z = [np.nan]*4
+
+fig, ax = plt.subplots()
+line, = plt.plot(t, z, '.-')
+ax.set_ylim(-1, 1)
+ax.set_xlim(0, 2*np.pi)
 
 ani = animation.FuncAnimation(fig, update, frames=get_data(),
-                              blit=False, interval=1, repeat=False)
+                              blit=False, interval=100, repeat=False)
 
 plt.show()
