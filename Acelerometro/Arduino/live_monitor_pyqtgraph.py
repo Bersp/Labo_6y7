@@ -6,7 +6,10 @@ import serial
 
 app = QtGui.QApplication([])
 
+buffer_len = 500
+
 p = pg.plot()
+#  p.setYRange(-512, 512, padding=0)
 p.setWindowTitle('live plot from serial')
 curve = p.plot()
 
@@ -24,8 +27,8 @@ data = [0]
 def update():
     global curve, data
     z = []
-    while len(z) != 500:
-        t, x, y, z = np.loadtxt('data.csv', delimiter=',', unpack=True)
+    #  while len(z) != buffer_len:
+    t, x, y, z = np.loadtxt('data.csv', delimiter=',', unpack=True)
     curve.setData(t, z)
     app.processEvents()
 

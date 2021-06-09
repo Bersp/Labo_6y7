@@ -29,8 +29,8 @@ t, x, y, z = [np.nan]*4
 
 fig, ax = plt.subplots()
 line, = plt.plot(t, z, '.-')
-ax.set_ylim(-1, 1)
-ax.set_xlim(0, 2*np.pi)
+ax.set_ylim(-512, 512)
+#  ax.set_xlim(0, 2*np.pi)
 
 ani = animation.FuncAnimation(fig, update, frames=get_data(),
                               blit=False, interval=100, repeat=False)
