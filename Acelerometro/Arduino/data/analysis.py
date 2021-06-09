@@ -38,16 +38,17 @@ gs = gridspec.GridSpec(2, 2)
 
 ax = fig.add_subplot(gs[0, 0])
 ax.plot(t, x, color='k')
-ax.set_ylabel('Amplitud', fontsize=14)
+ax.set_ylabel('Aceleración en x', fontsize=14)
 ax.grid(zorder=-100, alpha=0.4)
 
 ax = fig.add_subplot(gs[0, 1])
 ax.plot(t, y, color='k')
+ax.set_ylabel('Aceleración en y', fontsize=14)
 ax.grid(zorder=-100, alpha=0.4)
 
 ax = fig.add_subplot(gs[1, :])
 ax.plot(t, z, color='k')
-ax.set_ylabel('Amplitud', fontsize=14)
+ax.set_ylabel('Aceleración en z', fontsize=14)
 ax.set_xlabel('Tiempo [ms]', fontsize=14)
 ax.grid(zorder=-100, alpha=0.4)
 
