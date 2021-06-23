@@ -6,15 +6,15 @@ import yaml
 from datetime import datetime
 
 fps = 250
-acelerometer_n_points = 10
+acelerometer_n_points = None
 
 today_date = datetime.today()
 info = {
         'ACELEROMETER': {'n_points': acelerometer_n_points, 'used': bool(acelerometer_n_points)},
         'CAMERA': {'fps': fps,
-                   'n_images_deformed': 1, # TODO: Eliminar los 1
-                   'n_images_gray': 1,
-                   'n_images_reference': 1,
+                   'n_images_deformed': None,
+                   'n_images_gray': None,
+                   'n_images_reference': None,
                    'resolution': [1024, 1024],
                    'shutter_speed': 1/fps
                    },
@@ -30,7 +30,7 @@ def new_med_folder(folder_comment=None, MEDN='auto'):
     if MEDN == 'auto':
         # Veo cuál es la última medición y tomo n + 1
         MEDN = max([int(x.split('-', 1)[0].replace('MED', ''))
-               for x in os.listdir('.')[:-1]]) + 1
+                    for x in sorted(os.listdir('.'))[:-1]]) + 1
     elif isinstance(MEDN, int):
        repeted_folder = [x for x in os.listdir('.')[:-1] if f'MED{MEDN}' in x]
        if repeted_folder:
@@ -49,7 +49,8 @@ def new_med_folder(folder_comment=None, MEDN='auto'):
     os.mkdir(f'{MED_folder_name}/deformed')
     os.mkdir(f'{MED_folder_name}/gray')
     os.mkdir(f'{MED_folder_name}/reference')
-    os.mkdir(f'{MED_folder_name}/acelerometer')
+    if acelerometer_n_points:
+        os.mkdir(f'{MED_folder_name}/acelerometer')
 
     # Escribo el archivo info
     with open(f'{MED_folder_name}/info.yaml', 'w') as f:
@@ -61,4 +62,4 @@ def new_med_folder(folder_comment=None, MEDN='auto'):
         os.system(f'python ../Acelerometro/Arduino/serial_export.py {script_argv}')
 
 
-print(new_med_folder(MEDN=0, folder_comment='Medicion de prueba'))
+new_med_folder()
