@@ -1,0 +1,32 @@
+--- # Sample capture_parameters.yaml file. 
+
+DATA_SERIES_NAME: 2018-07-17-0001
+
+CAMERA_CALIBRATION:
+    corners: [9,9]
+    square_size: 25
+    units: mm
+
+FTP_PROJECTION:
+    L: 1000
+    D: 300
+    pspp: 0.5 
+    type: parallel-optical-axis
+    units: mm
+
+CAMERA_CAPTURE:
+    shape: [1024, 1024]
+    freq: 1000
+    N_images: 3000
+
+ACCELEROMETER_CAPTURE:
+    freq:  100 
+
+FORCING:
+    type: fm
+    osc_freq: 10
+    mod_freq: 2
+
+COMMENTS: 'This is likely to be a long line or a short one with continuation
+            because I like it like this.'
+

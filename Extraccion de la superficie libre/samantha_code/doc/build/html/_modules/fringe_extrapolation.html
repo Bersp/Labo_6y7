@@ -1,0 +1,292 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fringe_extrapolation &mdash; Modulation Instability Module 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Modulation Instability Module
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Header.html">About this module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Usage_example.html">Usage example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Parameter_inheritance.html">Parameter inheritance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Analysis_tools.html">Analysis tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Behind_the_scenes.html">Behind the scenes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Use_logging_while_running.html">Use logging while running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Tips_for_working_with_HDF5_files.html">Tips for working with HDF5 files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../BULK_PROCESSING_submodule.html">BULK_PROCESSING submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CALIBRATION_submodule.html">CALIBRATION submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FRINGE_EXTRAPOLATION_submodule.html">FRINGE_EXTRAPOLATION submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FTP_submodule.html">FTP submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ANALYSIS_submodule.html">ANALYSIS submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../VISUALIZATION_submodule.html">VISUALIZATION submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../INPUT_OUTPUT_submodule.html">INPUT_OUTPUT submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UTILS_submodule.html">UTILS submodule</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Modulation Instability Module</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>fringe_extrapolation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for fringe_extrapolation</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="k">import</span> <span class="n">argrelextrema</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">curve_fit</span>
+
+<div class="viewcode-block" id="gerchberg2d"><a class="viewcode-back" href="../FRINGE_EXTRAPOLATION_submodule.html#fringe_extrapolation.gerchberg2d">[docs]</a><span class="k">def</span> <span class="nf">gerchberg2d</span><span class="p">(</span><span class="n">interferogram</span><span class="p">,</span> <span class="n">mask_where_fringes_are</span><span class="p">,</span> <span class="n">N_iter_max</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    Extrapolates fringe pattern beyond mask, following Gerchberg algorithm.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ref</span> <span class="o">=</span> <span class="n">interferogram</span>
+    <span class="n">refh</span> <span class="o">=</span> <span class="n">interferogram</span><span class="o">*</span><span class="n">mask_where_fringes_are</span> 
+    <span class="n">interf</span> <span class="o">=</span> <span class="n">mask_where_fringes_are</span>
+
+    <span class="n">ft_ref</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft2</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span>
+    <span class="n">ft_refh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft2</span><span class="p">(</span><span class="n">refh</span><span class="p">)</span>
+
+    <span class="n">S</span> <span class="o">=</span> <span class="n">ref</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">S</span> <span class="o">=</span> <span class="n">S</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># k0x and R_in_k_space determination by gaussian fir</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ft_refh</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]))</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+    <span class="n">maxInd</span> <span class="o">=</span> <span class="n">argrelextrema</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">greater</span><span class="p">)</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">maxInd</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">maxInd</span><span class="p">]</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>                          
+    <span class="n">index_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">y</span><span class="o">==</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">y</span><span class="p">))[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> 
+    <span class="n">mean</span> <span class="o">=</span>  <span class="n">maxInd</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">index_mean</span><span class="p">]</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">y</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">mean</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">n</span>        
+
+    <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span><span class="n">gaus</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">p0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">sigma</span><span class="p">])</span>
+
+    <span class="n">k0x</span><span class="p">,</span> <span class="n">k0y</span> <span class="o">=</span> <span class="n">popt</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span>
+    <span class="n">R_in_k_space</span> <span class="o">=</span> <span class="n">popt</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="mf">2.5</span>
+
+    <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">S</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">)),</span> <span class="nb">range</span><span class="p">(</span><span class="n">S</span><span class="p">))</span>
+
+    <span class="c1"># lugar_a_conservar son dos cuartos de circulo</span>
+    <span class="c1"># centrados en 0,0 y en 0,1024</span>
+    <span class="n">cuarto_superior</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="n">kx</span><span class="o">-</span><span class="n">k0x</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">ky</span><span class="o">-</span><span class="p">(</span><span class="n">S</span><span class="o">-</span><span class="n">k0y</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">R_in_k_space</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span>
+    <span class="n">cuarto_inferior</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="n">kx</span><span class="o">-</span><span class="n">k0x</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">ky</span><span class="o">-</span><span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="n">k0y</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">R_in_k_space</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span>
+    <span class="n">lugar_a_conservar</span> <span class="o">=</span> <span class="n">cuarto_inferior</span> <span class="o">+</span> <span class="n">cuarto_superior</span>
+    <span class="n">lugar_a_anular</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">lugar_a_conservar</span>
+
+    <span class="c1"># non-fancy indexing es mejor</span>
+    <span class="n">lugar_a_anular</span> <span class="o">=</span> <span class="n">lugar_a_anular</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()</span>
+    <span class="n">interf</span> <span class="o">=</span> <span class="n">interf</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()</span>
+
+    <span class="n">En</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N_iter_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">ii</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">ii</span><span class="o">&lt;=</span><span class="n">N_iter_max</span><span class="p">:</span>
+        <span class="c1"># print(ii)</span>
+        <span class="n">ft_refh</span><span class="p">[</span><span class="n">lugar_a_anular</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">refhc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">irfft2</span><span class="p">(</span><span class="n">ft_refh</span><span class="p">)</span>
+        <span class="n">refhc</span><span class="p">[</span><span class="n">interf</span><span class="p">]</span> <span class="o">=</span> <span class="n">refh</span><span class="p">[</span><span class="n">interf</span><span class="p">]</span>
+        <span class="n">ft_refh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft2</span><span class="p">(</span><span class="n">refhc</span><span class="p">)</span>
+        <span class="n">En</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ft_refh</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">ii</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">En</span><span class="p">[</span><span class="n">ii</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">En</span><span class="p">[</span><span class="n">ii</span><span class="p">]:</span>
+            <span class="k">break</span>
+        <span class="n">ii</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">En</span> <span class="o">=</span> <span class="n">En</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">ii</span><span class="p">]</span>
+
+    <span class="n">refhc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">refhc</span><span class="p">)</span>
+    <span class="n">refhc</span><span class="p">[</span><span class="n">interf</span><span class="p">]</span> <span class="o">=</span> <span class="n">ref</span><span class="p">[</span><span class="n">interf</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">refhc</span></div>
+
+
+<div class="viewcode-block" id="gaus"><a class="viewcode-back" href="../FRINGE_EXTRAPOLATION_submodule.html#fringe_extrapolation.gaus">[docs]</a><span class="k">def</span> <span class="nf">gaus</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    Internal function, used to fit a gaussian.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">a</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">x0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Pablo Cobelli.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.0.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

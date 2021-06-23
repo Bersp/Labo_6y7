@@ -1,0 +1,252 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>CALIBRATION submodule &mdash; Modulation Instability Module 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="FRINGE_EXTRAPOLATION submodule" href="FRINGE_EXTRAPOLATION_submodule.html" />
+    <link rel="prev" title="BULK_PROCESSING submodule" href="BULK_PROCESSING_submodule.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Modulation Instability Module
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Header.html">About this module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Usage_example.html">Usage example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parameter_inheritance.html">Parameter inheritance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Analysis_tools.html">Analysis tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Behind_the_scenes.html">Behind the scenes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Use_logging_while_running.html">Use logging while running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tips_for_working_with_HDF5_files.html">Tips for working with HDF5 files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="BULK_PROCESSING_submodule.html">BULK_PROCESSING submodule</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CALIBRATION submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FRINGE_EXTRAPOLATION_submodule.html">FRINGE_EXTRAPOLATION submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FTP_submodule.html">FTP submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ANALYSIS_submodule.html">ANALYSIS submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VISUALIZATION_submodule.html">VISUALIZATION submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="INPUT_OUTPUT_submodule.html">INPUT_OUTPUT submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="UTILS_submodule.html">UTILS submodule</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Modulation Instability Module</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>CALIBRATION submodule</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/CALIBRATION_submodule.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-calibration">
+<span id="calibration-submodule"></span><h1>CALIBRATION submodule<a class="headerlink" href="#module-calibration" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="calibration.calibrate_accelerometer">
+<code class="descclassname">calibration.</code><code class="descname">calibrate_accelerometer</code><span class="sig-paren">(</span><em>dataX</em>, <em>dataY</em>, <em>dataZ</em>, <em>gval</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/calibration.html#calibrate_accelerometer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calibration.calibrate_accelerometer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calibrates accelerometer, taking a number of postures as input.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="calibration.calibrate_camera">
+<code class="descclassname">calibration.</code><code class="descname">calibrate_camera</code><span class="sig-paren">(</span><em>dset</em>, <em>corner_size</em>, <em>calsize</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/calibration.html#calibrate_camera"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calibration.calibrate_camera" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the camera parameters, including distortion coefficients and the
+undistort maps.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="calibration.undistort_image">
+<code class="descclassname">calibration.</code><code class="descname">undistort_image</code><span class="sig-paren">(</span><em>img</em>, <em>mapx</em>, <em>mapy</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/calibration.html#undistort_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calibration.undistort_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Undistorts image using calibration data.</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="FRINGE_EXTRAPOLATION_submodule.html" class="btn btn-neutral float-right" title="FRINGE_EXTRAPOLATION submodule" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="BULK_PROCESSING_submodule.html" class="btn btn-neutral" title="BULK_PROCESSING submodule" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Pablo Cobelli.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

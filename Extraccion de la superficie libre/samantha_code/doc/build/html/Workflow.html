@@ -1,0 +1,430 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Workflow para las experiencias y el tratamiento de datos &mdash; Modulation Instability Module 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tips for working with HDF5 files" href="Tips_for_working_with_HDF5_files.html" />
+    <link rel="prev" title="Behind the scenes" href="Behind_the_scenes.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Modulation Instability Module
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Header.html">About this module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Usage_example.html">Usage example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Analysis_tools.html">Analysis tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Behind_the_scenes.html">Behind the scenes</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Workflow para las experiencias y el tratamiento de datos</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#calibracion-de-la-camara">Calibracion de la camara</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#captura-de-imagenes-de-franjas">Captura de imagenes de franjas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tratamiento-de-imagenes-de-franjas-ftp-gerchberg">Tratamiento de imagenes de franjas (FTP + Gerchberg)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#almacenamiento-masivo-de-datos-crudos-y-de-resultados-de-procesamiento">Almacenamiento masivo de datos crudos y de resultados de procesamiento</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#organizacion-de-datos-para-el-procesamiento-automatizado-por-ftp">Organizacion de datos para el procesamiento automatizado por FTP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#development-stage">Development stage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Tips_for_working_with_HDF5_files.html">Tips for working with HDF5 files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="BULK_PROCESSING_submodule.html">BULK_PROCESSING submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CALIBRATION_submodule.html">CALIBRATION submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FRINGE_EXTRAPOLATION_submodule.html">FRINGE_EXTRAPOLATION submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FTP_submodule.html">FTP submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ANALYSIS_submodule.html">ANALYSIS submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VISUALIZATION_submodule.html">VISUALIZATION submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="INPUT_OUTPUT_submodule.html">INPUT_OUTPUT submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="UTILS_submodule.html">UTILS submodule</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Modulation Instability Module</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Workflow para las experiencias y el tratamiento de datos</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Workflow.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="workflow-para-las-experiencias-y-el-tratamiento-de-datos">
+<h1>Workflow para las experiencias y el tratamiento de datos<a class="headerlink" href="#workflow-para-las-experiencias-y-el-tratamiento-de-datos" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="calibracion-de-la-camara">
+<h2>Calibracion de la camara<a class="headerlink" href="#calibracion-de-la-camara" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Tomar imagenes de calibracion para la camara.</li>
+<li>Calibrar la camara (obtener los coeficientes de distorsion radial).</li>
+</ol>
+</div>
+<div class="section" id="captura-de-imagenes-de-franjas">
+<h2>Captura de imagenes de franjas<a class="headerlink" href="#captura-de-imagenes-de-franjas" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Tomar imagenes <code class="docutils literal notranslate"><span class="pre">grises</span></code> (varias para promediar despues).</li>
+<li>Tomar imagenes <code class="docutils literal notranslate"><span class="pre">referencias</span></code> (varias para promediar despues).</li>
+<li>Tomar imagenes <code class="docutils literal notranslate"><span class="pre">deformadas</span></code>.</li>
+</ol>
+</div>
+<div class="section" id="tratamiento-de-imagenes-de-franjas-ftp-gerchberg">
+<h2>Tratamiento de imagenes de franjas (FTP + Gerchberg)<a class="headerlink" href="#tratamiento-de-imagenes-de-franjas-ftp-gerchberg" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Generar una imagen promedio de las <code class="docutils literal notranslate"><span class="pre">grises</span></code>, llamada <code class="docutils literal notranslate"><span class="pre">gris</span></code>.</li>
+<li>Generar una imagen promedio de las <code class="docutils literal notranslate"><span class="pre">referencias</span></code>, llamada <code class="docutils literal notranslate"><span class="pre">referencia</span></code>.</li>
+<li>Calibrar la camara.</li>
+<li>Desdistorsionar la <code class="docutils literal notranslate"><span class="pre">gris</span></code>.</li>
+<li>Desdistorsionar la <code class="docutils literal notranslate"><span class="pre">referencia</span></code>.</li>
+<li><dl class="first docutils">
+<dt>Usar la imagen <code class="docutils literal notranslate"><span class="pre">gris</span></code> para determinar:</dt>
+<dd><ul class="first last">
+<li>el centro del disco,</li>
+<li>el radio del disco, y</li>
+<li>la posicion del rectangulo.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Generar una mascara dada por:</dt>
+<dd><ul class="first last">
+<li>un valor de 1, en el interior del disco y del rectangulo,</li>
+<li>un valor de 0, en toda otra posicion.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li>Recortar la <code class="docutils literal notranslate"><span class="pre">gris</span></code> y la <code class="docutils literal notranslate"><span class="pre">referencia</span></code> dejando en cada una solamente el
+disco y el rectangulo (y un poco de margen para que Gerchberg pueda
+periodizarlas!).</li>
+<li>Extender por fuera de la mascara la <code class="docutils literal notranslate"><span class="pre">gris</span></code> usando el algoritmo de Gerchberg.</li>
+<li>Extender por fuera de la mascara la <code class="docutils literal notranslate"><span class="pre">referencia</span></code> usando el algoritmo de Gerchberg.</li>
+<li><dl class="first docutils">
+<dt>Para cada imagen del set  <code class="docutils literal notranslate"><span class="pre">deformadas</span></code>:</dt>
+<dd><ol class="first last arabic">
+<li>Desdistorsionar la imagen.</li>
+<li><dl class="first docutils">
+<dt>Recortar la imagen dejando el rectangulo y el disco (y un poco de</dt>
+<dd>margen, idem).</dd>
+</dl>
+</li>
+<li>Extender la imagen usando el algoritmo de Gerchberg.</li>
+<li>Procesar la imagen mediante FTP, generando un mapa de diferencia de fase <cite>plegado</cite>.</li>
+<li>Desplegar el mapa de fase obtenido usando un algoritmo de <cite>unwrap bidimensional</cite> y suministrandole la mascara generada previamente, de forma que solo despliegue la fase dentro de esa region.</li>
+<li>Si correspondiese, ejecutar un <cite>unwrapping temporal</cite> respecto a la imagen <cite>deformada</cite> anterior.</li>
+<li><dl class="first docutils">
+<dt>Separacion de la imagen en dos:</dt>
+<dd><ul class="first last">
+<li>una cuadrada que contenga al disco inscripto, y</li>
+<li>una rectangular dentro del rectangulo de referencia</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li>A las del disco restarles el <span class="math notranslate nohighlight">\(&lt;h_{rect}(x,y,t)&gt;_{(x,y)}\)</span></li>
+<li><dl class="first docutils">
+<dt>Almacenar:</dt>
+<dd><ul class="first last">
+<li><span class="math notranslate nohighlight">\(&lt;h_{rect}(x,y,t)&gt;_{(x,y)}\)</span></li>
+<li><span class="math notranslate nohighlight">\(h_{disk-wo-rect}(x,y,t)\)</span></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ol>
+</dd>
+</dl>
+</li>
+</ol>
+</div>
+<div class="section" id="almacenamiento-masivo-de-datos-crudos-y-de-resultados-de-procesamiento">
+<h2>Almacenamiento masivo de datos crudos y de resultados de procesamiento<a class="headerlink" href="#almacenamiento-masivo-de-datos-crudos-y-de-resultados-de-procesamiento" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>Cada serie de mediciones corresponde a:</dt>
+<dd><ul class="first last simple">
+<li>aproximadamente 3000 imagenes a una resolucion de 1024 x 1024 pixeles, con una profundidad de color de 10 bits.</li>
+<li>una senal temporal de datos (proveniente del acelerometro).</li>
+<li>un numero fijo de datos asociados al setup de FTP y la excitacion provista al recipiente.</li>
+</ul>
+</dd>
+</dl>
+<p>Esta cantidad de datos <cite>crudos</cite> requiere del empleo de una estrategia de
+almacenamiento especializada. Nosotros hemos optado por realizar todo almacenamiento (y lectura) de datos empleando archivos tipo <code class="docutils literal notranslate"><span class="pre">hdf5</span></code>, mediante la libreria/wrapper <code class="docutils literal notranslate"><span class="pre">h5py</span></code>.</p>
+</div>
+<div class="section" id="organizacion-de-datos-para-el-procesamiento-automatizado-por-ftp">
+<h2>Organizacion de datos para el procesamiento automatizado por FTP<a class="headerlink" href="#organizacion-de-datos-para-el-procesamiento-automatizado-por-ftp" title="Permalink to this headline">¶</a></h2>
+<p>Cada serie de mediciones <strong>crudas</strong> deberia estar organizada de la siguiente manera:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">serie_2018_06_10_001</span><span class="o">/</span>
+    <span class="n">calibration_images</span><span class="o">/</span>
+        <span class="n">cal_im_0001</span><span class="o">.</span><span class="n">tif</span>
+        <span class="n">cal_im_0002</span><span class="o">.</span><span class="n">tif</span>
+        <span class="o">...</span>
+        <span class="n">cal_im_WXYZ</span><span class="o">.</span><span class="n">tif</span>
+    <span class="n">ftp_images</span><span class="o">/</span>
+        <span class="n">gray</span><span class="o">/</span>
+        <span class="n">references</span><span class="o">/</span>
+        <span class="n">deformed</span><span class="o">/</span>
+    <span class="n">parameters</span><span class="o">/</span>
+        <span class="n">capture_parameters</span><span class="o">.</span><span class="n">yaml</span>
+    <span class="n">accelerometer_signal</span><span class="o">/</span>
+        <span class="n">ax_ay_az_t</span><span class="o">.</span><span class="n">csv</span>
+</pre></div>
+</div>
+<p>El archivo <code class="docutils literal notranslate"><span class="pre">capture_parameters.yaml</span></code> es una lista estructurada en YAML, como la siguiente:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---</span> <span class="c1"># Sample capture_parameters.yaml file. </span>
+
+<span class="n">DATA_SERIES_NAME</span><span class="p">:</span> <span class="mi">2018</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">17</span><span class="o">-</span><span class="mi">0001</span>
+
+<span class="n">CAMERA_CALIBRATION</span><span class="p">:</span>
+    <span class="n">corners</span><span class="p">:</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span><span class="mi">9</span><span class="p">]</span>
+    <span class="n">square_size</span><span class="p">:</span> <span class="mi">25</span>
+    <span class="n">units</span><span class="p">:</span> <span class="n">mm</span>
+
+<span class="n">FTP_PROJECTION</span><span class="p">:</span>
+    <span class="n">L</span><span class="p">:</span> <span class="mi">1000</span>
+    <span class="n">D</span><span class="p">:</span> <span class="mi">300</span>
+    <span class="n">pspp</span><span class="p">:</span> <span class="mf">0.5</span> 
+    <span class="nb">type</span><span class="p">:</span> <span class="n">parallel</span><span class="o">-</span><span class="n">optical</span><span class="o">-</span><span class="n">axis</span>
+    <span class="n">units</span><span class="p">:</span> <span class="n">mm</span>
+
+<span class="n">CAMERA_CAPTURE</span><span class="p">:</span>
+    <span class="n">shape</span><span class="p">:</span> <span class="p">[</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">1024</span><span class="p">]</span>
+    <span class="n">freq</span><span class="p">:</span> <span class="mi">1000</span>
+    <span class="n">N_images</span><span class="p">:</span> <span class="mi">3000</span>
+
+<span class="n">ACCELEROMETER_CAPTURE</span><span class="p">:</span>
+    <span class="n">freq</span><span class="p">:</span>  <span class="mi">100</span> 
+
+<span class="n">FORCING</span><span class="p">:</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">fm</span>
+    <span class="n">osc_freq</span><span class="p">:</span> <span class="mi">10</span>
+    <span class="n">mod_freq</span><span class="p">:</span> <span class="mi">2</span>
+
+<span class="n">COMMENTS</span><span class="p">:</span> <span class="s1">&#39;This is likely to be a long line or a short one with continuation</span>
+            <span class="n">because</span> <span class="n">I</span> <span class="n">like</span> <span class="n">it</span> <span class="n">like</span> <span class="n">this</span><span class="o">.</span><span class="s1">&#39;</span>
+
+</pre></div>
+</div>
+<p>Como output del procesamiento, deberiamos tener:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ftp_processing_2018_06_10_001/
+    calibration_results/
+        calibration_parameters.???
+    height_fields/
+        disk-wo-rectangle/
+        rectangle/
+    parameters/
+        capture_parameters.yaml
+        processing_parameters.yaml
+</pre></div>
+</div>
+<p>Como output del analisis fourier para el calculo de espectros, deberiamos
+tener:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fourier_analysis_2018_06_10_001</span><span class="o">/</span>
+    <span class="n">fft2D</span><span class="o">/</span>
+    <span class="n">fft3D</span><span class="o">/</span>
+    <span class="n">comments</span><span class="o">/</span>
+</pre></div>
+</div>
+<p>Como output de la separacion entre moduladora y high-frequency, deberiamos
+tener:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">hilbert_analysis_2018_06_10_001</span><span class="o">/</span>
+    <span class="n">envelope</span><span class="o">/</span>
+    <span class="n">high</span><span class="o">-</span><span class="n">frequency</span><span class="o">/</span>
+    <span class="n">comments</span><span class="o">/</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="development-stage">
+<h2>Development stage<a class="headerlink" href="#development-stage" title="Permalink to this headline">¶</a></h2>
+<p>Upon modification of the source code, run</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pipreqs</span> <span class="n">modulation_instability</span><span class="o">/</span>
+</pre></div>
+</div>
+<p>to create an updated <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> file for the module.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Tips_for_working_with_HDF5_files.html" class="btn btn-neutral float-right" title="Tips for working with HDF5 files" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Behind_the_scenes.html" class="btn btn-neutral" title="Behind the scenes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Pablo Cobelli.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

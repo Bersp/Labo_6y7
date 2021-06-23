@@ -1,0 +1,653 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Usage example &mdash; Modulation Instability Module 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Parameter inheritance" href="Parameter_inheritance.html" />
+    <link rel="prev" title="About this module" href="Header.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Modulation Instability Module
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Header.html">About this module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage example</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#minimal-raw-data-files">Minimal raw data files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generating-a-monolithic-raw-dataset">Generating a monolithic raw dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-generate-a-monolithic-raw-dataset-reusing-calibration-results-from-another-dataset">How to generate a monolithic raw dataset <strong>reusing</strong> calibration results from another dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bulk-processing-of-the-raw-dataset">Bulk-processing of the raw dataset</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#what-do-we-mean-by-data-bulk-processing">What do we mean by data bulk-processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-to-bulk-process-a-data-file">How to bulk-process a data file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#individual-processing-of-parts-of-the-raw-dataset">Individual processing of parts of the raw dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#one-complete-run">One complete run</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#performing-just-the-camera-calibration">Performing just the camera calibration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performing-just-the-accelerometer-calibration">Performing just the accelerometer calibration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performing-fringe-extrapolation-on-just-one-fringe-image">Performing fringe extrapolation on just one fringe image</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Parameter_inheritance.html">Parameter inheritance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Analysis_tools.html">Analysis tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Behind_the_scenes.html">Behind the scenes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Use_logging_while_running.html">Use logging while running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tips_for_working_with_HDF5_files.html">Tips for working with HDF5 files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="BULK_PROCESSING_submodule.html">BULK_PROCESSING submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CALIBRATION_submodule.html">CALIBRATION submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FRINGE_EXTRAPOLATION_submodule.html">FRINGE_EXTRAPOLATION submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FTP_submodule.html">FTP submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ANALYSIS_submodule.html">ANALYSIS submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VISUALIZATION_submodule.html">VISUALIZATION submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="INPUT_OUTPUT_submodule.html">INPUT_OUTPUT submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="UTILS_submodule.html">UTILS submodule</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Modulation Instability Module</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Usage example</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Usage_example.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="usage-example">
+<h1>Usage example<a class="headerlink" href="#usage-example" title="Permalink to this headline">¶</a></h1>
+<p>In this section we describe a usage example of the MIMo code. We assume that
+the user already has already collected the <em>minimal raw data files</em> described
+in the next section.</p>
+<div class="section" id="minimal-raw-data-files">
+<h2>Minimal raw data files<a class="headerlink" href="#minimal-raw-data-files" title="Permalink to this headline">¶</a></h2>
+<p>The <em>minimal raw data files</em> necessary for running this example consists on
+the following <strong>five</strong> individual sets:</p>
+<ol class="arabic simple">
+<li><dl class="first docutils">
+<dt>Camera calibration data:</dt>
+<dd>a series of camera calibration images, stored in <code class="docutils literal notranslate"><span class="pre">path_to_calibration_camera</span></code>,</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Accelerometer calibration data:</dt>
+<dd>a series of accelerometer calibration arrays, stored in <code class="docutils literal notranslate"><span class="pre">path_to_calibration_accelerometer</span></code>,</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>FTP data:</dt>
+<dd>a series of gray, reference and deformed images, stored in
+<code class="docutils literal notranslate"><span class="pre">path_to_ftp_images</span></code> and organized acording to:</dd>
+</dl>
+</li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">path_to_ftp_images</span><span class="o">/</span>
+    <span class="n">gray</span><span class="o">/</span>
+        <span class="n">gray_image_0001</span><span class="o">.</span><span class="n">tif</span>
+        <span class="n">gray_image_0002</span><span class="o">.</span><span class="n">tif</span>
+        <span class="o">...</span>
+        <span class="n">gray_image_IIII</span><span class="o">.</span><span class="n">tif</span>
+    <span class="n">reference</span><span class="o">/</span>
+        <span class="n">reference_image_0001</span><span class="o">.</span><span class="n">tif</span>
+        <span class="n">reference_image_0002</span><span class="o">.</span><span class="n">tif</span>
+        <span class="o">...</span>
+        <span class="n">reference_image_JJJJ</span><span class="o">.</span><span class="n">tif</span>
+    <span class="n">deformed</span><span class="o">/</span>
+        <span class="n">deformed_image_0001</span><span class="o">.</span><span class="n">tif</span>
+        <span class="n">deformed_image_0002</span><span class="o">.</span><span class="n">tif</span>
+        <span class="o">...</span>
+        <span class="n">deformed_image_KKKK</span><span class="o">.</span><span class="n">tif</span>
+</pre></div>
+</div>
+<ol class="arabic" start="4">
+<li><dl class="first docutils">
+<dt>Raw accelerometer data:</dt>
+<dd><p class="first last">a file containing a time-series reading of a 3-axis accelerometer, named
+<code class="docutils literal notranslate"><span class="pre">raw_accelerometer_readings</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Parameter file:</dt>
+<dd><p class="first">a <code class="docutils literal notranslate"><span class="pre">capture_parameters.yaml</span></code> file which gathers the detailed configuration
+of the experimental setup employed for capturing each individual data set.
+This <code class="docutils literal notranslate"><span class="pre">capture_parameters.yaml</span></code> file should look like the following:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---</span> <span class="c1"># Sample capture_parameters.yaml file. </span>
+
+<span class="n">DATA_SERIES_NAME</span><span class="p">:</span> <span class="mi">2018</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">17</span><span class="o">-</span><span class="mi">0001</span>
+
+<span class="n">CAMERA_CALIBRATION</span><span class="p">:</span>
+    <span class="n">corners</span><span class="p">:</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span><span class="mi">9</span><span class="p">]</span>
+    <span class="n">square_size</span><span class="p">:</span> <span class="mi">25</span>
+    <span class="n">units</span><span class="p">:</span> <span class="n">mm</span>
+
+<span class="n">FTP_PROJECTION</span><span class="p">:</span>
+    <span class="n">L</span><span class="p">:</span> <span class="mi">1000</span>
+    <span class="n">D</span><span class="p">:</span> <span class="mi">300</span>
+    <span class="n">pspp</span><span class="p">:</span> <span class="mf">0.5</span> 
+    <span class="nb">type</span><span class="p">:</span> <span class="n">parallel</span><span class="o">-</span><span class="n">optical</span><span class="o">-</span><span class="n">axis</span>
+    <span class="n">units</span><span class="p">:</span> <span class="n">mm</span>
+
+<span class="n">CAMERA_CAPTURE</span><span class="p">:</span>
+    <span class="n">shape</span><span class="p">:</span> <span class="p">[</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">1024</span><span class="p">]</span>
+    <span class="n">freq</span><span class="p">:</span> <span class="mi">1000</span>
+    <span class="n">N_images</span><span class="p">:</span> <span class="mi">3000</span>
+
+<span class="n">ACCELEROMETER_CAPTURE</span><span class="p">:</span>
+    <span class="n">freq</span><span class="p">:</span>  <span class="mi">100</span> 
+
+<span class="n">FORCING</span><span class="p">:</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">fm</span>
+    <span class="n">osc_freq</span><span class="p">:</span> <span class="mi">10</span>
+    <span class="n">mod_freq</span><span class="p">:</span> <span class="mi">2</span>
+
+<span class="n">COMMENTS</span><span class="p">:</span> <span class="s1">&#39;This is likely to be a long line or a short one with continuation</span>
+            <span class="n">because</span> <span class="n">I</span> <span class="n">like</span> <span class="n">it</span> <span class="n">like</span> <span class="n">this</span><span class="o">.</span><span class="s1">&#39;</span>
+
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+</ol>
+</div>
+<div class="section" id="generating-a-monolithic-raw-dataset">
+<h2>Generating a monolithic raw dataset<a class="headerlink" href="#generating-a-monolithic-raw-dataset" title="Permalink to this headline">¶</a></h2>
+<p>Up until this stage, the <em>minimal raw data set</em> is just a bunch of files
+scattered on the user’s hard drive. Therefore, the main objective of this
+first stage of processing is to <strong>collect</strong> all this info together in <strong>one
+monolithic file</strong> in which all info is held and accessed as a unit.</p>
+<p>This is done in the following way. Let’s begin by launching an interactive
+python session and using MIMo to create this file.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">modulation_instability.input_output</span> <span class="kn">import</span> <span class="n">create_original_dataset</span>
+<span class="n">create_original_dataset</span><span class="p">(</span><span class="n">parameter_file</span> <span class="o">=</span> <span class="s1">&#39;capture_parameters.yaml&#39;</span><span class="p">,</span> \
+    <span class="n">cam_calib_path</span> <span class="o">=</span> <span class="s1">&#39;path_to_calibration_images&#39;</span><span class="p">,</span> \
+    <span class="n">acc_calib_path</span> <span class="o">=</span> <span class="s1">&#39;path_to_accelerometer_calibration_arrays&#39;</span> \
+    <span class="n">ftp_path</span> <span class="o">=</span> <span class="s1">&#39;path_to_ftp_images&#39;</span><span class="p">,</span> <span class="n">accel_file</span> <span class="o">=</span> <span class="s1">&#39;raw_accelerometer_readings&#39;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p><em>Note that the function</em> <code class="docutils literal notranslate"><span class="pre">create_original_dataset</span></code> <em>takes named arguments, so that they can
+be assigned in any order.</em></p>
+<p>After running these commands, a HDF5 file is created and named as stated by
+the value of the variable <code class="docutils literal notranslate"><span class="pre">DATA_SERIES_NAME</span></code> (according to the
+<code class="docutils literal notranslate"><span class="pre">capture_parameters.yaml</span></code> file) with a <code class="docutils literal notranslate"><span class="pre">-RAW</span></code> suffix added to denote
+the fact that this dataset file holds only raw data.
+In this example case, the file will be
+named <code class="docutils literal notranslate"><span class="pre">2018-07-17-0001-RAW.hdf5</span></code>. This <code class="docutils literal notranslate"><span class="pre">hdf5</span></code> file is organized internally
+as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">2018</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">17</span><span class="o">-</span><span class="mi">0001</span><span class="o">-</span><span class="n">RAW</span><span class="o">.</span><span class="n">hdf5</span><span class="o">/</span>
+    <span class="n">calibration_camera</span>
+    <span class="n">calibration_accelerometer</span>
+    <span class="n">ftp_images</span><span class="o">/</span>
+        <span class="n">gray</span>
+        <span class="n">reference</span>
+        <span class="n">deformed</span>
+    <span class="n">raw_accelerometer_readings</span>
+</pre></div>
+</div>
+<p>In this scheme, <code class="docutils literal notranslate"><span class="pre">calibration_camera</span></code>, <code class="docutils literal notranslate"><span class="pre">calibration_accelerometer</span></code> and <code class="docutils literal notranslate"><span class="pre">raw_accelerometer_readings</span></code>
+are HDF5 datasets, whereas <code class="docutils literal notranslate"><span class="pre">ftp_images</span></code> is a HDF5 group holding three datasets:
+<code class="docutils literal notranslate"><span class="pre">gray</span></code>, <code class="docutils literal notranslate"><span class="pre">reference</span></code> and <code class="docutils literal notranslate"><span class="pre">deformed</span></code>. The parameter values detailed in
+the <code class="docutils literal notranslate"><span class="pre">capture_parameters.yaml</span></code> file are now stored as attributes associated
+to each of the corresponding datasets in the newly created HDF5 file.</p>
+<p>In detail, each of the contents of the <code class="docutils literal notranslate"><span class="pre">-RAW</span></code> file is:</p>
+<ul>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">calibration_camera</span></code> is a 3D dataset, each plane [:,:,z] holds one of the
+calibration images.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">calibration_accelerometer</span></code> is a 3D dataset of size <span class="math notranslate nohighlight">\(4 \times N_t
+\times N_p\)</span>, where <span class="math notranslate nohighlight">\(N_p\)</span> is the number of postures employed in the
+calibration and <span class="math notranslate nohighlight">\(N_t\)</span> is the number of time-points in each posture
+measurement.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">ftp_images</span></code> is a group which holds three datasets related to FTP
+measurements:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">gray</span></code> is a 3D dataset, each plane [:,:,z] holds one of the gray
+images,</li>
+<li><code class="docutils literal notranslate"><span class="pre">reference</span></code> is a 3D dataset, each plane [:,:,z] holds one of the
+reference images, and</li>
+<li><code class="docutils literal notranslate"><span class="pre">deformed</span></code> is a 3D dataset, each plane [:,:,z] holds one of the
+deformed images.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">raw_accelerometer_readings</span></code> is a 4-column-by-N-lines 2D dataset, where
+each column corresponds to time, x-acceleration, y-acceleration and
+z-acceleration <strong>raw</strong> data, i.e., as read by Arduino without conversion to
+physical units.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="how-to-generate-a-monolithic-raw-dataset-reusing-calibration-results-from-another-dataset">
+<h2>How to generate a monolithic raw dataset <strong>reusing</strong> calibration results from another dataset<a class="headerlink" href="#how-to-generate-a-monolithic-raw-dataset-reusing-calibration-results-from-another-dataset" title="Permalink to this headline">¶</a></h2>
+<p>Due to the fact that recalibration is only necessary whenever the setup changes
+(this is true, in our case, for the accelerometer and the camera), it might be
+useful to be able to <strong>reuse</strong> calibration data from another (already
+processed) dataset. This can be done in the following way.</p>
+<p>Let’s suppose that we would like to reuse the accelerometer calibration results
+which are part of a HDF5 <code class="docutils literal notranslate"><span class="pre">-PRO</span></code> file (a datafile with results from a previous
+processing of a <code class="docutils literal notranslate"><span class="pre">-RAW</span></code> datafile), named <code class="docutils literal notranslate"><span class="pre">2018-07-10-0001-PRO</span></code>. In that case, we do:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">modulation_instability.input_output</span> <span class="kn">import</span> <span class="n">create_original_dataset</span>
+<span class="n">create_original_dataset</span><span class="p">(</span><span class="n">parameter_file</span> <span class="o">=</span> <span class="s1">&#39;capture_parameters.yaml&#39;</span><span class="p">,</span> \
+    <span class="n">cam_calib_path</span> <span class="o">=</span> <span class="s1">&#39;path_to_calibration_images&#39;</span><span class="p">,</span> \
+    <span class="n">acc_calib_path</span><span class="o">=</span><span class="s1">&#39;2018-07-10-0001-PRO.hdf5&#39;</span> \
+    <span class="n">ftp_path</span> <span class="o">=</span> <span class="s1">&#39;path_to_ftp_images&#39;</span><span class="p">,</span> <span class="n">accel_file</span> <span class="o">=</span> <span class="s1">&#39;accelerometer_readings&#39;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>By passing <code class="docutils literal notranslate"><span class="pre">2018-07-10-0001-PRO</span></code> to <code class="docutils literal notranslate"><span class="pre">acc_calib_path</span></code> (instead of a folder with
+accelerometer calibration arrays), the function <code class="docutils literal notranslate"><span class="pre">create_original_dataset</span></code>
+understands that it should take the calibration results for the accelerometer
+from that particular file.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">-RAW</span></code> file created in this way presents the following internal organization:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">2018</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">17</span><span class="o">-</span><span class="mi">0001</span><span class="o">-</span><span class="n">RAW</span><span class="o">.</span><span class="n">hdf5</span><span class="o">/</span>
+    <span class="n">calibration_camera</span>
+    <span class="n">res_calibration_accelerometer</span>
+    <span class="n">ftp_images</span><span class="o">/</span>
+        <span class="n">gray</span>
+        <span class="n">reference</span>
+        <span class="n">deformed</span>
+    <span class="n">raw_accelerometer_readings</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="bulk-processing-of-the-raw-dataset">
+<h2>Bulk-processing of the raw dataset<a class="headerlink" href="#bulk-processing-of-the-raw-dataset" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="what-do-we-mean-by-data-bulk-processing">
+<h3>What do we mean by data bulk-processing<a class="headerlink" href="#what-do-we-mean-by-data-bulk-processing" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">-RAW</span></code> data file holds all raw data together, the only difference between
+this and the raw files being that now all our data is <em>together</em> and
+<em>organized</em> in one place: a HDF5 file. In order to work with this data, we need
+to process it. Concretely, this processing stage involves the following
+operations on raw data:</p>
+<ul class="simple">
+<li><strong>from the accelerometer calibration data</strong>, calibrate it to obtain the three
+sensibility and the three offset coefficients <span class="math notranslate nohighlight">\((S_x, S_y, S_z, O_x,
+O_y, O_z)\)</span> and their uncertainties,</li>
+<li><strong>from the camera calibration images</strong>, calibrate the camera to obtain a
+camera matrix <span class="math notranslate nohighlight">\(MATRIX\)</span> containing (amongst others) the radial and
+tangential distortion parameters, and</li>
+<li><strong>from the fringe images</strong>, calculate the height or phase difference maps.
+In turn, this part of the processing involves masking, fringe extrapolation
+and FTP processing.</li>
+</ul>
+</div>
+<div class="section" id="how-to-bulk-process-a-data-file">
+<h3>How to bulk-process a data file<a class="headerlink" href="#how-to-bulk-process-a-data-file" title="Permalink to this headline">¶</a></h3>
+<p>For the data processing of this newly created monolithic raw dataset, the user needs
+to prescribe the value of certain parameters employed in the processing. These
+are established in a YAML file named <code class="docutils literal notranslate"><span class="pre">ftp_processing_parameters.yaml</span></code>, whose
+contents are as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---</span> <span class="c1"># Sample of ftp_processing_parameters.yaml file.</span>
+
+<span class="n">FTP_PROCESSING</span><span class="p">:</span>
+    <span class="n">n</span><span class="p">:</span> <span class="mi">3</span>
+    <span class="n">th</span><span class="p">:</span> <span class="mf">0.9</span>
+
+<span class="n">FRINGE_EXTRAPOLATION</span><span class="p">:</span>
+    <span class="n">N_iter_max</span><span class="p">:</span> <span class="mi">100</span>
+</pre></div>
+</div>
+<p>With this settings file and the monolithic raw dataset created on the previous
+stage, it is straightforward to process the dataset by FTP. The following lines
+of code describe this operation with MIMo.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="kn">from</span> <span class="nn">modulation_instability.bulk_processing</span> <span class="kn">import</span> <span class="n">process_datafile_by_ftp</span>
+ <span class="n">process_datafile_by_ftp</span><span class="p">(</span><span class="n">data_series_file</span><span class="o">=</span><span class="s1">&#39;/Volumes/Seagate Backup Plus Drive/Modulation_Instability/20</span>
+     <span class="mi">18</span><span class="o">-</span><span class="mo">07</span><span class="o">-</span><span class="mi">17</span><span class="o">-</span><span class="mo">0001</span><span class="o">-</span><span class="n">RAW</span><span class="o">.</span><span class="n">hdf5</span><span class="s1">&#39;, parameter_file=&#39;</span><span class="o">/</span><span class="n">Volumes</span><span class="o">/</span><span class="n">Seagate</span> <span class="n">Backup</span> <span class="n">Plus</span> <span class="n">Drive</span><span class="o">/</span><span class="n">Modulation_Instability</span><span class="o">/</span><span class="n">ftp_processing_parameters</span><span class="o">.</span><span class="n">yaml</span><span class="s1">&#39;, logging_level=&#39;</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="s1">&#39;)</span>
+</pre></div>
+</td></tr></table></div>
+<p>The command <code class="docutils literal notranslate"><span class="pre">process_datafile_by_ftp</span></code> creates a new HDF5 file, named
+<code class="docutils literal notranslate"><span class="pre">DATA_SERIES_NAME</span></code> with the added suffix <code class="docutils literal notranslate"><span class="pre">-PRO</span></code>, indicating that it holds
+<strong>processed</strong> datasets. In this example case, the created file name is
+<code class="docutils literal notranslate"><span class="pre">2018-07-17-0001-PRO.hdf5</span></code>. Its internal structure is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">2018</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">17</span><span class="o">-</span><span class="mi">0001</span><span class="o">-</span><span class="n">PRO</span><span class="o">.</span><span class="n">hdf5</span><span class="o">/</span>
+    <span class="n">calibration_results</span><span class="o">/</span>
+    <span class="n">height_fields</span><span class="o">/</span>
+        <span class="n">disk_wo_rectangle</span>
+        <span class="n">rectangle</span>
+</pre></div>
+</div>
+<p>Again, the parameter values prescribed in the
+<code class="docutils literal notranslate"><span class="pre">ftp_processing_parameters.yaml</span></code> file are now stored as attributes associated
+to each of the corresponding datasets in the resulting HDF5 file.</p>
+</div>
+</div>
+<div class="section" id="individual-processing-of-parts-of-the-raw-dataset">
+<h2>Individual processing of parts of the raw dataset<a class="headerlink" href="#individual-processing-of-parts-of-the-raw-dataset" title="Permalink to this headline">¶</a></h2>
+<p>While exploring data, it might be useful to have a way to perform a particular
+processing on just a part of the dataset. For example, the user may be willing
+to quickly check whether the calibration images for the camera lead to a good
+estimation of the distortion parameters, <strong>before</strong> launching the
+bulk-processing of all data (including the often lengthy calculation of height
+fields via FTP).</p>
+<p>In the following paragraphs we include some examples on how to perform such
+operations, assuming a <code class="docutils literal notranslate"><span class="pre">-RAW</span></code> HDF5 file already exists.</p>
+</div>
+<div class="section" id="one-complete-run">
+<h2>One complete run<a class="headerlink" href="#one-complete-run" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21</pre></div></td><td class="code"><div class="highlight"><pre><span></span> $ ipython
+
+ import logging
+
+ from modulation_instability import input_output
+
+ logging.getLogger(&#39;modulation_instability&#39;).setLevel(logging.INFO)
+
+ logging.getLogger(&#39;input_output&#39;).setLevel(logging.INFO)
+
+ input_output.create_original_dataset(parameter_file=&#39;/Volumes/Seagate Backup Plus Drive/Modulation_Insta
+ bility/capture_parameters.yaml&#39;, cam_calib_path=&#39;/Volumes/Seagate Backup Plus Drive/Modulation_Instabili
+ ty/Subset_of_229/Calibracion&#39;, acc_calib_path=&#39;/Users/pablo/&#39;, ftp_path=&#39;/Volumes/Seagate Backup Plus Dr
+ ive/Modulation_Instability/Subset_of_229&#39;, accel_file=&#39;&#39;, destination_path=&#39;/Volumes/Seagate Backup Plus
+ Drive/Modulation_Instability/&#39;)
+
+ INFO:modulation_instability.input_output:Creando el dataset de la camara...
+ INFO:modulation_instability.input_output:Creando dataset de grises
+ INFO:modulation_instability.input_output:Creando dataset de referencia
+ INFO:modulation_instability.input_output:Creando dataset deformadas
+ INFO:modulation_instability.input_output:Listo.
+</pre></div>
+</td></tr></table></div>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;bulk_processing&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+
+ <span class="kn">from</span> <span class="nn">modulation_instability</span> <span class="kn">import</span> <span class="n">bulk_processing</span>
+
+ <span class="n">bulk_processing</span><span class="o">.</span><span class="n">process_datafile_by_ftp</span><span class="p">(</span><span class="n">data_series_file</span><span class="o">=</span><span class="s1">&#39;/Volumes/Seagate Backup Plus Drive/Modulation_</span>
+ <span class="n">Instability</span><span class="o">/</span><span class="mi">2018</span><span class="o">-</span><span class="mo">07</span><span class="o">-</span><span class="mi">17</span><span class="o">-</span><span class="mo">0001</span><span class="o">-</span><span class="n">RAW</span><span class="o">.</span><span class="n">hdf5</span><span class="s1">&#39;, parameter_file=&#39;</span><span class="o">/</span><span class="n">Volumes</span><span class="o">/</span><span class="n">Seagate</span> <span class="n">Backup</span> <span class="n">Plus</span> <span class="n">Drive</span><span class="o">/</span><span class="n">Modulation_Ins</span>
+ <span class="n">tability</span><span class="o">/</span><span class="n">ftp_processing_parameters</span><span class="o">.</span><span class="n">yaml</span><span class="s1">&#39;, destination_path=&#39;</span><span class="o">/</span><span class="n">Volumes</span><span class="o">/</span><span class="n">Seagate</span> <span class="n">Backup</span> <span class="n">Plus</span> <span class="n">Drive</span><span class="o">/</span><span class="n">Modulatio</span>
+ <span class="n">n_Instability</span><span class="o">/</span><span class="s1">&#39;)</span>
+
+ <span class="n">INFO</span><span class="p">:</span><span class="n">modulation_instability</span><span class="o">.</span><span class="n">bulk_processing</span><span class="p">:</span><span class="n">Reading</span> <span class="n">ftp_processing_parameters</span>
+ <span class="n">INFO</span><span class="p">:</span><span class="n">modulation_instability</span><span class="o">.</span><span class="n">bulk_processing</span><span class="p">:</span><span class="n">Creating</span> <span class="n">destination</span> <span class="n">hdf5</span> <span class="nb">file</span>
+ <span class="n">INFO</span><span class="p">:</span><span class="n">modulation_instability</span><span class="o">.</span><span class="n">bulk_processing</span><span class="p">:</span><span class="n">Calibrating</span> <span class="n">camera</span>
+ <span class="n">INFO</span><span class="p">:</span><span class="n">modulation_instability</span><span class="o">.</span><span class="n">bulk_processing</span><span class="p">:</span><span class="n">Generate</span> <span class="n">averages</span> <span class="n">gray</span> <span class="ow">and</span> <span class="n">reference</span><span class="p">,</span> <span class="ow">and</span> <span class="n">generate</span> <span class="n">mask</span>
+ <span class="n">INFO</span><span class="p">:</span><span class="n">modulation_instability</span><span class="o">.</span><span class="n">bulk_processing</span><span class="p">:</span><span class="n">FTP</span> <span class="n">processing</span>
+</pre></div>
+</td></tr></table></div>
+<div class="section" id="performing-just-the-camera-calibration">
+<h3>Performing just the camera calibration<a class="headerlink" href="#performing-just-the-camera-calibration" title="Permalink to this headline">¶</a></h3>
+<p>Let’s suppose that we only want to perform the camera calibration, and
+check the results obtained in just this stage of the data processing.
+The following code does the trick:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">h5py</span>
+<span class="n">hf</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s1">&#39;2018-07-17-0001-RAW.hdf5&#39;</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">dset</span> <span class="o">=</span> <span class="n">hf</span><span class="p">[</span><span class="s1">&#39;calibration_camera&#39;</span><span class="p">]</span>
+<span class="kn">from</span> <span class="nn">modulation_instability.calibration</span> <span class="kn">import</span> <span class="n">calibrate_camera</span>
+<span class="n">mtx</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">mapx</span><span class="p">,</span> <span class="n">mapy</span> <span class="o">=</span> <span class="n">calibrate_camera</span><span class="p">(</span><span class="n">dset</span><span class="p">,</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>The code works as follows. As we will need to access a HDF5 <code class="docutils literal notranslate"><span class="pre">-RAW</span></code> data file,
+we import the module <code class="docutils literal notranslate"><span class="pre">h5py</span></code> [line 1]. Line 2 opens the file for reading.
+Line 3 grabs the relevant dataset, <code class="docutils literal notranslate"><span class="pre">calibration_camera</span></code>, and puts it into
+<code class="docutils literal notranslate"><span class="pre">dset</span></code>. Line 4 imports the <code class="docutils literal notranslate"><span class="pre">calibrate_camera</span></code> function, and the last line
+performs the actual calibration (using a 8x6 checkerboard) and
+sending its output to the variables <code class="docutils literal notranslate"><span class="pre">mtx</span></code>, <code class="docutils literal notranslate"><span class="pre">roi</span></code>, <code class="docutils literal notranslate"><span class="pre">mapx</span></code>, and <code class="docutils literal notranslate"><span class="pre">mapy</span></code>.</p>
+</div>
+<div class="section" id="performing-just-the-accelerometer-calibration">
+<h3>Performing just the accelerometer calibration<a class="headerlink" href="#performing-just-the-accelerometer-calibration" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="performing-fringe-extrapolation-on-just-one-fringe-image">
+<h3>Performing fringe extrapolation on just one fringe image<a class="headerlink" href="#performing-fringe-extrapolation-on-just-one-fringe-image" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">h5py</span>
+<span class="n">hf</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s1">&#39;2018-07-17-0001-RAW.hdf5&#39;</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="c1"># Grab one gray image and generate mask</span>
+<span class="n">dsetg</span> <span class="o">=</span> <span class="n">hf</span><span class="p">[</span><span class="s1">&#39;ftp_images/gray&#39;</span><span class="p">]</span>
+<span class="c1"># mask =</span>
+<span class="n">dsetd</span> <span class="o">=</span> <span class="n">hf</span><span class="p">[</span><span class="s1">&#39;ftp_images/deformed&#39;</span><span class="p">]</span>
+<span class="c1"># Grab one deformed image</span>
+<span class="n">img</span> <span class="o">=</span> <span class="n">dset</span><span class="p">[:,:,</span><span class="mi">0</span><span class="p">]</span>
+<span class="c1"># Fill using Gerchberg extrapolation, providing fringe image &amp; mask</span>
+<span class="c1"># fe_img =</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Parameter_inheritance.html" class="btn btn-neutral float-right" title="Parameter inheritance" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Header.html" class="btn btn-neutral" title="About this module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Pablo Cobelli.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
