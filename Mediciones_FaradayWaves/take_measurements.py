@@ -1,13 +1,14 @@
 import os
+import re
 import shutil
 import yaml
 
 from datetime import datetime
 
 fps = 250
-acelerometer_n_points = 15_000
+acelerometer_n_points = None
 
-folder_comment = 'Hay una estructura para ver'
+folder_comment = ''
 MEDN = 'auto'
 
 today_date = datetime.today()
@@ -34,9 +35,9 @@ info = {
 def new_med_folder(folder_comment=None, MEDN='auto'):
 
     if MEDN == 'auto':
-        # Veo cuál es la última medición y tomo n + 1
-        MEDN = max([int(x.split('-', 1)[0].replace('MED', ''))
-                    for x in sorted(os.listdir('.'))[:-1]]) + 1
+        # Veo cuál es la última medición y tomo el nuevo n como n + 1
+        MEDN = re.findall('MED([0-9]+) -', ' '.join(os.listdir('.')))
+        MEDN = max(map(int, MEDN)) + 1
     elif isinstance(MEDN, int):
        repeted_folder = [x for x in os.listdir('.')[:-1] if f'MED{MEDN}' in x]
        if repeted_folder:
@@ -52,10 +53,11 @@ def new_med_folder(folder_comment=None, MEDN='auto'):
 
     # Creo la carpeta MEDN y las acelerometer, deformed, gray y reference
     os.mkdir(MED_folder_name)
-    os.mkdir(f'{MED_folder_name}/deformed')
-    os.mkdir(f'{MED_folder_name}/gray')
-    os.mkdir(f'{MED_folder_name}/reference')
-    os.mkdir(f'{MED_folder_name}/white')
+    # NOTE: No creo estas carpetas para saber cuáles ya fueron pasadas
+    #  os.mkdir(f'{MED_folder_name}/deformed')
+    #  os.mkdir(f'{MED_folder_name}/gray')
+    #  os.mkdir(f'{MED_folder_name}/reference')
+    #  os.mkdir(f'{MED_folder_name}/white')
     if acelerometer_n_points:
         os.mkdir(f'{MED_folder_name}/acelerometer')
 
