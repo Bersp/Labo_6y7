@@ -29,13 +29,12 @@ if len(argv) > 2:
     N = int(argv[2])
     print_meds = False
 else:
-    N = 1e4
+    N = int(1e4)
     output_file = 'data.csv'
     print_meds = True
 
 # Settings
-#  serial_port = '/dev/ttyACM0'
-serial_port = '/dev/pts/9'
+serial_port = '/dev/ttyACM0'
 baud_rate = 115200
 ser = serial.Serial(serial_port, baud_rate)
 

@@ -40,7 +40,9 @@ tiempo_hdf5 = time.time()-start_time_hdf5
 #Procesado FTP
 logging.getLogger('bulk_processing').setLevel(logging.INFO)
 start_time_ftp = time.time()
-bulk_processing.process_datafile_by_ftp(destination_path = destination_path, data_series_file= destination_path+filename+'-RAW.hdf5', parameter_file= path_mediciones+'processing_parameters.yaml')
+bulk_processing.process_datafile_by_ftp(destination_path = destination_path,
+                                        data_series_file= destination_path+filename+'-RAW.hdf5',
+                                        parameter_file= path_mediciones+'processing_parameters.yaml')
 tiempo_ftp = time.time()-start_time_ftp
 
 bot.send_message(chat_id=my_id, text='Termino el procesado FTP en '+str(round(tiempo_ftp/60,2))+' minutos. Pasando a coordenadas polares')

@@ -1,5 +1,5 @@
 ACELEROMETER:
-  n_points: 15000j
+  n_points: 15000
   used: true
 CAMERA:
   fps: 250
@@ -10,8 +10,8 @@ CAMERA:
   - 1024
   - 1024
   shutter_speed: 0.004
-DATE: 23/06/21
+DATE: 06-06-21
 FUNCTION_GENERATOR:
   hz: 20000
-  vpp: 9.5
+  vpp: 4.0
 NOTES: ''

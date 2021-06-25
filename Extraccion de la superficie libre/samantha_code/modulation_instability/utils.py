@@ -23,7 +23,7 @@ def generate_mask(image, modificado=False):
     """
 
     imth = image > ( np.mean(image) + 0.2*np.std(image) )
-    labeled, N_objects = skm.label( imth, neighbors=8, return_num = True)
+    labeled, N_objects = skm.label( imth, connectivity=2, return_num = True)
     objects = skm.regionprops(labeled)
 
     props = [(object.area, object.label, object.solidity, object.extent) for object in objects]
@@ -65,7 +65,7 @@ def mask_int_annulus(mask_annulus):
     Internal funciton which labels the regions in 'mask_annulus' and selects its interior.
     """
     imth = mask_annulus*1 + np.ones(shape=np.shape(mask_annulus))
-    labeled, N_objects = skm.label(imth, neighbors=8, return_num = True)
+    labeled, N_objects = skm.label(imth, connectivity=2, return_num = True)
     objects = skm.regionprops(labeled)
 
     props = [(object.area, object.label, object.solidity, object.extent) for object in objects]

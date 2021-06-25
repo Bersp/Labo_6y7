@@ -2,25 +2,31 @@ import os
 import shutil
 import yaml
 
-
 from datetime import datetime
 
 fps = 250
-acelerometer_n_points = None
+acelerometer_n_points = 15_000
+
+folder_comment = 'Hay una estructura para ver'
+MEDN = 'auto'
 
 today_date = datetime.today()
 info = {
         'ACELEROMETER': {'n_points': acelerometer_n_points, 'used': bool(acelerometer_n_points)},
         'CAMERA': {'fps': fps,
-                   'n_images_deformed': None,
-                   'n_images_gray': None,
-                   'n_images_reference': None,
+                   'n_images_deformed': 3072,
+                   'n_images_gray': 200,
+                   'n_images_reference': 200,
                    'resolution': [1024, 1024],
                    'shutter_speed': 1/fps
                    },
-        'DATE': today_date.strftime('%d/%m/%y'),
-        'FUNCTION_GENERATOR': {'hz': 20000,
-                               'vpp': 9.5},
+        'DATE': today_date.strftime('%m-%d-%y'),
+        'FUNCTION_GENERATOR': {'hz': 20,
+                               'vpp': 11,
+                               'freq_modulation': None},
+        'CALIBRATION': {'d': 21.0, # distancia entre el proyector y la cámara
+                        'L': 103.0}, # altura de la camara al disco
+        'PROJECTOR': {'image_to_proyect:' 'Sin01.BMP'},
         'NOTES': ''
         }
 
@@ -42,13 +48,14 @@ def new_med_folder(folder_comment=None, MEDN='auto'):
     MED_folder_name = f'MED{MEDN}'
     if folder_comment:
         MED_folder_name = f'{MED_folder_name} - {folder_comment}'
-    MED_folder_name = f'{MED_folder_name} - {today_date.strftime("%d%m")}'
+    MED_folder_name = f'{MED_folder_name} - {today_date.strftime("%m%d")}'
 
     # Creo la carpeta MEDN y las acelerometer, deformed, gray y reference
     os.mkdir(MED_folder_name)
     os.mkdir(f'{MED_folder_name}/deformed')
     os.mkdir(f'{MED_folder_name}/gray')
     os.mkdir(f'{MED_folder_name}/reference')
+    os.mkdir(f'{MED_folder_name}/white')
     if acelerometer_n_points:
         os.mkdir(f'{MED_folder_name}/acelerometer')
 
@@ -62,4 +69,4 @@ def new_med_folder(folder_comment=None, MEDN='auto'):
         os.system(f'python ../Acelerometro/Arduino/serial_export.py {script_argv}')
 
 
-new_med_folder()
+new_med_folder(folder_comment=folder_comment, MEDN=MEDN)

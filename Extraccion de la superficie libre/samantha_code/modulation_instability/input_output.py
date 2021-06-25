@@ -83,7 +83,7 @@ def generate_original_dataset(hdf5_datasetname, cam_calib_path, acc_calib_path, 
             image = sio.imread(gri_files[kk])
             image = image.astype(float)
             acum_gri[:, :, i] = image
-            
+
             kk += 1
 
         gri_dset[:, :, ((N_gri_vertical_slices*j)):(N_gri_vertical_slices*(j+1))] = acum_gri
@@ -117,7 +117,7 @@ def generate_original_dataset(hdf5_datasetname, cam_calib_path, acc_calib_path, 
     def_files = sorted(glob.glob(os.path.join(ftp_im_path , deformed_folder, '*.tiff')))
     Ndef = len(def_files)
 
-    N_vertical_slices = divisor(Ndef)
+    N_vertical_slices = Ndef//2
 
     def_dset = hdf5_file.create_dataset('ftp_images/deformed', \
             shape=(Slin, Scol, Ndef), chunks=(64, 64, N_vertical_slices), dtype='float64')
