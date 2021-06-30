@@ -27,7 +27,7 @@ info = {
                                'freq_modulation': None},
         'CALIBRATION': {'d': 21.0, # distancia entre el proyector y la cámara
                         'L': 103.0}, # altura de la camara al disco
-        'PROJECTOR': {'image_to_proyect:' 'Sin01.BMP'},
+        'PROJECTOR': {'image_to_proyect': 'Sin01.BMP'},
         'NOTES': ''
         }
 
