@@ -19,5 +19,5 @@ FUNCTION_GENERATOR:
   hz: 20
   vpp: 10.5
 NOTES: ''
-PROJECTOR: !!set
-  image_to_proyect:Sin01.BMP: null
+PROJECTOR: 
+  image_to_proyect: Sin01.BMP
