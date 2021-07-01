@@ -1,6 +1,5 @@
 from typing import Tuple
 import numpy as np
-from numba import jit
 
 def get_polar_band(image: np.ndarray,
                    center: Tuple[float, float],
@@ -55,7 +54,7 @@ def get_spatiotemporal_diagram(height_fields_path: str,
     Retorna el diagrama espaciotemporal.
     """
     f = h5py.File(height_fields_path, 'r')
-    annulus_array = f['height_fields/annulus'][:, :, :]
+    annulus_array = f['height_fields/annulus']
     annulus_mask = f['masks/annulus'][:, :, 0]
 
     *radius_limits, annulus_region_mask = find_annulus_region(annulus_mask,
@@ -65,20 +64,23 @@ def get_spatiotemporal_diagram(height_fields_path: str,
     center = [half_width]*2
 
     n_images = annulus_array.shape[-1]
+    n_chunks = annulus_array.chunks[-1]*2
+
     spatiotemporal_diagram = np.zeros(shape=(n_images, band_resolution))
-    for i in range(n_images): # TODO: Pedir el annulus_array[:, :, i] de a chunks
+    for i in range(n_images//n_chunks): # TODO: Pedir el annulus_array[:, :, i] de a chunks
+        print(i)
 
-        annulus_band_average = get_polar_band_average(
-                                       annulus_array[:, :, i], center=center,
-                                       radius_limits=radius_limits,
-                                       annulus_region_mask=annulus_region_mask,
-                                       band_resolution=band_resolution)
+        annulus_chunk = annulus_array[:, :, i*n_chunks: (i+1)*n_chunks]
+        for j in range(n_chunks):
+            annulus_band_average = get_polar_band_average(
+                                           annulus_chunk[:, :, j], center=center,
+                                           radius_limits=radius_limits,
+                                           annulus_region_mask=annulus_region_mask,
+                                           band_resolution=band_resolution)
 
-        spatiotemporal_diagram[i, :] = annulus_band_average
+            spatiotemporal_diagram[i*n_chunks+j, :] = annulus_band_average
 
     return spatiotemporal_diagram
-
-
 
 if __name__ == '__main__':
     import h5py
@@ -87,8 +89,8 @@ if __name__ == '__main__':
     import cProfile
     import pstats
 
-    height_fields_path = '/media/box/Laboratorio/Labo_6y7/Mediciones_FaradayWaves/MED - Mediciones de Samantha para testear/HDF5/2018-07-17-0001-annulus-PRO.hdf5'
-    #  height_fields_path = '/media/box/Laboratorio/Labo_6y7/Mediciones_FaradayWaves/MED - Mediciones de Samantha para testear/HDF5/2019-10-09-a200-f20-fmod0-annulus-PRO.hdf5'
+    #  height_fields_path = '/media/box/Laboratorio/Labo_6y7/Mediciones_FaradayWaves/MED - Mediciones de Samantha para testear/HDF5/2018-07-17-0001-annulus-PRO.hdf5'
+    height_fields_path = '/media/box/Laboratorio/Labo_6y7/Mediciones_FaradayWaves/MED - Mediciones de Samantha para testear/HDF5/2019-10-09-a200-f20-fmod0-annulus-PRO.hdf5'
     #  annulus_mask = np.asarray(f['masks/annulus'][:, :, 0])
     #  with cProfile.Profile() as pr:
         #  get_spatiotemporal_diagram(height_fields_path)
