@@ -68,29 +68,27 @@ def calculate_phase_diff_map_1D(dY, dY0, th, ns, mask_for_unwrapping=None):
         mphase = unwrap(mphase)
 
     # Definition of the phase difference map
-    dphase = (mphase-mphase0)
+    dphase = (mphase-mphase0);
     # dphase = dphase - np.min(dphase) - np.pi/2
     return dphase
 
 
 @np.vectorize
-def tukey_3d(x, radius, annulus_width, decay_width):
-    window_len = annulus_width + 2 * decay_width
-    if x < radius - window_len/2:
-        return 0
-    if x > radius + window_len/2:
-        return 0
+def tukey_3d(x, radius, annulus_width, decay_width, x_len):
+
+    x /= x_len
 
     r = annulus_width/(annulus_width+2*decay_width)
-    xc = 1 / (window_len) * (x - (radius - window_len/2 ))
+    xc = (x - radius)
 
     if xc >= 0 and xc < r/2:
-        return 1/2*(1+np.cos(2*np.pi/r * (xc- r/2))) 
+        return 1/2*(1+np.cos(2*np.pi/r * (xc- r/2)))
     elif xc >= r/2 and xc < 1-r/2:
         return 1
     elif xc >= 1-r/2 and xc <= 1:
         return 1/2*(1+np.cos(2*np.pi/r * (xc-1 + r/2)))
-
+    else:
+        return 0
 
 def create_smooth_mask(radius, center, annulus_width, output_shape):
     x, y = [np.arange(0, output_shape)]*2
@@ -103,79 +101,70 @@ def create_smooth_mask(radius, center, annulus_width, output_shape):
 
     return mask
 
-# Creo imagen sintética
-v = np.linspace(-1, 1, 1024)
-x, y = np.meshgrid(v, v)
-phase_imposed = (3*(1-x)**2.*np.exp(-(x**2) - (y+1)**2) - 10*(x/5 - x**3 - y**5)*np.exp(-x**2-y**2) - 1/3*np.exp(-(x+1)**2 - y**2))
-
-f0 = 80
-im_ref = np.sin(f0*x)
-im_def = np.sin(f0*x + phase_imposed)
-
-# Máscara Tukey 
 x = np.arange(0, 1024)
-X, Y = np.meshgrid(x,x)
-center = (512, 512)
-R = np.sqrt((X-center[0])**2 + (Y-center[1])**2)
+y = tukey_3d(x, radius=0, annulus_width=60, decay_width=30, x_len=1024)
 
-mask1 = tukey_3d(R, radius=450, annulus_width=60, decay_width=30)
-mask2 = tukey_3d(R, radius=450, annulus_width=15, decay_width=30)
-
-plt.imshow(im_def*mask1, cmap="gray")
-plt.title("Test para tukey mask")
-plt.colorbar()
+plt.plot(x, y)
 plt.show()
 
-# #  mask1 = create_smooth_mask(radius=450, center=(512, 512),
-#                           #  annulus_width=60, output_shape=1024)
-# #  mask2 = create_smooth_mask(radius=450, center=(512, 512),
-#                           #  annulus_width=10, output_shape=1024)
+#  v = np.linspace(-1, 1, 1024)
+#  x, y = np.meshgrid(v, v)
+#  phase_imposed = (3*(1-x)**2.*np.exp(-(x**2) - (y+1)**2) - 10*(x/5 - x**3 - y**5)*np.exp(-x**2-y**2) - 1/3*np.exp(-(x+1)**2 - y**2))/2
 
-mask1 = 1 - mask1
-mask2 = 1 - mask2
+#  f0 = 80
+#  im_ref = np.sin(f0*x)
+#  im_def = np.sin(f0*x + phase_imposed)
 
-dphase = calculate_phase_diff_map_1D(im_def, im_ref, th=0.9, ns=3)*(1-mask2)
-im_def1 = im_def*(1-mask2) + im_ref*mask1
-#   im_def2 = im_def*(1-mask2) + im_def*mask1
+#  mask1 = create_smooth_mask(radius=450, center=(512, 512),
+                          #  annulus_width=60, output_shape=1024)
+#  mask2 = create_smooth_mask(radius=450, center=(512, 512),
+                          #  annulus_width=10, output_shape=1024)
 
-im_ref = im_ref*(1-mask2) + im_ref*mask1
-dphase_mask = calculate_phase_diff_map_1D(im_def1, im_ref, th=0.9, ns=3)*(1-mask2)
+#  dphase = calculate_phase_diff_map_1D(im_def, im_ref, th=0.9, ns=3)*(1-mask2)
+#  im_def1 = im_def*(1-mask2) + im_ref*mask1
+#  im_def2 = im_def*(1-mask2) + im_def*mask1
 
-phase_imposed = phase_imposed*(1-mask2)
-#  dphase = phase_imposed
+#  im_ref = im_ref*(1-mask2) + im_ref*mask1
+#  dphase_mask = calculate_phase_diff_map_1D(im_def1, im_ref, th=0.9, ns=3)*(1-mask2)
 
-dphase -= dphase[65, 458]
-dphase_mask -= dphase_mask[65, 458]
+#  phase_imposed = phase_imposed*(1-mask2)
+#  #  dphase = phase_imposed
 
-dphase[np.isclose((1-mask2), 0, atol=0.4)] = np.nan
-dphase_mask[np.isclose((1-mask2), 0, atol=0.4)] = np.nan
+#  dphase -= dphase[65, 458]
+#  dphase_mask -= dphase_mask[65, 458]
 
-#   print(np.nanmax(dphase)-np.nanmin(dphase))
-#   print(np.nanmax(dphase_mask)-np.nanmin(dphase_mask))
+#  dphase[np.isclose((1-mask2), 0, atol=0.4)] = np.nan
+#  dphase_mask[np.isclose((1-mask2), 0, atol=0.4)] = np.nan
 
-plt.figure()
-plt.imshow(im_def1)
-plt.title('im_def1 de input')
-plt.colorbar()
+#  print(np.nanmax(dphase)-np.nanmin(dphase))
+#  print(np.nanmax(dphase_mask)-np.nanmin(dphase_mask))
 
-#   plt.figure()
-#   plt.imshow(im_def2)
-#   plt.title('im_def2')
-#   plt.colorbar()
+#  plt.imshow(im_def1)
+#  plt.title('im_def1')
+#  plt.colorbar()
 
-plt.figure()
-plt.imshow(dphase)
-plt.title('dphase')
-plt.colorbar()
+#  plt.figure()
+#  plt.imshow(im_def2)
+#  plt.title('im_def2')
+#  plt.colorbar()
 
-plt.figure()
-plt.imshow(dphase_mask)
-plt.title('dphase mask')
-plt.colorbar()
+#  plt.imshow(im_def1)
+#  plt.title('def')
+#  plt.colorbar()
 
-plt.figure()
-plt.imshow(dphase-dphase_mask)
-plt.title('dphase diff')
-plt.colorbar()
+#  plt.figure()
+#  plt.imshow(dphase)
+#  plt.title('dphase')
+#  plt.colorbar()
 
-plt.show()
+#  plt.figure()
+#  plt.imshow(dphase-dphase_mask)
+#  plt.title('dphase diff')
+#  plt.colorbar()
+
+#  plt.figure()
+#  plt.imshow(dphase_mask)
+#  plt.title('dphase mask')
+#  plt.colorbar()
+
+#  plt.show()
