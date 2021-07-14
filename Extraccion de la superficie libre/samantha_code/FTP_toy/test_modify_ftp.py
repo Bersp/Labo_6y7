@@ -1,9 +1,12 @@
 import matplotlib
-import numpy as np
+import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
-
+import numpy as np
 from scipy import signal
 from unwrap import unwrap
+
+import h5py
+
 
 def calculate_phase_diff_map_1D(dY, dY0, th, ns, mask_for_unwrapping=None):
     """
@@ -72,119 +75,305 @@ def calculate_phase_diff_map_1D(dY, dY0, th, ns, mask_for_unwrapping=None):
     # dphase = dphase - np.min(dphase) - np.pi/2
     return dphase
 
-
-@np.vectorize
-def tukey_3d(x, radius, annulus_width, decay_width, x_len):
-
-    x /= x_len
-
-    r = annulus_width/(annulus_width+2*decay_width)
-    xc = (x - radius)
-
-    if xc >= 0 and xc < r/2:
-        return 1/2*(1+np.cos(2*np.pi/r * (xc- r/2)))
-    elif xc >= r/2 and xc < 1-r/2:
-        return 1
-    elif xc >= 1-r/2 and xc <= 1:
-        return 1/2*(1+np.cos(2*np.pi/r * (xc-1 + r/2)))
-    else:
-        return 0
-
 def tukey_2d(L, R, A, D):
     """
     construimos una ventana de tukey en 2D
     L = imagen resultante en tamaño L x L
     R = radio donde inicia la ventana de Tukey
-    D = longitud de crecimiento/decrecimiento
     A = longitud del plateau
+    D = longitud de crecimiento/decrecimiento
     """
     output = np.zeros((L,L))
     x, y = np.meshgrid(np.arange(L), np.arange(L))
-    r = np.sqrt( (x-L/2)**2 + (y-L/2)**2)
-    region_plateau = (r>=(R-A/2)) * (r<=(R+A/2))
-    region_subida  = (r>=(R-A/2-D)) * (r<(R-A/2))
-    region_bajada  = (r>=(R+A/2)) * (r<(R+A/2+D))
+    r = np.sqrt( (x-L//2)**2 + (y-L//2)**2)
+    region_plateau = (r>=(R-A//2)) * (r<=(R+A//2))
+    region_subida  = (r>=(R-A//2-D)) * (r<(R-A//2))
+    region_bajada  = (r>=(R+A//2)) * (r<(R+A//2+D))
     output[region_plateau] = 1
-    output[region_subida]  = 0.5*(1-np.cos(np.pi/D*(r[region_subida]-np.mean(r[r==(R-A/2-D)]))))
-    output[region_bajada]  = 0.5*(1+np.cos(np.pi/D*(r[region_bajada]-np.mean(r[r==(R+A/2)]))))
-    r
+    output[region_subida]  = 0.5*(1-np.cos(np.pi/D*(r[region_subida]-np.mean(r[r==(R-A//2-D)]))))
+    output[region_bajada]  = 0.5*(1+np.cos(np.pi/D*(r[region_bajada]-np.mean(r[r==(R+A//2)]))))
+
     return output
 
-def create_smooth_mask(radius, center, annulus_width, output_shape):
-    x, y = [np.arange(0, output_shape)]*2
-    X, Y = np.meshgrid(x, y)
-    R = np.sqrt((X-center[0])**2 + (Y-center[1])**2)
+def test_syntetic_phase():
+    v = np.linspace(-1, 1, 1024)
+    x, y = np.meshgrid(v, v)
+    phase_imposed = (3*(1-x)**2.*np.exp(-(x**2) - (y+1)**2) - 10*(x/5 - x**3 - y**5)*np.exp(-x**2-y**2) - 1/3*np.exp(-(x+1)**2 - y**2))/2
 
-    sigma = annulus_width
-    mask = 1 - np.exp( -(R-radius)**2/(2*sigma**2) )
-    #  mask[mask > 0.8] = 1
+    f0 = 80
+    im_ref = np.sin(f0*x)
+    im_def = np.sin(f0*x + phase_imposed)
 
-    return mask
+    mask_out = tukey_2d(1024, 300, 60, 30)
+    mask_in = tukey_2d(1024, 300, 30, 30)
 
-v = np.linspace(-1, 1, 1024)
-x, y = np.meshgrid(v, v)
-phase_imposed = (3*(1-x)**2.*np.exp(-(x**2) - (y+1)**2) - 10*(x/5 - x**3 - y**5)*np.exp(-x**2-y**2) - 1/3*np.exp(-(x+1)**2 - y**2))/2
+    good_dphase = calculate_phase_diff_map_1D(im_def, im_ref, th=0.9, ns=3)*(mask_in)
+    #  good_dphase = phase_imposed*(mask_in)
+    frankestein = im_def*(mask_in) + im_ref*(1-mask_out)
+    im_def_by_pieces = im_def*(mask_in) + im_def*(1-mask_out)
 
-f0 = 80
-im_ref = np.sin(f0*x)
-im_def = np.sin(f0*x + phase_imposed)
+    im_ref = im_ref*(mask_in) + im_ref*(1-mask_out)
+    dphase_mask = calculate_phase_diff_map_1D(frankestein, im_ref, th=0.9, ns=3)
 
-mask1 = tukey_2d(1024, 300, 50, 30)
-mask2 = tukey_2d(1024, 300, 10, 30)
+    good_dphase[mask_in != 1] = np.nan
+    dphase_mask[mask_in != 1] = np.nan
 
-# El nuevo tukey las define al revés
-mask1 = 1 - mask1
-mask2 = 1- mask2
-#  mask1 = create_smooth_mask(radius=450, center=(512, 512),
-                          #  annulus_width=60, output_shape=1024)
-#  mask2 = create_smooth_mask(radius=450, center=(512, 512),
-                          #  annulus_width=10, output_shape=1024)
+    good_dphase -= np.nanmean(good_dphase)
+    dphase_mask -= np.nanmean(dphase_mask)
 
-dphase = calculate_phase_diff_map_1D(im_def, im_ref, th=0.9, ns=3)*(1-mask2)
-im_def1 = im_def*(1-mask2) + im_ref*mask1
-im_def2 = im_def*(1-mask2) + im_def*mask1
+    print(np.nanmax(good_dphase)-np.nanmin(good_dphase))
+    print(np.nanmax(dphase_mask)-np.nanmin(dphase_mask))
 
-im_ref = im_ref*(1-mask2) + im_ref*mask1
-dphase_mask = calculate_phase_diff_map_1D(im_def1, im_ref, th=0.9, ns=3)*(1-mask2)
+    fig, axes = plt.subplots(2, 3, figsize=(16, 10), sharex=True, sharey= True)
+    axes = axes.flatten()
 
-phase_imposed = phase_imposed*(1-mask2)
-#  dphase = phase_imposed
+    mapp = axes[0].imshow(good_dphase)
+    axes[0].set_title('good dphase')
+    fig.colorbar(mapp, ax=axes[0])
 
-dphase -= dphase[65, 458]
-dphase_mask -= dphase_mask[65, 458]
+    mapp = axes[1].imshow(dphase_mask)
+    axes[1].set_title('dphase mask')
+    fig.colorbar(mapp, ax=axes[1])
 
-dphase[np.isclose((1-mask2), 0, atol=0.4)] = np.nan
-dphase_mask[np.isclose((1-mask2), 0, atol=0.4)] = np.nan
+    mapp = axes[2].imshow(good_dphase-dphase_mask)
+    axes[2].set_title('dphase diff')
+    fig.colorbar(mapp, ax=axes[2])
 
-print(np.nanmax(dphase)-np.nanmin(dphase))
-print(np.nanmax(dphase_mask)-np.nanmin(dphase_mask))
+    mapp = axes[3].imshow(frankestein)
+    axes[3].set_title('frankestein')
+    fig.colorbar(mapp, ax=axes[3])
 
-plt.imshow(im_def1)
-plt.title('im_def1')
-plt.colorbar()
+    mapp = axes[4].imshow(im_def_by_pieces)
+    axes[4].set_title('im_def_by_pieces')
+    fig.colorbar(mapp, ax=axes[4])
 
-plt.figure()
-plt.imshow(im_def2)
-plt.title('im_def2')
-plt.colorbar()
+    axes[5].get_shared_y_axes().remove(axes[5])
+    axes[5].set_ylim(-0.5, 1.5)
+    axes[5].plot(mask_in[mask_in.shape[0]//2, :], label='mask_in')
+    axes[5].plot(mask_out[mask_in.shape[0]//2, :], label='mask_out')
+    axes[5].legend()
 
-plt.imshow(im_def1)
-plt.title('def')
-plt.colorbar()
+    fig.subplots_adjust(right=0.8)
 
-plt.figure()
-plt.imshow(dphase)
-plt.title('dphase')
-plt.colorbar()
+    plt.show()
 
-plt.figure()
-plt.imshow(dphase-dphase_mask)
-plt.title('dphase diff')
-plt.colorbar()
+def test_square_img():
+    deformed = np.load('../FTP_toy/deformed.npy')
+    reference  = np.load('../FTP_toy/reference.npy')
 
-plt.figure()
-plt.imshow(dphase_mask)
-plt.title('dphase mask')
-plt.colorbar()
+    inicial, final = 300,600
+    im_ref = reference[inicial:final, inicial:final]
+    im_def = deformed[inicial:final, inicial:final]
 
+    mask_out = tukey_2d(im_ref.shape[0], 90, 30, 30)
+    mask_in = tukey_2d(im_ref.shape[0], 90, 15, 30)
+
+    #  good_dphase = calculate_phase_diff_map_1D(im_def, im_ref, th=0.9, ns=3)*(mask_in)
+    frankestein = im_def*(mask_in) + im_ref*(1-mask_out)
+    im_def_by_pieces = im_def*(mask_in) + im_def*(1-mask_out)
+
+    im_ref = im_ref*(mask_in) + im_ref*(1-mask_out)
+    dphase_mask = calculate_phase_diff_map_1D(frankestein, im_ref, th=0.9, ns=3)*(mask_in)
+
+    good_dphase = calculate_phase_diff_map_1D(im_def, im_ref, th=0.9, ns=3)*(mask_in)
+
+    good_dphase[mask_in != 1] = np.nan
+    dphase_mask[mask_in != 1] = np.nan
+
+    good_dphase -= np.nanmean(good_dphase)
+    dphase_mask -= np.nanmean(dphase_mask)
+
+    fig, axes = plt.subplots(2, 3, figsize=(16, 10), sharex=True, sharey= True)
+    axes = axes.flatten()
+
+    mapp = axes[0].imshow(good_dphase)
+    axes[0].set_title('good dphase')
+    fig.colorbar(mapp, ax=axes[0])
+
+    mapp = axes[1].imshow(dphase_mask)
+    axes[1].set_title('dphase mask')
+    fig.colorbar(mapp, ax=axes[1])
+
+    mapp =axes[2].imshow(good_dphase-dphase_mask)
+    axes[2].set_title('dphase diff')
+    fig.colorbar(mapp, ax=axes[2])
+
+    mapp =axes[3].imshow(frankestein)
+    axes[3].set_title('frankestein')
+    fig.colorbar(mapp, ax=axes[3])
+
+    mapp =axes[4].imshow(im_def_by_pieces)
+    axes[4].set_title('im_def_by_pieces')
+    fig.colorbar(mapp, ax=axes[4])
+
+    axes[5].get_shared_y_axes().remove(axes[5])
+    axes[5].set_ylim(-0.5, 1.5)
+    axes[5].plot(mask_in[mask_in.shape[0]//2, :], label='mask_in')
+    axes[5].plot(mask_out[mask_in.shape[0]//2, :], label='mask_out')
+    axes[5].legend()
+
+    fig.subplots_adjust(right=0.8)
+
+    plt.show()
+
+
+def _gerchberg2d(interferogram, mask_where_fringes_are, N_iter_max):
+
+    from scipy.signal import argrelextrema
+    from scipy.optimize import curve_fit
+    from scipy.signal import hann
+
+    def gaus(x, a, x0, sigma): return a*np.exp(-(x-x0)**2/(2*sigma**2))
+
+    ref = interferogram
+    refh = interferogram*mask_where_fringes_are
+    interf = mask_where_fringes_are
+
+    ft_ref  = np.fft.rfft2(ref)
+    ft_refh = np.fft.rfft2(refh)
+
+    S = ref.shape
+    S = S[0]
+
+    y = (np.abs(ft_refh[0,:]))
+    y = y/np.max(y)
+    x = np.linspace(0, (len(y)-1), len(y))
+    maxInd = argrelextrema(y, np.greater)
+    x, y = x[maxInd], y[maxInd]
+    n = len(x)
+    w = hann(n)
+    y = y*w
+    index_mean = np.argwhere(y==np.max(y))[0,0]
+    mean =  maxInd[0][index_mean]
+    sigma = np.sum(y*(x-mean)**2)/n
+    try:
+        popt, pcov = curve_fit(gaus, x, y, p0 = [y[index_mean], mean, sigma],maxfev=1100)
+    except:
+        popt, pcov = curve_fit(gaus, x, y,maxfev=1100)
+
+    k0x, k0y = popt[1], 0
+    R_in_k_space = popt[2]#*2.5
+
+    kx, ky = np.meshgrid(range(int(S/2+1)), range(S))
+
+    cuarto_superior = ( (kx-k0x)**2 + (ky-(S-k0y))**2 <= R_in_k_space**2 )
+    cuarto_inferior = ( (kx-k0x)**2 + (ky-(0-k0y))**2 <= R_in_k_space**2 )
+    lugar_a_conservar = cuarto_inferior + cuarto_superior
+    lugar_a_anular = 1-lugar_a_conservar
+
+    lugar_a_anular = lugar_a_anular.nonzero()
+    interf = interf.nonzero()
+
+    En = np.zeros(N_iter_max+1)
+
+    ii = 0
+    while ii<=N_iter_max:
+        ft_refh[lugar_a_anular] = 0
+        refhc = np.fft.irfft2(ft_refh)
+        refhc[interf] = refh[interf]
+        ft_refh = np.fft.rfft2(refhc)
+        En[ii] = np.sum(np.abs(ft_refh))
+        if ii > 0 and En[ii-1] < En[ii]:
+            break
+        ii += 1
+    En = En[0:ii]
+
+    refhc = np.real(refhc)
+    refhc[interf] = ref[interf]
+
+    return refhc
+
+
+from skimage.morphology import dilation, disk
+
+#  def test_annulus_img():
+deformed = np.load('../FTP_toy/deformed.npy')
+reference  = np.load('../FTP_toy/reference.npy')
+
+f = h5py.File('/media/box/Laboratorio/Labo_6y7/Mediciones_FaradayWaves/MED - Mediciones de Samantha para testear/HDF5/2018-07-17-0001-annulus-PRO.hdf5', 'r')
+samantha_dphase = f['height_fields/annulus'][:, :, 17]
+
+f = h5py.File('/media/box/Laboratorio/Labo_6y7/Mediciones_FaradayWaves/MED - Mediciones de Samantha para testear/HDF5/2018-07-17-0001-RAW.hdf5', 'r')
+
+
+gray = np.array(f['ftp_images']['gray']).mean(axis=2)
+deformed = f['ftp_images']['deformed'][:, :, 17]-gray
+reference = np.array(f['ftp_images']['reference']).mean(axis=2)-gray
+mask_where_fringes_are = np.zeros(reference.shape)
+mask_where_fringes_are[250:450, 150:550] = 1
+
+f = h5py.File('/media/box/Laboratorio/Labo_6y7/Mediciones_FaradayWaves/MED42 - 0707/HDF5/FTP.hdf5', 'r')
+mask = np.array(f['masks']['annulus'])
+mask = dilation(mask, disk(2))
+
+mask_where_fringes_are += mask
+
+full_def = _gerchberg2d(deformed, mask_where_fringes_are, 100)
+full_ref = _gerchberg2d(reference, mask_where_fringes_are, 100)
+good_dphase = calculate_phase_diff_map_1D(full_def, full_ref, th=0.9, ns=3)
+
+good_dphase[mask == 0] = np.nan
+
+fig, (ax1, ax2) = plt.subplots(1, 2, sharex=True, sharey=True)
+ax1.imshow(samantha_dphase, cmap='gray')
+ax2.imshow(good_dphase, cmap='gray')
 plt.show()
+
+    #  inicial, final = 300,600
+    #  im_ref = reference[inicial:final, inicial:final]
+    #  im_def = deformed[inicial:final, inicial:final]
+
+    #  mask_out = tukey_2d(im_ref.shape[0], 90, 30, 30)
+    #  mask_in = tukey_2d(im_ref.shape[0], 90, 15, 30)
+
+    #  #  good_dphase = calculate_phase_diff_map_1D(im_def, im_ref, th=0.9, ns=3)*(mask_in)
+    #  frankestein = im_def*(mask_in) + im_ref*(1-mask_out)
+    #  im_def_by_pieces = im_def*(mask_in) + im_def*(1-mask_out)
+
+    #  im_ref = im_ref*(mask_in) + im_ref*(1-mask_out)
+    #  dphase_mask = calculate_phase_diff_map_1D(frankestein, im_ref, th=0.9, ns=3)*(mask_in)
+
+    #  good_dphase = calculate_phase_diff_map_1D(im_def, im_ref, th=0.9, ns=3)*(mask_in)
+
+    #  good_dphase[mask_in != 1] = np.nan
+    #  dphase_mask[mask_in != 1] = np.nan
+
+    #  good_dphase -= np.nanmean(good_dphase)
+    #  dphase_mask -= np.nanmean(dphase_mask)
+
+    #  fig, axes = plt.subplots(2, 3, figsize=(16, 10), sharex=True, sharey= True)
+    #  axes = axes.flatten()
+
+    #  mapp = axes[0].imshow(good_dphase)
+    #  axes[0].set_title('good dphase')
+    #  fig.colorbar(mapp, ax=axes[0])
+
+    #  mapp = axes[1].imshow(dphase_mask)
+    #  axes[1].set_title('dphase mask')
+    #  fig.colorbar(mapp, ax=axes[1])
+
+    #  mapp =axes[2].imshow(good_dphase-dphase_mask)
+    #  axes[2].set_title('dphase diff')
+    #  fig.colorbar(mapp, ax=axes[2])
+
+    #  mapp =axes[3].imshow(frankestein)
+    #  axes[3].set_title('frankestein')
+    #  fig.colorbar(mapp, ax=axes[3])
+
+    #  mapp =axes[4].imshow(im_def_by_pieces)
+    #  axes[4].set_title('im_def_by_pieces')
+    #  fig.colorbar(mapp, ax=axes[4])
+
+    #  axes[5].get_shared_y_axes().remove(axes[5])
+    #  axes[5].set_ylim(-0.5, 1.5)
+    #  axes[5].plot(mask_in[mask_in.shape[0]//2, :], label='mask_in')
+    #  axes[5].plot(mask_out[mask_in.shape[0]//2, :], label='mask_out')
+    #  axes[5].legend()
+
+    #  fig.subplots_adjust(right=0.8)
+
+    #  plt.show()
+
+#  test_real_img()
+#  test_syntetic_phase()
+#  test_annulus_img()
