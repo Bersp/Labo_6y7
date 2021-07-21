@@ -22,6 +22,8 @@ def calculate_phase_diff_map_1D(dY, dY0, th, ns, mask_for_unwrapping=None):
     # dphase 	= phase difference map between images
     """
 
+    import numpy.ma as ma
+
     ny, nx = np.shape(dY)
     phase0 = np.zeros([nx,ny])
     phase  = np.zeros([nx,ny])
@@ -57,10 +59,6 @@ def calculate_phase_diff_map_1D(dY, dY0, th, ns, mask_for_unwrapping=None):
         phase0[lin,:] = np.angle(Ny0)
         phase[lin,:]  = np.angle(Ny)
 
-    # 2D-unwrapping is available with masks (as an option), using 'unwrap' library
-    # unwrap allows for the use of wrapped_arrays, according to the docs:
-    # "[...] in this case masked entries are ignored during the phase unwrapping process. This is useful if the wrapped phase data has holes or contains invalid entries. [...]"
-
     if mask_for_unwrapping is None:
         mphase0 = unwrap(phase0)
         mphase = unwrap(phase)
@@ -75,7 +73,7 @@ def calculate_phase_diff_map_1D(dY, dY0, th, ns, mask_for_unwrapping=None):
     # dphase = dphase - np.min(dphase) - np.pi/2
     return dphase
 
-def tukey_2d(L, R, A, D):
+def tukey_2d(x0, y0, L, R, A, D):
     """
     construimos una ventana de tukey en 2D
     L = imagen resultante en tamaño L x L
@@ -85,6 +83,8 @@ def tukey_2d(L, R, A, D):
     """
     output = np.zeros((L,L))
     x, y = np.meshgrid(np.arange(L), np.arange(L))
+    x -= x0 - L//2
+    y -= y0 - L//2
     r = np.sqrt( (x-L//2)**2 + (y-L//2)**2)
     region_plateau = (r>=(R-A//2)) * (r<=(R+A//2))
     region_subida  = (r>=(R-A//2-D)) * (r<(R-A//2))
@@ -216,7 +216,6 @@ def test_square_img():
 
     plt.show()
 
-
 def _gerchberg2d(interferogram, mask_where_fringes_are, N_iter_max):
 
     from scipy.signal import argrelextrema
@@ -283,41 +282,48 @@ def _gerchberg2d(interferogram, mask_where_fringes_are, N_iter_max):
 
     return refhc
 
+def test_annulus_img():
+    from skimage.morphology import dilation, disk
 
-from skimage.morphology import dilation, disk
+    deformed = np.load('../FTP_toy/deformed.npy')
+    reference  = np.load('../FTP_toy/reference.npy')
 
-#  def test_annulus_img():
-deformed = np.load('../FTP_toy/deformed.npy')
-reference  = np.load('../FTP_toy/reference.npy')
+    f = h5py.File('/home/bersp/Documents/Labo_6y7/Mediciones_FaradayWaves/MED - Mediciones de Samantha para testear/HDF5/2018-07-17-0001-annulus-PRO.hdf5', 'r')
+    samantha_dphase = f['height_fields/annulus'][:, :, 17]
 
-f = h5py.File('/media/box/Laboratorio/Labo_6y7/Mediciones_FaradayWaves/MED - Mediciones de Samantha para testear/HDF5/2018-07-17-0001-annulus-PRO.hdf5', 'r')
-samantha_dphase = f['height_fields/annulus'][:, :, 17]
-
-f = h5py.File('/media/box/Laboratorio/Labo_6y7/Mediciones_FaradayWaves/MED - Mediciones de Samantha para testear/HDF5/2018-07-17-0001-RAW.hdf5', 'r')
+    f = h5py.File('/home/bersp/Documents/Labo_6y7/Mediciones_FaradayWaves/MED - Mediciones de Samantha para testear/HDF5/2018-07-17-0001-RAW.hdf5', 'r')
 
 
-gray = np.array(f['ftp_images']['gray']).mean(axis=2)
-deformed = f['ftp_images']['deformed'][:, :, 17]-gray
-reference = np.array(f['ftp_images']['reference']).mean(axis=2)-gray
-mask_where_fringes_are = np.zeros(reference.shape)
-mask_where_fringes_are[250:450, 150:550] = 1
+    gray = np.array(f['ftp_images']['gray']).mean(axis=2)
+    deformed = f['ftp_images']['deformed'][:, :, 17]-gray
+    reference = np.array(f['ftp_images']['reference']).mean(axis=2)-gray
+    mask_where_fringes_are = np.zeros(reference.shape)
+    mask_where_fringes_are[250:450, 150:550] = 1
 
-f = h5py.File('/media/box/Laboratorio/Labo_6y7/Mediciones_FaradayWaves/MED42 - 0707/HDF5/FTP.hdf5', 'r')
-mask = np.array(f['masks']['annulus'])
-mask = dilation(mask, disk(2))
+    f = h5py.File('/home/bersp/Documents/Labo_6y7/Mediciones_FaradayWaves/MED42 - 0716/HDF5/FTP.hdf5', 'r')
+    mask = np.array(f['masks']['annulus'])
+    mask = dilation(mask, disk(2))
 
-mask_where_fringes_are += mask
+    mask_where_fringes_are += mask
 
-full_def = _gerchberg2d(deformed, mask_where_fringes_are, 100)
-full_ref = _gerchberg2d(reference, mask_where_fringes_are, 100)
-good_dphase = calculate_phase_diff_map_1D(full_def, full_ref, th=0.9, ns=3)
+    full_def = _gerchberg2d(deformed, mask_where_fringes_are, 100)
+    full_ref = _gerchberg2d(reference, mask_where_fringes_are, 100)
+    good_dphase = calculate_phase_diff_map_1D(full_def, full_ref, th=0.9, ns=3, mask_for_unwrapping=1-mask)
 
-good_dphase[mask == 0] = np.nan
+    good_dphase[mask == 0] = np.nan
+    good_dphase = good_dphase[:-5, :-5]
 
-fig, (ax1, ax2) = plt.subplots(1, 2, sharex=True, sharey=True)
-ax1.imshow(samantha_dphase, cmap='gray')
-ax2.imshow(good_dphase, cmap='gray')
-plt.show()
+    good_dphase -= np.nanmean(good_dphase)
+    samantha_dphase -= np.nanmean(samantha_dphase)
+
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, sharex=True, sharey=True)
+    mapp = ax1.imshow(samantha_dphase, cmap='gray')
+    fig.colorbar(mapp, ax=ax1)
+    mapp = ax2.imshow(good_dphase, cmap='gray')
+    fig.colorbar(mapp, ax=ax2)
+    mapp = ax3.imshow(samantha_dphase-good_dphase, cmap='gray')
+    fig.colorbar(mapp, ax=ax3)
+    plt.show()
 
     #  inicial, final = 300,600
     #  im_ref = reference[inicial:final, inicial:final]
@@ -374,6 +380,141 @@ plt.show()
 
     #  plt.show()
 
-#  test_real_img()
+def test_annulus_final_med():
+    from skimage.morphology import dilation, disk, binary_erosion
+    import skimage.io as sio
+
+    path = '/home/bersp/Documents/Labo_6y7/Mediciones_FaradayWaves/MED5 - No medimos - 0716/'
+    gray = sio.imread(path+'gray/ID_0_C1S0001000001.tif').astype(float)
+    deformed = sio.imread(path+'deformed/ID_0_C1S0001000001.tif').astype(float)-gray
+    reference = sio.imread(path+'reference/ID_0_C1S0001000001.tif').astype(float)-gray
+
+    annulus_mask, square_mask = np.load('MED5_masks.npy')
+    x0, y0, r_inner, r_outer = np.load('MED5_circle_props.npy')
+    x0 = int(x0)
+    y0 = int(y0)
+
+    mask_where_fringes_are = annulus_mask + square_mask
+
+    full_def = _gerchberg2d(deformed, mask_where_fringes_are, 100)
+    full_ref = _gerchberg2d(reference, mask_where_fringes_are, 100)
+
+    good_dphase = calculate_phase_diff_map_1D(full_def, full_ref, th=0.9, ns=3, mask_for_unwrapping=1-annulus_mask)
+
+    # Frankestain
+    width = r_outer-r_inner
+    r_middle = (r_outer+r_inner)//2
+    mask_out = tukey_2d(x0, y0, 1024, r_middle, width*2, int(width))
+    mask_in = tukey_2d(x0, y0, 1024, r_middle, width, int(width))
+
+    frankestein = deformed*(mask_in) + full_ref*(1-mask_out)
+    dphase_mask = calculate_phase_diff_map_1D(frankestein, full_ref, th=0.9, ns=3, mask_for_unwrapping=1-annulus_mask)
+
+    for i in range(8): annulus_mask = binary_erosion(annulus_mask)
+    good_dphase[annulus_mask == 0] = np.nan
+    dphase_mask[annulus_mask == 0] = np.nan
+    good_dphase -= np.nanmean(good_dphase)
+    dphase_mask -= np.nanmean(dphase_mask)
+
+    fig, axes = plt.subplots(2, 3, figsize=(16, 10), sharex=True, sharey= True)
+    axes = axes.flatten()
+
+    mapp = axes[0].imshow(good_dphase)
+    axes[0].set_title('good dphase')
+    fig.colorbar(mapp, ax=axes[0])
+
+    mapp = axes[1].imshow(dphase_mask)
+    axes[1].set_title('dphase mask')
+    fig.colorbar(mapp, ax=axes[1])
+
+    mapp = axes[2].imshow(good_dphase-dphase_mask)
+    axes[2].set_title('dphase diff')
+    fig.colorbar(mapp, ax=axes[2])
+
+    mapp = axes[3].imshow(frankestein)
+    axes[3].set_title('frankestein')
+    fig.colorbar(mapp, ax=axes[3])
+
+    axes[4].get_shared_y_axes().remove(axes[4])
+    axes[4].set_ylim(-0.5, 1.5)
+    axes[4].plot(mask_in[mask_in.shape[0]//2, :], label='mask_in')
+    axes[4].plot(mask_out[mask_in.shape[0]//2, :], label='mask_out')
+    axes[4].legend()
+
+    fig.subplots_adjust(right=0.8)
+
+    plt.show()
+
+    return
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(14, 9), sharex=True, sharey=True)
+    mapp = ax1.imshow(full_def, cmap='gray')
+    fig.colorbar(mapp, ax=ax1)
+
+    mapp = ax2.imshow(full_ref, cmap='gray')
+    fig.colorbar(mapp, ax=ax2)
+
+    mapp = ax3.imshow(good_dphase, cmap='gray')
+    fig.colorbar(mapp, ax=ax3)
+
+    plt.show()
+    return
+
+    #  inicial, final = 300,600
+    #  im_ref = reference[inicial:final, inicial:final]
+    #  im_def = deformed[inicial:final, inicial:final]
+
+    #  mask_out = tukey_2d(im_ref.shape[0], 90, 30, 30)
+    #  mask_in = tukey_2d(im_ref.shape[0], 90, 15, 30)
+
+    #  #  good_dphase = calculate_phase_diff_map_1D(im_def, im_ref, th=0.9, ns=3)*(mask_in)
+    #  frankestein = im_def*(mask_in) + im_ref*(1-mask_out)
+    #  im_def_by_pieces = im_def*(mask_in) + im_def*(1-mask_out)
+
+    #  im_ref = im_ref*(mask_in) + im_ref*(1-mask_out)
+    #  dphase_mask = calculate_phase_diff_map_1D(frankestein, im_ref, th=0.9, ns=3)*(mask_in)
+
+    #  good_dphase = calculate_phase_diff_map_1D(im_def, im_ref, th=0.9, ns=3)*(mask_in)
+
+    #  good_dphase[mask_in != 1] = np.nan
+    #  dphase_mask[mask_in != 1] = np.nan
+
+    #  good_dphase -= np.nanmean(good_dphase)
+    #  dphase_mask -= np.nanmean(dphase_mask)
+
+    #  fig, axes = plt.subplots(2, 3, figsize=(16, 10), sharex=True, sharey= True)
+    #  axes = axes.flatten()
+
+    #  mapp = axes[0].imshow(good_dphase)
+    #  axes[0].set_title('good dphase')
+    #  fig.colorbar(mapp, ax=axes[0])
+
+    #  mapp = axes[1].imshow(dphase_mask)
+    #  axes[1].set_title('dphase mask')
+    #  fig.colorbar(mapp, ax=axes[1])
+
+    #  mapp =axes[2].imshow(good_dphase-dphase_mask)
+    #  axes[2].set_title('dphase diff')
+    #  fig.colorbar(mapp, ax=axes[2])
+
+    #  mapp =axes[3].imshow(frankestein)
+    #  axes[3].set_title('frankestein')
+    #  fig.colorbar(mapp, ax=axes[3])
+
+    #  mapp =axes[4].imshow(im_def_by_pieces)
+    #  axes[4].set_title('im_def_by_pieces')
+    #  fig.colorbar(mapp, ax=axes[4])
+
+    #  axes[5].get_shared_y_axes().remove(axes[5])
+    #  axes[5].set_ylim(-0.5, 1.5)
+    #  axes[5].plot(mask_in[mask_in.shape[0]//2, :], label='mask_in')
+    #  axes[5].plot(mask_out[mask_in.shape[0]//2, :], label='mask_out')
+    #  axes[5].legend()
+
+    #  fig.subplots_adjust(right=0.8)
+
+    #  plt.show()
+
 #  test_syntetic_phase()
+#  test_square_img()
 #  test_annulus_img()
+test_annulus_final_med()

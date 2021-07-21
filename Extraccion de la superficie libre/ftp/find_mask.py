@@ -5,6 +5,7 @@ import skimage.filters as sif
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 from scipy.signal import argrelextrema
+from scipy import ndimage
 
 def taubin_svd(XY):
     """
@@ -60,19 +61,38 @@ def generate_mask(white_img):
     threshold = get_threshold(white_img)
     imth = white_img > threshold
 
+    # Busco el annulus
     labeled = skm.label(imth, connectivity=2)
     objects = skm.regionprops(labeled)
 
-    props = [(object.label, object.area, object.bbox, object.perimeter) for object in objects]
-    #  def sort_key_function(p): # TODO: Sortear adecuadamente el cuadradito
-        #  min_row, min_col, max_row, max_col = p[2]
-        #  return abs((max_row-min_row)/(max_col-min_col) - 1.2/1.9)
-        #  return abs(p[3]/p[1] - 2*(1.2+1.9)/(1.2 * 1.9))
-    #  print('\n'.join([f'{p[0]}\t{sort_key_function(p)}' for p in props]))
+    props = [(object.label, object.area) for object in objects]
 
-    label_annulus = sorted(props, key=lambda p: p[1], reverse=True)[1][0] # NOTE: Cambiar ese 1 por un 0
-    annulus = labeled == label_annulus
-    filtered_annulus = sif.roberts(annulus)
+    label_annulus = sorted(props, key=lambda p: p[1], reverse=True)[0][0]
+    annulus_mask = labeled == label_annulus
+
+    # Busco el cuadradito adentro del radio externo del annulus
+    filled_annulus = ndimage.binary_fill_holes(annulus_mask)
+    inner_annulus_area = imth*filled_annulus*(1-annulus_mask)
+
+    labeled = skm.label(inner_annulus_area, connectivity=1)
+    objects = skm.regionprops(labeled)
+    props = [(object.label, object.area, object.bbox, object.perimeter)
+             for object in objects]
+
+    def sort_key_function(p): # TODO: Sortear adecuadamente el cuadradito
+        min_row, min_col, max_row, max_col = p[2]
+        return abs((max_row-min_row)/(max_col-min_col) - 1.2/1.9)
+
+    label_square = sorted(props, key=sort_key_function)[0][0]
+
+    square_mask = labeled == label_square
+
+    return annulus_mask, square_mask
+
+def get_annulus_radii(annulus_mask):
+
+    # Consigo propiedades
+    filtered_annulus = sif.roberts(annulus_mask)
     threshold = get_threshold(filtered_annulus)
     filtered_annulus = filtered_annulus > threshold
 
@@ -82,59 +102,27 @@ def generate_mask(white_img):
     (label_circ1, _), (label_circ2, _) = sorted(props, key=lambda p: p[1], reverse=False)[:2]
 
     XY = np.vstack(np.where(labeled==label_circ1)).T
-    x0, y0, r = taubin_svd(XY)
-    plt.plot([x0, y0], [x0+r, y0], 'r.')
+    *_, r_inner = taubin_svd(XY)
 
     XY = np.vstack(np.where(labeled==label_circ2)).T
-    x0, y0, r = taubin_svd(XY)
-    plt.plot([x0, y0], [x0+r, y0], 'b.')
+    x0, y0, r_outer = taubin_svd(XY)
 
-    plt.imshow(labeled, cmap='gray')
-    #  plt.plot([x0, y0], [x0+r, y0], 'ro')
+    #  plt.plot([x0, y0], [x0+r_inner, y0], 'r.')
+    #  plt.plot([x0, y0], [x0+r_outer, y0], 'b.')
 
+    #  plt.imshow(labeled, cmap='gray')
     #  plt.show()
-    #  plt.imshow(labeled==label_annulus, cmap='gray')
-    #  plt.figure()
-    #  plt.imshow(labeled==565, cmap='gray')
-    plt.show()
 
-    return
-
-    # sort regionprops by area*solidity*extent, in ascending order
-
-
-
-    mask_of_disk_alone = ( labeled == props[-1][1] )
-    mask_of_rect_alone = ( labeled == props[-2][1] )
-    mask_of_annulus_alone = ( labeled == props[-3][1] )
-    if modificado==True:
-        ### OJO QUE ACA LO MODIFIQUE A MANO para 09/10
-        mask_of_rect_alone = ( labeled == props[-3][1] )
-        mask_of_annulus_alone = ( labeled == props[-5][1] )
-
-    # Relleno la mascara del anillo por si quedaron agujeros
-    mask_of_annulus_alone = dilation(mask_of_annulus_alone, disk(2))
-    xc_disk, yc_disk, R_disk = determine_properties_of_disk(mask_of_disk_alone)
-    xc_ext_annulus, yc_ext_annulus, Rext_annulus = determine_properties_of_disk(mask_of_annulus_alone)
-    xc_int_annulus, yc_int_annulus, Rint_annulus  = determine_properties_of_disk(mask_int_annulus(mask_of_annulus_alone))
-
-    # Both the internal and external fit of the annulus have the same center
-    xc_annulus, yc_annulus = np.mean([xc_ext_annulus, xc_int_annulus]), np.mean([yc_ext_annulus, yc_int_annulus])
-
-    R_disk = R_disk + 4 # this only affects the R_disk variable, not the mask itself
-    Rint_annulus = Rint_annulus + 5
-    Rext_annulus = Rext_annulus + 5
-
-    xc_rect, yc_rect, sl_rect = determine_properties_of_rect(mask_of_rect_alone)
-
-    mask = ( mask_of_disk_alone + mask_of_rect_alone + mask_of_annulus_alone)
-
-    return mask, [xc_disk, yc_disk], R_disk, [xc_rect, yc_rect], sl_rect, [xc_annulus, yc_annulus], Rext_annulus, Rint_annulus, mask_of_disk_alone, mask_of_rect_alone, mask_of_annulus_alone
+    return x0, y0, r_inner, r_outer
 
 if __name__ == '__main__':
-    img = get_white_img('../../Mediciones_FaradayWaves/MED - Mediciones de Samantha para testear/gray/Camera procimage500_eagle-117361-00001.tiff')
+    #  img = get_white_img('../../Mediciones_FaradayWaves/MED - Mediciones de Samantha para testear/gray/Camera procimage500_eagle-117361-00001.tiff')
     #  img = get_white_img('../../Mediciones_FaradayWaves/MED2 - 0624/gray/ID_0_C1S0001000001.tif')
     #  img = get_white_img('../../Mediciones_FaradayWaves/MED2 - 0624/white/IM_C1S0001000001.tif')
     #  img = get_white_img('../../Mediciones_FaradayWaves/MED0 - Medicion con 16 bits - 0611/gray/IM_C1S0003000001.tif')
+    img = get_white_img('../../Mediciones_FaradayWaves/MED5 - No medimos - 0716/white/ID_0_C1S0001000001.tif')
 
-    generate_mask(img)
+    masks = generate_mask(img)
+    circle_props = get_annulus_radii(masks[0])
+    np.save('../samantha_code/FTP_toy/MED5_masks', masks)
+    np.save('../samantha_code/FTP_toy/MED5_circle_props', circle_props)
