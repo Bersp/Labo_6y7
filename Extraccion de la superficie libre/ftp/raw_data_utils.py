@@ -27,7 +27,8 @@ def get_images_array(images_folder: str, subset: tuple=None):
     else:
         raise 'subset tiene que ser un entero, una tupla o None'
 
-    images_array = np.array(images_iterator[subset[0]: subset[1]])
+    images_array = np.moveaxis(np.array(images_iterator[subset[0]: subset[1]]),
+                               0, 2)
     return images_array
 
 def create_raw_hdf5(med_folder: str, chunks: tuple=(64, 64, 100)):
@@ -112,15 +113,14 @@ def create_raw_hdf5(med_folder: str, chunks: tuple=(64, 64, 100)):
         n_chunks = np.ceil(n_images/img_per_chunk).astype(int)
 
         for i in range(n_chunks-1):
-            subset = (img_per_chunk*i, img_per_chunk*(i+1))
-            image_chunk = np.moveaxis(get_images_array(deformed_folder, subset),
-                                      0, 2)
-            deformed_dset[:, :, img_per_chunk*i:img_per_chunk*(i+1)] = image_chunk
+            subset = (img_per_chunk*i, img_per_chunk*(i+1)-1)
+            image_chunk = get_images_array(deformed_folder, subset),
+            deformed_dset[:, :, img_per_chunk*i:img_per_chunk*(i+1)-1] = image_chunk
             logging.info(f'{i+1}/{n_chunks} chunks guardados')
 
         # Guardo el último chunk aparte porque podría ser más corto
-        subset = (img_per_chunk*(n_chunks-1), n_images)
-        deformed_dset[:, :, img_per_chunk*(n_chunks-1): n_images] = get_images_array(deformed_folder, subset)
+        subset = (img_per_chunk*(n_chunks-1), n_images-1)
+        deformed_dset[:, :, img_per_chunk*(n_chunks-1): n_images-1] = get_images_array(deformed_folder, subset)
         logging.info(f'{n_chunks}/{n_chunks} chunks guardados')
 
     else:
