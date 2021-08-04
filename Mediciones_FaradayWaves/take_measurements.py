@@ -6,18 +6,18 @@ import yaml
 from datetime import datetime
 
 fps = 250
-acelerometer_n_points = None
+accelerometer_n_points = None
 
 folder_comment = ''
 MEDN = 'auto'
 
 today_date = datetime.today()
 info = {
-        'ACELEROMETER': {'n_points': acelerometer_n_points, 'used': bool(acelerometer_n_points)},
+        'ACCELEROMETER': {'n_points': accelerometer_n_points, 'used': bool(accelerometer_n_points)},
         'CAMERA': {'fps': fps,
-                   'n_images_deformed': 3072,
-                   'n_images_gray': 200,
-                   'n_images_reference': 200,
+                   'n_deformed_images': 3072,
+                   'n_gray_images': 100,
+                   'n_reference_images': 100,
                    'resolution': [1024, 1024],
                    'shutter_speed': 1/fps
                    },
@@ -51,23 +51,23 @@ def new_med_folder(folder_comment=None, MEDN='auto'):
         MED_folder_name = f'{MED_folder_name} - {folder_comment}'
     MED_folder_name = f'{MED_folder_name} - {today_date.strftime("%m%d")}'
 
-    # Creo la carpeta MEDN y las acelerometer, deformed, gray y reference
+    # Creo la carpeta MEDN y las accelerometer, deformed, gray y reference
     os.mkdir(MED_folder_name)
     # NOTE: No creo estas carpetas para saber cuáles ya fueron pasadas
     #  os.mkdir(f'{MED_folder_name}/deformed')
     #  os.mkdir(f'{MED_folder_name}/gray')
     #  os.mkdir(f'{MED_folder_name}/reference')
     #  os.mkdir(f'{MED_folder_name}/white')
-    if acelerometer_n_points:
-        os.mkdir(f'{MED_folder_name}/acelerometer')
+    if accelerometer_n_points:
+        os.mkdir(f'{MED_folder_name}/accelerometer')
 
     # Escribo el archivo info
     with open(f'{MED_folder_name}/info.yaml', 'w') as f:
         yaml.dump(info, f, default_flow_style=False, default_style=None)
 
     # Escribo el archivo del acelerómetro
-    if acelerometer_n_points:
-        script_argv = f'"{MED_folder_name}/acelerometer/acceleration.csv" {acelerometer_n_points}'
+    if accelerometer_n_points:
+        script_argv = f'"{MED_folder_name}/accelerometer/acceleration.csv" {accelerometer_n_points}'
         os.system(f'python ../Acelerometro/Arduino/serial_export.py {script_argv}')
 
 

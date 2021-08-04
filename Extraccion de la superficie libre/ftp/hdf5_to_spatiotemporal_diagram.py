@@ -93,7 +93,7 @@ def get_st_diagram(ftp_hdf5_path: str,
                                            annulus_region_mask=annulus_region_mask,
                                            strip_resolution=strip_resolution)
 
-            annulus_strip_average -= annulus_strip_average.mean()
+            #  annulus_strip_average -= annulus_strip_average.mean()
             st_diagram[i*img_per_chunk+j, :] = annulus_strip_average
 
         logging.info(f'{i+1}/{n_chunks} chunks calculados')
@@ -108,7 +108,7 @@ def get_st_diagram(ftp_hdf5_path: str,
                                        annulus_region_mask=annulus_region_mask,
                                        strip_resolution=strip_resolution)
 
-        annulus_strip_average -= annulus_strip_average.mean()
+        #  annulus_strip_average -= annulus_strip_average.mean()
         if j == 1:
             plt.imshow(annulus_chunk[:, :, j])
             plt.figure()
@@ -126,8 +126,8 @@ def create_st_hdf5(hdf5_folder):
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
 
-    #  hdf5_folder = '../../Mediciones_FaradayWaves/MED5 - 0716/HDF5/'
-    hdf5_folder = '../../Mediciones_FaradayWaves/MED666 - Test - 0721/HDF5/'
+    hdf5_folder = '../../Mediciones_FaradayWaves/MED5 - 0716/HDF5/'
+    #  hdf5_folder = '../../Mediciones_FaradayWaves/MED666 - Test - 0721/HDF5/'
 
     create_st_hdf5(hdf5_folder)
 

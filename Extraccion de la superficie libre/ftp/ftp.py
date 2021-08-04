@@ -447,15 +447,15 @@ class FTP():
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
 
-    #  med_folder = '../../Mediciones_FaradayWaves/MED5 - 0716/'
-    med_folder = '../../Mediciones_FaradayWaves/MED666 - Test - 0721/'
+    med_folder = '../../Mediciones_FaradayWaves/MED5 - 0716/'
+    #  med_folder = '../../Mediciones_FaradayWaves/MED666 - Test - 0721/'
     hdf5_folder = med_folder+'HDF5/'
 
     ftp = FTP(hdf5_folder)
 
-    #  ftp.export()
+    ftp.export()
 
-    f = h5py.File(hdf5_folder+'FTP.hdf5', 'r')
-    img = f['height_fields']['annulus'][:, :, 99]
-    plt.imshow(img)
-    plt.show()
+    #  f = h5py.File(hdf5_folder+'FTP.hdf5', 'r')
+    #  img = f['height_fields']['annulus'][:, :, 99]
+    #  plt.imshow(img)
+    #  plt.show()

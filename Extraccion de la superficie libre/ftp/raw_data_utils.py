@@ -128,6 +128,6 @@ def create_raw_hdf5(med_folder: str, chunks: tuple=(64, 64, 100)):
     logging.info('END\n')
 
 if __name__ == '__main__':
-    #  med_folder = '../../Mediciones_FaradayWaves/MED5 - 0716/'
-    med_folder = '../../Mediciones_FaradayWaves/MED666 - Test - 0721/'
+    med_folder = '../../Mediciones_FaradayWaves/MED5 - 0716/'
+    #  med_folder = '../../Mediciones_FaradayWaves/MED666 - Test - 0721/'
     create_raw_hdf5(med_folder)
