@@ -113,14 +113,14 @@ def create_raw_hdf5(med_folder: str, chunks: tuple=(64, 64, 100)):
         n_chunks = np.ceil(n_images/img_per_chunk).astype(int)
 
         for i in range(n_chunks-1):
-            subset = (img_per_chunk*i, img_per_chunk*(i+1)-1)
-            image_chunk = get_images_array(deformed_folder, subset),
-            deformed_dset[:, :, img_per_chunk*i:img_per_chunk*(i+1)-1] = image_chunk
+            chunk = (img_per_chunk*i, img_per_chunk*(i+1))
+            image_chunk = get_images_array(deformed_folder, chunk),
+            deformed_dset[:, :, chunk[0]:chunk[1]] = image_chunk
             logging.info(f'{i+1}/{n_chunks} chunks guardados')
 
         # Guardo el último chunk aparte porque podría ser más corto
-        subset = (img_per_chunk*(n_chunks-1), n_images-1)
-        deformed_dset[:, :, img_per_chunk*(n_chunks-1): n_images-1] = get_images_array(deformed_folder, subset)
+        chunk = (img_per_chunk*(n_chunks-1), n_images)
+        deformed_dset[:, :, chunk[0]:chunk[1]] = get_images_array(deformed_folder, chunk)
         logging.info(f'{n_chunks}/{n_chunks} chunks guardados')
 
     else:
@@ -128,5 +128,6 @@ def create_raw_hdf5(med_folder: str, chunks: tuple=(64, 64, 100)):
     logging.info('END\n')
 
 if __name__ == '__main__':
+    #  med_folder = '../../Mediciones_FaradayWaves/MED5 - 0716/'
     med_folder = '../../Mediciones_FaradayWaves/MED666 - Test - 0721/'
     create_raw_hdf5(med_folder)

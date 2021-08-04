@@ -1,11 +1,17 @@
 from typing import Tuple
+import logging
+
 import h5py
 import numpy as np
 
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s ST: %(message)s',
+                    datefmt = '%H:%M:%S')
+
 def get_polar_strip(image: np.ndarray,
-                   center: Tuple[float, float],
-                   radius_limits: Tuple[float, float],
-                   strip_resolution: int):
+                    center: Tuple[float, float],
+                    radius_limits: Tuple[float, float],
+                    strip_resolution: int):
 
     initial_radius, final_radius = radius_limits
 
@@ -18,17 +24,19 @@ def get_polar_strip(image: np.ndarray,
     image_strip = image[ycart, xcart].reshape(final_radius-initial_radius, strip_resolution)
     return image_strip
 
-def find_annulus_region(annulus_mask, strip_resolution):
+def find_annulus_region(annulus_mask, center, annulus_radii, strip_resolution):
 
     half_width = annulus_mask.shape[0]//2
     annulus_mask_strip = get_polar_strip(annulus_mask,
-                                       center=(half_width, half_width),
-                                       radius_limits=(0, half_width),
-                                       strip_resolution=strip_resolution)
+                                         center=center,
+                                         radius_limits=(0, half_width),
+                                         strip_resolution=strip_resolution)
 
-    initial_radius = int(half_width-np.max(annulus_mask_strip.sum(0)))
+    #  initial_radius = int(half_width-np.max(annulus_mask_strip.sum(0)))
+    #  final_radius = half_width
 
-    final_radius = half_width
+    initial_radius, final_radius = annulus_radii
+
     annulus_region_mask = annulus_mask_strip[initial_radius:final_radius, :].astype(bool)
 
     return initial_radius, final_radius, annulus_region_mask
@@ -46,7 +54,7 @@ def get_polar_strip_average(annulus: np.ndarray,
 
     return strip_average
 
-def get_spatiotemporal_diagram(height_fields_path: str,
+def get_st_diagram(ftp_hdf5_path: str,
                                strip_resolution: int=3000):
     """
     Toma un HDF5 con dos grupos: uno con las imagenes ya procesadas
@@ -54,95 +62,94 @@ def get_spatiotemporal_diagram(height_fields_path: str,
 
     Retorna el diagrama espaciotemporal.
     """
-    f = h5py.File(height_fields_path, 'r')
+
+    f = h5py.File(ftp_hdf5_path, 'r')
     annulus_array = f['height_fields/annulus']
-    annulus_mask = f['masks/annulus'][:, :, 0]
+    annulus_mask = f['masks/annulus'][:, :]
+    annulus_mask_info = f['masks/annulus'].attrs
 
-    *radius_limits, annulus_region_mask = find_annulus_region(annulus_mask,
-                                                              strip_resolution)
+    center = annulus_mask_info['center']
+    annulus_radii = annulus_mask_info['annulus_radii']
 
-    half_width = annulus_array.shape[0]//2
-    center = [half_width]*2
+    annulus_region_mask = get_polar_strip(annulus_mask, center, annulus_radii,
+                                          strip_resolution=3000)
 
     n_images = annulus_array.shape[-1]
-    n_chunks = annulus_array.chunks[-1]*2
+    img_per_chunk = annulus_array.chunks[-1]
 
-    spatiotemporal_diagram = np.zeros(shape=(n_images, strip_resolution))
-    for i in range(n_images//n_chunks):
-        print(i)
+    n_chunks = np.ceil(n_images/img_per_chunk).astype(int)
 
-        annulus_chunk = annulus_array[:, :, i*n_chunks: (i+1)*n_chunks]
-        for j in range(n_chunks):
+    st_diagram = np.zeros(shape=(n_images, strip_resolution))
+
+    logging.info('Inicio del cálculo del diagrama espacio-temporal')
+
+    for i in range(n_chunks-1):
+
+        annulus_chunk = annulus_array[:, :, i*img_per_chunk: (i+1)*img_per_chunk]
+        for j in range(img_per_chunk):
             annulus_strip_average = get_polar_strip_average(
                                            annulus_chunk[:, :, j], center=center,
-                                           radius_limits=radius_limits,
+                                           radius_limits=annulus_radii,
                                            annulus_region_mask=annulus_region_mask,
                                            strip_resolution=strip_resolution)
 
-            spatiotemporal_diagram[i*n_chunks+j, :] = annulus_strip_average
+            annulus_strip_average -= annulus_strip_average.mean()
+            st_diagram[i*img_per_chunk+j, :] = annulus_strip_average
 
-    return spatiotemporal_diagram
+        logging.info(f'{i+1}/{n_chunks} chunks calculados')
+    logging.info('END')
 
-if __name__ == '__main__':
-    import matplotlib
-    from matplotlib import pyplot as plt
-    import cProfile
-    import pstats
-
-    #  height_fields_path = '/home/bersp/Documents/Labo_6y7/Mediciones_FaradayWaves/MED - Mediciones de Samantha para testear/HDF5/2018-07-17-0001-annulus-PRO.hdf5'
-    height_fields_path = '/home/bersp/Documents/Labo_6y7/Mediciones_FaradayWaves/MED - Mediciones de Samantha para testear/HDF5/2019-10-09-a200-f20-fmod0-annulus-PRO.hdf5'
-    #  spatiotemporal_diagram = get_spatiotemporal_diagram(height_fields_path)
-
-    #  plt.imshow(spatiotemporal_diagram, cmap='gray')
-    #  plt.colorbar()
-    #  plt.clim(-10, 10)
-
-    #  plt.imshow(spatiotemporal_diagram, cmap='gray')
-    #  plt.colorbar()
-
-    #  plt.show()
-    #  plt.plot(spatiotemporal_diagram[1950, :]-spatiotemporal_diagram[1950, :].mean())
-    #  plt.plot(spatiotemporal_diagram[2499, :]-spatiotemporal_diagram[2499, :].mean())
-    #  plt.show()
-
-    #  with cProfile.Profile() as pr:
-        #  get_spatiotemporal_diagram(height_fields_path)
-
-    #  stats = pstats.Stats(pr)
-    #  stats.sort_stats(pstats.SortKey.TIME)
-    #  stats.print_stats()
-
-    height_fields_path ='/home/bersp/Documents/Labo_6y7/Mediciones_FaradayWaves/MED - Mediciones de Samantha para testear/HDF5/2018-07-17-0001-annulus-PRO.hdf5'
-    #  height_fields_path = '/home/bersp/Documents/Labo_6y7/Mediciones_FaradayWaves/MED - Mediciones de Samantha para testear/HDF5/2019-10-09-a200-f20-fmod0-annulus-PRO.hdf5'
-    f = h5py.File(height_fields_path)
-
-
-    annulus = f['height_fields/annulus']
-    annulus_mask = f['masks/annulus']
-    annulus = annulus[:, :, 40]
-    annulus_mask = annulus_mask[:, :, 0]
-    strip_resolution = 3000
-
-    #  half_width = annulus.shape[0]//2
-    #  center = [half_width]*2
-
-    #  *radius_limits, annulus_region_mask = find_annulus_region(annulus_mask, strip_resolution)
-
-    #  annulus_strip_average = get_polar_strip_average(
-                                   #  annulus, center=center,
-                                   #  radius_limits=radius_limits,
-                                   #  annulus_region_mask=annulus_region_mask,
-                                   #  strip_resolution=strip_resolution
-                                   #  )
-
-    #  plt.plot(annulus_strip_average)
-
-    half_width = annulus_mask.shape[0]//2
-    center = [half_width]*2
-    annulus_mask_strip = get_polar_strip(annulus_mask,
-                                       center=(half_width, half_width),
-                                       radius_limits=(0, half_width),
+    # Guardo el último chunk aparte porque podría ser más corto
+    annulus_chunk = annulus_array[:, :, (n_chunks-1)*img_per_chunk:n_images]
+    for j in range(annulus_chunk.shape[-1]):
+        annulus_strip_average = get_polar_strip_average(
+                                       annulus_chunk[:, :, j], center=center,
+                                       radius_limits=annulus_radii,
+                                       annulus_region_mask=annulus_region_mask,
                                        strip_resolution=strip_resolution)
 
-    plt.imshow(annulus_mask_strip, cmap='gray')
+        annulus_strip_average -= annulus_strip_average.mean()
+        if j == 1:
+            plt.imshow(annulus_chunk[:, :, j])
+            plt.figure()
+        st_diagram[(n_chunks-1)*img_per_chunk+j, :] = annulus_strip_average
+
+    return st_diagram
+
+def create_st_hdf5(hdf5_folder):
+    st_diagram = get_st_diagram(hdf5_folder+'FTP.hdf5')
+
+    f = h5py.File(hdf5_folder+'ST.hdf5', 'w')
+    f.create_dataset('spatiotemporal_diagram', data=st_diagram)
+    f.close()
+
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+
+    #  hdf5_folder = '../../Mediciones_FaradayWaves/MED5 - 0716/HDF5/'
+    hdf5_folder = '../../Mediciones_FaradayWaves/MED666 - Test - 0721/HDF5/'
+
+    create_st_hdf5(hdf5_folder)
+
+    f = h5py.File(hdf5_folder+'ST.hdf5', 'r')
+    st_diagram = f['spatiotemporal_diagram']
+
+    plt.imshow(st_diagram)
     plt.show()
+
+    #  f = h5py.File(ftp_hdf5_path, 'r')
+    #  annulus_array = f['height_fields/annulus']
+    #  annulus_mask = f['masks/annulus'][:, :]
+    #  annulus_mask_info = f['masks/annulus'].attrs
+
+    #  img = annulus_array[:, :, 0]
+
+    #  center = annulus_mask_info['center']
+    #  annulus_radii = annulus_mask_info['annulus_radii']
+
+    #  half_width = annulus_mask.shape[0]//2
+    #  annulus_region_mask = get_polar_strip(annulus_mask, center, annulus_radii, strip_resolution=3000)
+    #  polar_strip = get_polar_strip_average(img, center, annulus_radii, annulus_region_mask, strip_resolution=3000)
+
+    #  plt.plot(polar_strip)
+    #  plt.show()

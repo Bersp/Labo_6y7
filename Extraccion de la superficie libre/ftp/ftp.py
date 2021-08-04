@@ -1,6 +1,5 @@
 import json
 import logging
-import warnings
 
 import h5py
 import numpy as np
@@ -19,6 +18,8 @@ from itertools import repeat
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s FTP: %(message)s',
                     datefmt = '%H:%M:%S')
+
+from numba import njit
 
 from multiprocessing import Pool, cpu_count
 
@@ -104,11 +105,11 @@ def individual_ftp(deformed, gray, filled_ref,
 
     return dphase
 
+
 def _gauss(x, a, x0, sigma):
     return a*np.exp(-(x-x0)**2/(2*sigma**2))
 
 def gerchberg2d(interferogram, mask_where_fringes_are, N_iter_max):
-
 
     ref = interferogram
     refh = interferogram*mask_where_fringes_are
@@ -151,6 +152,7 @@ def gerchberg2d(interferogram, mask_where_fringes_are, N_iter_max):
 
     En = np.zeros(N_iter_max+1)
 
+
     ii = 0
     while ii<=N_iter_max:
         ft_refh[lugar_a_anular] = 0
@@ -167,7 +169,6 @@ def gerchberg2d(interferogram, mask_where_fringes_are, N_iter_max):
     refhc[interf] = ref[interf]
 
     return refhc
-
 
 def tukey_2d(x0, y0, L, R, A, D):
     """
@@ -287,29 +288,6 @@ class FTP():
 
         return dphase_chunk
 
-    def chunk_ftp_parallel(self, deformed_chunk):
-
-        cores = cpu_count()
-        p = Pool(cores)
-
-        dphase_chunk = np.zeros(deformed_chunk.shape)
-        n_images = deformed_chunk.shape[2]
-
-
-        ftp_args = (self.gray,
-                    self.filled_ref,
-                    self.annulus_mask,
-                    self.annulus_center,
-                    self.annulus_radii)
-
-        def_chunk_gen = ( (deformed_chunk[:, :, i], *ftp_args)
-                          for i in range (n_images)
-                        )
-
-        dphase_chunk = p.starmap(individual_ftp, def_chunk_gen)
-
-        return np.moveaxis(dphase_chunk, 0, 2)
-
     # -------------------------------------------------------------------------
     # Mask and annulus props functions
 
@@ -419,14 +397,14 @@ class FTP():
     # -------------------------------------------------------------------------
     # Export functions
 
-    def export(self, parallelize):
+    def export(self):
         f = h5py.File(self.hdf5_folder+'FTP.hdf5', 'w')
 
         height_grp = f.create_group('height_fields')
         masks_grp = f.create_group('masks')
 
         self._get_mask_and_export(masks_grp)
-        self._do_ftp_and_export_height_fields(height_grp, parallelize)
+        self._do_ftp_and_export_height_fields(height_grp)
 
         f.flush()
         f.close()
@@ -437,13 +415,14 @@ class FTP():
                                                      dtype='float64')
         masks_grp_annulus[:, :] = self.annulus_mask
         masks_grp_annulus.attrs['center'] = self.annulus_center
+        masks_grp_annulus.attrs['annulus_radii'] = self.annulus_radii
 
         masks_grp_square = masks_grp.create_dataset('square',
                                                     shape=self.img_resolution,
                                                     dtype='float64')
         masks_grp_square[:, :] = self.square_mask
 
-    def _do_ftp_and_export_height_fields(self, height_grp, parallelize):
+    def _do_ftp_and_export_height_fields(self, height_grp):
 
         height_grp.create_dataset('annulus',
                   shape=(*self.img_resolution, self.n_deformed_images),
@@ -453,30 +432,30 @@ class FTP():
         n_chunks = np.ceil(self.n_deformed_images/img_per_chunk).astype(int)
 
         logging.info(f'Calculando {n_chunks} chunks')
+
         for i in range(n_chunks):
-            deformed_chunk = self.deformed[:, :, img_per_chunk*i:img_per_chunk*(i+1)]
+            chunk = (img_per_chunk*i, img_per_chunk*(i+1))
 
-            if parallelize:
-                height_field_chunk = self.chunk_ftp_parallel(deformed_chunk)
-            else:
-                height_field_chunk = self.chunk_ftp(deformed_chunk)
+            deformed_chunk = self.deformed[:, :, chunk[0]:chunk[1]]
 
-            height_grp['annulus'][:, :, img_per_chunk*i:img_per_chunk*(i+1)] = height_field_chunk
+            height_field_chunk = self.chunk_ftp(deformed_chunk)
+
+            height_grp['annulus'][:, :, chunk[0]:chunk[1]] = height_field_chunk
             logging.info(f'{i+1}/{n_chunks} chunks guardados')
         logging.info(f'END\n')
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
 
+    #  med_folder = '../../Mediciones_FaradayWaves/MED5 - 0716/'
     med_folder = '../../Mediciones_FaradayWaves/MED666 - Test - 0721/'
     hdf5_folder = med_folder+'HDF5/'
 
     ftp = FTP(hdf5_folder)
 
-    ftp.export(parallelize=True)
+    #  ftp.export()
 
-    #  f = h5py.File(hdf5_folder+'FTP.hdf5', 'r')
-    #  img = f['height_fields']['annulus'][:, :, 5]
-    #  plt.imshow(img)
-    #  plt.show()
-
+    f = h5py.File(hdf5_folder+'FTP.hdf5', 'r')
+    img = f['height_fields']['annulus'][:, :, 99]
+    plt.imshow(img)
+    plt.show()
