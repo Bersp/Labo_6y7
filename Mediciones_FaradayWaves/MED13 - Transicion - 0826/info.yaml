@@ -1,0 +1,23 @@
+ACCELEROMETER:
+  n_points: 5000
+  used: true
+CALIBRATION:
+  L: 103.0
+  d: 22.0
+CAMERA:
+  fps: 250
+  n_deformed_images: 3072
+  n_gray_images: 100
+  n_reference_images: 100
+  resolution:
+  - 1024
+  - 1024
+  shutter_speed: 0.004
+DATE: 08-26-21
+FUNCTION_GENERATOR:
+  freq_modulation: null
+  hz: 20
+  vpp: 16
+NOTES: ''
+PROJECTOR:
+  image_to_proyect: Sin01.BMP
