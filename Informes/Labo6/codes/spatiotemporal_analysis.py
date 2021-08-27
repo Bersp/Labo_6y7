@@ -30,32 +30,36 @@ def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
         cmap(np.linspace(minval, maxval, n)))
     return new_cmap
 
-def get_st_diagram(med_folder_name, procceced=True):
+def get_st_diagram(med_folder_name):
     hdf5_path = f'../../../Mediciones_FaradayWaves/{med_folder_name}/HDF5/ST.hdf5'
     f = h5py.File(hdf5_path, 'r')
 
     st_diagram = np.array(f['spatiotemporal_diagram'])
 
-    if procceced:
-        gap = st_diagram[:, 100] - np.unwrap(st_diagram[:, 100])
+    gap = st_diagram[:, 100] - np.unwrap(st_diagram[:, 100])
 
-        gap = np.expand_dims(gap, 1)
-        st_diagram = st_diagram - gap
+    gap = np.expand_dims(gap, 1)
+    st_diagram = st_diagram - gap
 
-        st_diagram = unwrap(st_diagram)
+    st_diagram = unwrap(st_diagram)
 
-        st_diagram -= np.expand_dims(st_diagram.mean(1), 1)
+    st_diagram -= np.expand_dims(st_diagram.mean(1), 1)
 
-        #  st_diagram = np.remainder(st_diagram, 2*np.pi)
-        #  st_diagram[st_diagram < 1.2] = np.nan
-        #  st_diagram = fill_nans(st_diagram)
-        #  st_diagram = np.pi - st_diagram
+    st_diagram[(st_diagram > 5) + (st_diagram < -5)] = np.nan
+    st_diagram = fill_nans(st_diagram)
 
-        #  st_diagram = (st_diagram.T - st_diagram.mean(1)).T
-        #  mask = (st_diagram > 5) + (st_diagram < -5)
-        #  st_diagram[mask] = np.nan
-        #  st_diagram = fill_nans(st_diagram)
-        #  st_diagram *= -1
+    st_diagram *= -1
+
+    #  st_diagram = np.remainder(st_diagram, 2*np.pi)
+    #  st_diagram[st_diagram < 1.2] = np.nan
+    #  st_diagram = fill_nans(st_diagram)
+    #  st_diagram = np.pi - st_diagram
+
+    #  st_diagram = (st_diagram.T - st_diagram.mean(1)).T
+    #  mask = (st_diagram > 5) + (st_diagram < -5)
+    #  st_diagram[mask] = np.nan
+    #  st_diagram = fill_nans(st_diagram)
+    #  st_diagram *= -1
 
     return st_diagram
 
@@ -64,31 +68,33 @@ def st(med_folder_name):
     extent = (0, 2*np.pi, 0, st_diagram.shape[1]/250)
 
     fig, ax = plt.subplots(figsize=(12, 8))
+    cmap = truncate_colormap('twilight_shifted', 0.1, 0.90)
 
     img = ax.imshow(st_diagram,
                     extent=extent,
                     aspect=0.5,
-                    cmap='coolwarm'
+                    cmap=cmap
                     )
     fig.colorbar(img, ax=ax)
 
-    # axins = zoomed_inset_axes(ax, 4.5, loc=2)
-    # axins.imshow(st_diagram,
-                 # extent=extent,
-                 # aspect=0.5,
-                 # cmap='coolwarm'
-                 # )
+    ax.set_xlabel('theta [rad]', fontsize=20)
+    ax.set_ylabel('time [s]', fontsize=20)
 
-    # axins.set_xlim(5.5, 6)
-    # axins.set_ylim(2, 3)
+    axins = zoomed_inset_axes(ax, 4.5, loc=2)
+    axins.imshow(st_diagram,
+                 extent=extent,
+                 aspect=0.5,
+                 cmap=cmap
+                 )
 
-    # axins.set_xticklabels('')
-    # axins.set_yticklabels('')
+    axins.set_xlim(5.5, 6)
+    axins.set_ylim(2, 3)
 
-    # mark_inset(ax, axins, loc1=1, loc2=3, fc="none", ec=BLACK_NORD)
+    axins.set_xticklabels('')
+    axins.set_yticklabels('')
 
-    ax.set_xlabel('theta [rad]', fontsize=16)
-    ax.set_ylabel('time [s]', fontsize=16)
+    mark_inset(ax, axins, loc1=1, loc2=3, fc="none", ec=BLACK_NORD)
+
 
     if '5' in med_folder_name:
         state='Baja aceleración'
@@ -100,8 +106,8 @@ def st(med_folder_name):
 
 
     plt.tight_layout()
-    #  plt.savefig(f'../figures/st_{med_folder_name.split(" ")[0]}.png',
-                #  transparent=True, dpi=400)
+    plt.savefig(f'../figures/st_{med_folder_name.split(" ")[0]}.pdf',
+                transparent=True, bbox_inches='tight')
     plt.show()
 
 def some_frames(med_folder_name, start_frame, interval):
@@ -141,7 +147,7 @@ def point_through_time(point):
     ax.set_xlabel('Tiempo (s)', fontsize=16)
 
     plt.tight_layout()
-    plt.savefig('../figures/med5_med11_thetatt.png', transparent=True, dpi=400)
+    plt.savefig('../figures/med5_med11_thetatt.png', transparent=True)
 
     plt.show()
 
@@ -230,11 +236,8 @@ def plot_one_line(med_folder_name, n_column=10):
     plt.show()
 
 
-
-        
-
 if __name__ == "__main__":
     #  point_through_time(point=100)
-    #  animate_st()
+     # animate_st()
     meds = ['MED5 - 0716', 'MED11 - 0730', 'MED12 - 0730']
-    st(meds[1])
+    st(meds[2])

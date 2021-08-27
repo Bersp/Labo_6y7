@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="331.78751mm"
+   height="161.89792mm"
+   viewBox="0 0 331.78751 161.89792"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15, custom)"
+   sodipodi:docname="hdf5_chunk.svg"
+   inkscape:export-filename="/home/bersp/Documents/Labo_6y7/Informes/Labo6/inkscape_figures/med_folder.png"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300">
+  <defs
+     id="defs2">
+    <rect
+       x="-35.547997"
+       y="17.411818"
+       width="127.32804"
+       height="33.582809"
+       id="rect48064" />
+    <marker
+       style="overflow:visible"
+       id="marker11612"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:#2e3f53;fill-opacity:1;fill-rule:evenodd;stroke:#2e3f53;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         id="path11610" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker11548"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path11546" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker11478"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Mend"
+       inkscape:isstock="true">
+      <path
+         transform="scale(-0.6)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         id="path11476" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Send"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Send"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.2,0,0,-0.2,-1.2,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path10881" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path10869" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="TriangleOutL"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutL"
+       inkscape:isstock="true">
+      <path
+         transform="scale(0.8)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path11008" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Mend"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Mend"
+       inkscape:isstock="true">
+      <path
+         transform="scale(-0.6)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         id="path10893" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Mend"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Mend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.4,0,0,-0.4,-4,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path10875" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Lend"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         id="path10887" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.75017844"
+     inkscape:cx="685.82451"
+     inkscape:cy="368.00855"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer6"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:window-width="1904"
+     inkscape:window-height="1033"
+     inkscape:window-x="6"
+     inkscape:window-y="37"
+     inkscape:window-maximized="0"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0">
+    <inkscape:grid
+       type="xygrid"
+       id="grid10830"
+       originx="-3.7113954"
+       originy="-9.1735384" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="backgrounds"
+     style="display:inline"
+     transform="translate(-3.7113953,-9.1735382)" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="grid"
+     style="display:inline"
+     transform="translate(-3.7113953,-9.1735382)">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="23.627008"
+       y="11.455758"
+       id="text1621"><tspan
+         sodipodi:role="line"
+         id="tspan1619"
+         x="23.627008"
+         y="11.455758"
+         style="stroke-width:0.264583" /></text>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="text"
+     style="display:inline"
+     transform="translate(-3.7113953,-9.1735382)" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer5"
+     inkscape:label="fto_direcctories"
+     sodipodi:insensitive="true"
+     style="display:none;opacity:0.181382">
+    <image
+       width="105.58339"
+       height="77.242592"
+       preserveAspectRatio="none"
+       xlink:href="data:image/png;base64,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 Ba1TAAAAAElFTkSuQmCC "
+       id="image46810"
+       x="12.722377"
+       y="15.894958"
+       style="display:inline" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer6"
+     inkscape:label="direcctories 1">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;line-height:1.25;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3f53;fill-opacity:1;stroke-width:0.817777"
+       x="28.996809"
+       y="49.57325"
+       id="text46838"><tspan
+         sodipodi:role="line"
+         id="tspan46836"
+         x="28.996809"
+         y="49.57325"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3f53;fill-opacity:1;stroke-width:0.817777"> MED FOLDER</tspan></text>
+    <path
+       style="opacity:0.988845;fill:none;fill-opacity:1;stroke:#516d90;stroke-width:0.865;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 31.600782,55.213507 31.588135,118.6013 H 47.463136"
+       id="path46840"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="opacity:0.988845;fill:#2e3f53;fill-opacity:1;stroke:#516d90;stroke-width:0.865;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 31.588135,70.9763 H 47.463136"
+       id="path46840-0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="opacity:0.988845;fill:#2e3f53;fill-opacity:1;stroke:#516d90;stroke-width:0.865;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 31.588135,82.88255 H 47.463136"
+       id="path46840-0-5"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="opacity:0.988845;fill:#2e3f53;fill-opacity:1;stroke:#516d90;stroke-width:0.865;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 31.588135,94.7888 H 47.463136"
+       id="path46840-0-5-6"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="opacity:0.988845;fill:#2e3f53;fill-opacity:1;stroke:#516d90;stroke-width:0.865;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 31.588135,106.69505 H 47.463136"
+       id="path46840-0-5-6-0"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;line-height:1.25;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3f53;fill-opacity:1;stroke-width:0.817777"
+       x="50.573902"
+       y="62.097439"
+       id="text46838-4"><tspan
+         sodipodi:role="line"
+         x="50.573902"
+         y="62.097439"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3f53;fill-opacity:1;stroke-width:0.817777"
+         id="tspan49270"><tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.76111px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
+   id="tspan49274"></tspan> accelerometer</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;line-height:1.25;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3f53;fill-opacity:1;stroke-width:0.817777"
+       x="50.567917"
+       y="72.751633"
+       id="text46838-4-3"><tspan
+         sodipodi:role="line"
+         id="tspan46836-0-2"
+         x="50.567917"
+         y="72.751633"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3f53;fill-opacity:1;stroke-width:0.817777"> deformed</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;line-height:1.25;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3f53;fill-opacity:1;stroke-width:0.817777"
+       x="50.639301"
+       y="84.291962"
+       id="text46838-4-3-0"><tspan
+         sodipodi:role="line"
+         id="tspan46836-0-2-8"
+         x="50.639301"
+         y="84.291962"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3f53;fill-opacity:1;stroke-width:0.817777"> gray</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;line-height:1.25;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3f53;fill-opacity:1;stroke-width:0.817777"
+       x="50.644169"
+       y="97.559639"
+       id="text46838-4-3-0-6"><tspan
+         sodipodi:role="line"
+         id="tspan46836-0-2-8-9"
+         x="50.644169"
+         y="97.559639"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3f53;fill-opacity:1;stroke-width:0.817777"> reference</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;line-height:1.25;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3f53;fill-opacity:1;stroke-width:0.817777"
+       x="50.620296"
+       y="109.80442"
+       id="text46838-4-3-0-6-9"><tspan
+         sodipodi:role="line"
+         id="tspan46836-0-2-8-9-2"
+         x="50.620296"
+         y="109.80442"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3f53;fill-opacity:1;stroke-width:0.817777"> white</tspan></text>
+    <text
+       xml:space="preserve"
+       id="text48062"
+       style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';white-space:pre;shape-inside:url(#rect48064);" />
+    <path
+       style="opacity:0.988845;fill:#2e3f53;fill-opacity:1;stroke:#516d90;stroke-width:0.865;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 31.600781,59.182257 H 47.475782"
+       id="path46840-0-3"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;line-height:1.25;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3f53;fill-opacity:1;stroke-width:0.817777"
+       x="50.989162"
+       y="120.09512"
+       id="text46838-4-6"><tspan
+         sodipodi:role="line"
+         x="50.989162"
+         y="120.09512"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3f53;fill-opacity:1;stroke-width:0.817777"
+         id="tspan49270-7"><tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.76111px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
+   id="tspan49274-5"></tspan> info.yaml</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;line-height:1.25;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3f53;fill-opacity:1;stroke-width:0.817777"
+       x="186.16478"
+       y="18.719501"
+       id="text46838-4-6-0"><tspan
+         sodipodi:role="line"
+         x="186.16478"
+         y="18.719501"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87778px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3f53;fill-opacity:1;stroke-width:0.817777"
+         id="tspan49270-7-2"><tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.76111px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
+   id="tspan49274-5-1"></tspan> info.yaml</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.70524px;line-height:1.25;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3440;fill-opacity:1;stroke:none;stroke-width:0.192631"
+       x="194.41142"
+       y="31.728477"
+       id="text632-0"><tspan
+         sodipodi:role="line"
+         x="194.41142"
+         y="31.728477"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.70524px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3440;fill-opacity:1;stroke-width:0.192631"
+         id="tspan638-5">CALIBRATION:</tspan><tspan
+         sodipodi:role="line"
+         x="194.41142"
+         y="41.360027"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.70524px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3440;fill-opacity:1;stroke-width:0.192631"
+         id="tspan640-1">  L: 103.0</tspan><tspan
+         sodipodi:role="line"
+         x="194.41142"
+         y="50.991577"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.70524px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3440;fill-opacity:1;stroke-width:0.192631"
+         id="tspan642-1">  d: 25.5</tspan><tspan
+         sodipodi:role="line"
+         x="194.41142"
+         y="60.623127"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.70524px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3440;fill-opacity:1;stroke-width:0.192631"
+         id="tspan644-0">CAMERA:</tspan><tspan
+         sodipodi:role="line"
+         x="194.41142"
+         y="70.254677"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.70524px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3440;fill-opacity:1;stroke-width:0.192631"
+         id="tspan646-8">  fps: 250</tspan><tspan
+         sodipodi:role="line"
+         x="194.41142"
+         y="79.886223"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.70524px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3440;fill-opacity:1;stroke-width:0.192631"
+         id="tspan648-5">  n_deformed_images: 3072</tspan><tspan
+         sodipodi:role="line"
+         x="194.41142"
+         y="89.517776"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.70524px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3440;fill-opacity:1;stroke-width:0.192631"
+         id="tspan658-0">  resolution: [1024, 1024]</tspan><tspan
+         sodipodi:role="line"
+         x="194.41142"
+         y="99.149323"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.70524px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3440;fill-opacity:1;stroke-width:0.192631"
+         id="tspan660-6">  shutter_speed: 0.004</tspan><tspan
+         sodipodi:role="line"
+         x="194.41142"
+         y="108.78088"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.70524px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3440;fill-opacity:1;stroke-width:0.192631"
+         id="tspan662-4">DATE: 07-30-21</tspan><tspan
+         sodipodi:role="line"
+         x="194.41142"
+         y="118.41242"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.70524px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3440;fill-opacity:1;stroke-width:0.192631"
+         id="tspan664-6">FUNCTION_GENERATOR:</tspan><tspan
+         sodipodi:role="line"
+         x="194.41142"
+         y="128.04398"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.70524px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3440;fill-opacity:1;stroke-width:0.192631"
+         id="tspan666-2">  hz: 20</tspan><tspan
+         sodipodi:role="line"
+         x="194.41142"
+         y="137.67552"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.70524px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3440;fill-opacity:1;stroke-width:0.192631"
+         id="tspan668-5">  phase_dev: 90</tspan><tspan
+         sodipodi:role="line"
+         x="194.41142"
+         y="147.30707"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.70524px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3440;fill-opacity:1;stroke-width:0.192631"
+         id="tspan699-8">...</tspan><tspan
+         sodipodi:role="line"
+         x="194.41142"
+         y="156.93863"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.70524px;font-family:'RobotoMono Nerd Font';-inkscape-font-specification:'RobotoMono Nerd Font, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2e3440;fill-opacity:1;stroke-width:0.192631"
+         id="tspan680-6">  </tspan></text>
+    <path
+       style="opacity:0.988845;fill:#2e3443;fill-opacity:1;stroke:#516d90;stroke-width:0.833;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 189.1289,147.20752 V 24.669089"
+       id="path46840-0-3-8"
+       sodipodi:nodetypes="cc" />
+  </g>
+</svg>

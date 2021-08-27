@@ -34,8 +34,8 @@ VIOLET_NORD = NORD15
 
 # Matplotlib parameters
 mpl.rcParams['grid.alpha'] = '0.4'
-mpl.rcParams['xtick.labelsize'] = 12
-mpl.rcParams['ytick.labelsize'] = 12
+mpl.rcParams['xtick.labelsize'] = 14
+mpl.rcParams['ytick.labelsize'] = 14
 mpl.rcParams['figure.figsize'] = [16, 8]
 
 color_array = [NORD10, NORD12, NORD14, NORD11, NORD15]
