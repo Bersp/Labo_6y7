@@ -1,4 +1,4 @@
-ACELEROMETER:
+ACCELEROMETER:
   n_points: 15000j
   used: true
 CAMERA:

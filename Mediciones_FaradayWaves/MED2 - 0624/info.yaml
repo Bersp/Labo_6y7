@@ -1,4 +1,4 @@
-ACELEROMETER:
+ACCELEROMETER:
   n_points: 15000
   used: true
 CALIBRATION:
@@ -6,7 +6,7 @@ CALIBRATION:
   d: 21.0
 CAMERA:
   fps: 250
-  n_images_deformed: null
+  n_images_deformed: 3072
   n_images_gray: 200
   n_images_reference: 200
   resolution:
@@ -19,5 +19,5 @@ FUNCTION_GENERATOR:
   hz: 20
   vpp: 6.0
 NOTES: ''
-PROJECTOR: 
+PROJECTOR:
   image_to_proyect: Sin01.BMP

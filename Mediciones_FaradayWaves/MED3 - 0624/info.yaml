@@ -1,4 +1,4 @@
-ACELEROMETER:
+ACCELEROMETER:
   n_points: 15000
   used: true
 CALIBRATION:
@@ -19,5 +19,5 @@ FUNCTION_GENERATOR:
   hz: 20
   vpp: 10.5
 NOTES: ''
-PROJECTOR: 
+PROJECTOR:
   image_to_proyect: Sin01.BMP
