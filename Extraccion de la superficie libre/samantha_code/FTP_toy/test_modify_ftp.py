@@ -43,16 +43,12 @@ def calculate_phase_diff_map_1D(dY, dY0, th, ns, mask_for_unwrapping=None):
         win=signal.tukey(int(W),ns)
 
 
-        # OJO QUE ACA LO MODIFIQUE
-        #gaussfilt1D= np.zeros([1,nx])
         gaussfilt1D= np.zeros(nx)
         gaussfilt1D[int(ifmax-HW-1):int(ifmax-HW+W-1)]=win
 
-        # Multiplication by the filter
         Nfy0 = fY0*gaussfilt1D
         Nfy = fY*gaussfilt1D
 
-        # Inverse Fourier transform of both images
         Ny0=np.fft.ifft(Nfy0)
         Ny=np.fft.ifft(Nfy)
 
@@ -68,9 +64,7 @@ def calculate_phase_diff_map_1D(dY, dY0, th, ns, mask_for_unwrapping=None):
         mphase0 = unwrap(mphase0)
         mphase = unwrap(mphase)
 
-    # Definition of the phase difference map
     dphase = (mphase-mphase0);
-    # dphase = dphase - np.min(dphase) - np.pi/2
     return dphase
 
 def tukey_2d(x0, y0, L, R, A, D):
@@ -87,11 +81,11 @@ def tukey_2d(x0, y0, L, R, A, D):
     y -= y0 - L//2
     r = np.sqrt( (x-L//2)**2 + (y-L//2)**2)
     region_plateau = (r>=(R-A//2)) * (r<=(R+A//2))
-    region_subida  = (r>=(R-A//2-D)) * (r<(R-A//2))
-    region_bajada  = (r>=(R+A//2)) * (r<(R+A//2+D))
+    region_subida = (r>=(R-A//2-D)) * (r<(R-A//2))
+    region_bajada = (r>=(R+A//2)) * (r<(R+A//2+D))
     output[region_plateau] = 1
-    output[region_subida]  = 0.5*(1-np.cos(np.pi/D*(r[region_subida]-np.mean(r[r==(R-A//2-D)]))))
-    output[region_bajada]  = 0.5*(1+np.cos(np.pi/D*(r[region_bajada]-np.mean(r[r==(R+A//2)]))))
+    output[region_subida] = 0.5*(1-np.cos(np.pi/D*(r[region_subida]-np.mean(r[r==(R-A//2-D)]))))
+    output[region_bajada] = 0.5*(1+np.cos(np.pi/D*(r[region_bajada]-np.mean(r[r==(R+A//2)]))))
 
     return output
 
@@ -384,7 +378,7 @@ def test_annulus_final_med():
     from skimage.morphology import dilation, disk, binary_erosion
     import skimage.io as sio
 
-    path = '/home/bersp/Documents/Labo_6y7/Mediciones_FaradayWaves/MED5 - No medimos - 0716/'
+    path = '../../../Mediciones_FaradayWaves/MED5 - No medimos - 0716/'
     gray = sio.imread(path+'gray/ID_0_C1S0001000001.tif').astype(float)
     deformed = sio.imread(path+'deformed/ID_0_C1S0001000001.tif').astype(float)-gray
     reference = sio.imread(path+'reference/ID_0_C1S0001000001.tif').astype(float)-gray
@@ -446,73 +440,6 @@ def test_annulus_final_med():
     plt.show()
 
     return
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(14, 9), sharex=True, sharey=True)
-    mapp = ax1.imshow(full_def, cmap='gray')
-    fig.colorbar(mapp, ax=ax1)
-
-    mapp = ax2.imshow(full_ref, cmap='gray')
-    fig.colorbar(mapp, ax=ax2)
-
-    mapp = ax3.imshow(good_dphase, cmap='gray')
-    fig.colorbar(mapp, ax=ax3)
-
-    plt.show()
-    return
-
-    #  inicial, final = 300,600
-    #  im_ref = reference[inicial:final, inicial:final]
-    #  im_def = deformed[inicial:final, inicial:final]
-
-    #  mask_out = tukey_2d(im_ref.shape[0], 90, 30, 30)
-    #  mask_in = tukey_2d(im_ref.shape[0], 90, 15, 30)
-
-    #  #  good_dphase = calculate_phase_diff_map_1D(im_def, im_ref, th=0.9, ns=3)*(mask_in)
-    #  frankestein = im_def*(mask_in) + im_ref*(1-mask_out)
-    #  im_def_by_pieces = im_def*(mask_in) + im_def*(1-mask_out)
-
-    #  im_ref = im_ref*(mask_in) + im_ref*(1-mask_out)
-    #  dphase_mask = calculate_phase_diff_map_1D(frankestein, im_ref, th=0.9, ns=3)*(mask_in)
-
-    #  good_dphase = calculate_phase_diff_map_1D(im_def, im_ref, th=0.9, ns=3)*(mask_in)
-
-    #  good_dphase[mask_in != 1] = np.nan
-    #  dphase_mask[mask_in != 1] = np.nan
-
-    #  good_dphase -= np.nanmean(good_dphase)
-    #  dphase_mask -= np.nanmean(dphase_mask)
-
-    #  fig, axes = plt.subplots(2, 3, figsize=(16, 10), sharex=True, sharey= True)
-    #  axes = axes.flatten()
-
-    #  mapp = axes[0].imshow(good_dphase)
-    #  axes[0].set_title('good dphase')
-    #  fig.colorbar(mapp, ax=axes[0])
-
-    #  mapp = axes[1].imshow(dphase_mask)
-    #  axes[1].set_title('dphase mask')
-    #  fig.colorbar(mapp, ax=axes[1])
-
-    #  mapp =axes[2].imshow(good_dphase-dphase_mask)
-    #  axes[2].set_title('dphase diff')
-    #  fig.colorbar(mapp, ax=axes[2])
-
-    #  mapp =axes[3].imshow(frankestein)
-    #  axes[3].set_title('frankestein')
-    #  fig.colorbar(mapp, ax=axes[3])
-
-    #  mapp =axes[4].imshow(im_def_by_pieces)
-    #  axes[4].set_title('im_def_by_pieces')
-    #  fig.colorbar(mapp, ax=axes[4])
-
-    #  axes[5].get_shared_y_axes().remove(axes[5])
-    #  axes[5].set_ylim(-0.5, 1.5)
-    #  axes[5].plot(mask_in[mask_in.shape[0]//2, :], label='mask_in')
-    #  axes[5].plot(mask_out[mask_in.shape[0]//2, :], label='mask_out')
-    #  axes[5].legend()
-
-    #  fig.subplots_adjust(right=0.8)
-
-    #  plt.show()
 
 #  test_syntetic_phase()
 #  test_square_img()

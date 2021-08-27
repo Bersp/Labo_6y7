@@ -41,13 +41,6 @@ def calculate_phase_diff_map_1D(dY, dY0, th, ns, mask_for_unwrapping=None):
         gaussfilt1D= np.zeros(nx)
         gaussfilt1D[int(ifmax-HW-1):int(ifmax-HW+W-1)]=win
 
-        if lin == 50:
-            fig, (ax1, ax2, ax3) = plt.subplots(3,1, sharex=True)
-            ax1.plot(gaussfilt1D)
-            ax2.plot(fY)
-            ax3.plot(fY*gaussfilt1D)
-            plt.show()
-
         # Multiplication by the filter
         Nfy0 = fY0*gaussfilt1D
         Nfy = fY*gaussfilt1D
@@ -84,39 +77,22 @@ deformed   = np.load('deformed.npy')
 
 
 # Recorto un cuadrado en el medio
+inicial, final = 300,600
 
-#  inicial, final = 300,600
+gray = gray[inicial:final, inicial:final]
+reference = reference[inicial:final, inicial:final]
+deformed = deformed[inicial:final, inicial:final]
 
-#  gray = gray[inicial:final, inicial:final]
-#  reference = reference[inicial:final, inicial:final]
-#  deformed = deformed[inicial:final, inicial:final]
-
-ref_cuadrado = reference[70, 545:599]
-fft_cuadrado = np.abs(np.fft.fft(ref_cuadrado))
-freq_cuadrado = np.fft.fftfreq(len(ref_cuadrado), 1)
-
-ref_circulo = reference[250, 300:600]
-fft_circulo = np.abs(np.fft.fft(ref_circulo))
-freq_circulo = np.fft.fftfreq(len(ref_circulo), 1)
-
-fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
-ax1.plot(freq_cuadrado, fft_cuadrado/max(fft_cuadrado), '.-')
-ax1.set_title('cuadrado')
-ax1.plot(freq_circulo, fft_circulo/max(fft_circulo), '.-')
-ax2.set_title('circulo')
-
-print(len(fft_cuadrado))
-print(len(fft_circulo))
 
 # Resto la gris
-#  ref_m_gray = reference - gray
-#  def_m_gray = deformed - gray
+ref_m_gray = reference - gray
+def_m_gray = deformed - gray
 
-#  # Calculo la diferencia de fase entre la deformada y la de referencia
-#  dphase = calculate_phase_diff_map_1D(def_m_gray, ref_m_gray, th=0.9, ns=3)
+# Calculo la diferencia de fase entre la deformada y la de referencia
+dphase = calculate_phase_diff_map_1D(def_m_gray, ref_m_gray, th=0.9, ns=3)
 
-#  fig, (ax1, ax2) = plt.subplots(1, 2, sharex=True, sharey=True)
-#  ax1.imshow(deformed, cmap="gray")
-#  ax1.set_title('deformed')
-#  ax2.imshow(dphase, cmap="gray")
+fig, (ax1, ax2) = plt.subplots(1, 2, sharex=True, sharey=True)
+ax1.imshow(deformed, cmap="gray")
+ax1.set_title('deformed')
+ax2.imshow(dphase, cmap="gray")
 plt.show()
