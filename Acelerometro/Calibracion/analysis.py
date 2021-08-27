@@ -5,8 +5,8 @@ sns.set_style('white')
 
 import matplotlib.gridspec as gridspec
 
-t, x, y, z = np.loadtxt('data_calibration/calibration0.csv', delimiter=',',
-                        skiprows=31, unpack=True)
+t, x, y, z = np.loadtxt('data_calibration/calibration1n.csv', delimiter=',',
+                        skiprows=200, unpack=True)
 
 # Cambio de unidades a m/s^2
 
