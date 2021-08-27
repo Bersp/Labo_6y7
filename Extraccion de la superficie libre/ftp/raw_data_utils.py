@@ -11,7 +11,7 @@ import yaml
 
 # Logger config
 logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s RAW: %(message)s',
+                    format='%(asctime)s | %(message)s',
                     datefmt = '%H:%M:%S')
 
 def get_images_array(images_folder: str, subset: tuple=None):
@@ -42,7 +42,7 @@ def create_raw_hdf5(med_folder: str, chunks: tuple=(64, 64, 100)):
 
     # Creo la carpeta HDF5 si no existe y el RAW.HDF5
     hdf5_folder = med_folder + 'HDF5/'
-    logging.info(f"Creando {hdf5_folder+'RAW.hdf5'}")
+    logging.info(f"RAW: Creando {hdf5_folder+'RAW.hdf5'}")
     if not os.path.isdir(hdf5_folder):
         os.mkdir(hdf5_folder)
     f = h5py.File(hdf5_folder+'RAW.hdf5', 'w')
@@ -50,7 +50,7 @@ def create_raw_hdf5(med_folder: str, chunks: tuple=(64, 64, 100)):
 
     # Guardo la información de info.yaml
     info_file = med_folder + 'info.yaml'
-    logging.info(f'Agregando atributos de {info_file}')
+    logging.info(f'RAW: Agregando atributos de {info_file}')
     with open(info_file, 'r') as stream:
         info = yaml.safe_load(stream)
     for k, v in info.items():
@@ -58,7 +58,7 @@ def create_raw_hdf5(med_folder: str, chunks: tuple=(64, 64, 100)):
     logging.info('END\n')
 
     # Accelerometer
-    logging.info('Accelerómetro')
+    logging.info('RAW: Guardando datos del acelerómetro')
     if os.path.isdir(accelerometer_folder):
         data = np.loadtxt(accelerometer_folder+'/acceleration.csv',
                           delimiter=',', unpack=True)
@@ -68,40 +68,40 @@ def create_raw_hdf5(med_folder: str, chunks: tuple=(64, 64, 100)):
     logging.info('END\n')
 
     # White
-    logging.info('White')
+    logging.info('RAW: Guardando imagen blanca')
     if os.path.isdir(white_folder):
         data = sio.imread_collection(white_folder+'*.tif*',
                                      conserve_memory=True)
         data = np.asarray(data).mean(axis=0)
         f.create_dataset('white', data=data)
     else:
-        logging.info(f'No se encontró la carpeta {white_folder}')
+        logging.info(f'RAW: No se encontró la carpeta {white_folder}')
     logging.info('END\n')
 
     # Gray
-    logging.info('Gray')
+    logging.info('RAW: Guardando imagen gris')
     if os.path.isdir(gray_folder):
         data = sio.imread_collection(gray_folder+'*.tif*',
                                      conserve_memory=True)
         data = np.asarray(data).mean(axis=0)
         f.create_dataset('gray', data=data)
     else:
-        logging.info(f'No se encontró la carpeta {gray_folder}')
+        logging.info(f'RAW: No se encontró la carpeta {gray_folder}')
     logging.info('END\n')
 
     # Reference
-    logging.info('Reference')
+    logging.info('RAW: Guardando imagen de referencia')
     if os.path.isdir(reference_folder):
         data = sio.imread_collection(reference_folder+'*.tif*',
                                      conserve_memory=True)
         data = np.asarray(data).mean(axis=0)
         f.create_dataset('reference', data=data)
     else:
-        logging.info(f'No se encontró la carpeta {reference_folder}')
+        logging.info(f'RAW: No se encontró la carpeta {reference_folder}')
     logging.info('END\n')
 
     # Deformed
-    logging.info('Deformed')
+    logging.info('RAW: Guardando imágenes de la superficie deformada')
     if os.path.isdir(deformed_folder):
         resolution = info['CAMERA']['resolution']
         n_images = info['CAMERA']['n_deformed_images']
@@ -116,18 +116,17 @@ def create_raw_hdf5(med_folder: str, chunks: tuple=(64, 64, 100)):
             chunk = (img_per_chunk*i, img_per_chunk*(i+1))
             image_chunk = get_images_array(deformed_folder, chunk),
             deformed_dset[:, :, chunk[0]:chunk[1]] = image_chunk
-            logging.info(f'{i+1}/{n_chunks} chunks guardados')
+            logging.info(f'RAW: {i+1}/{n_chunks} chunks guardados')
 
         # Guardo el último chunk aparte porque podría ser más corto
         chunk = (img_per_chunk*(n_chunks-1), n_images)
         deformed_dset[:, :, chunk[0]:chunk[1]] = get_images_array(deformed_folder, chunk)
-        logging.info(f'{n_chunks}/{n_chunks} chunks guardados')
+        logging.info(f'RAW: {n_chunks}/{n_chunks} chunks guardados')
 
     else:
-        logging.info(f'No se encontró la carpeta {deformed_folder}')
-    logging.info('END\n')
+        logging.info(f'RAW: No se encontró la carpeta {deformed_folder}')
+    logging.info('RAW: END\n')
 
 if __name__ == '__main__':
-    med_folder = '../../Mediciones_FaradayWaves/MED5 - 0716/'
-    #  med_folder = '../../Mediciones_FaradayWaves/MED666 - Test - 0721/'
+    med_folder = '../../Mediciones_FaradayWaves/MED12 - 0730/'
     create_raw_hdf5(med_folder)

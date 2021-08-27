@@ -16,7 +16,7 @@ from itertools import repeat
 
 # Logger config
 logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s FTP: %(message)s',
+                    format='%(asctime)s | %(message)s',
                     datefmt = '%H:%M:%S')
 
 from numba import njit
@@ -280,10 +280,10 @@ class FTP():
             dphase = individual_ftp(deformed_chunk[:, :, i], *ftp_args)
             dphase_chunk[:, :, i] = dphase
 
-            if i == 0:
-                logging.info(f'{1}/{n_images} imágenes del chunk calculadas')
-            elif i > 1 and i % 20 == 0:
-                logging.info(f'{i}/{n_images} imágenes del chunk calculadas')
+            #  if i == 0:
+                #  logging.info(f'FTP: {1}/{n_images} imágenes del chunk calculadas')
+            #  elif i > 1 and i % 20 == 0:
+                #  logging.info(f'FTP: {i}/{n_images} imágenes del chunk calculadas')
 
 
         return dphase_chunk
@@ -409,6 +409,8 @@ class FTP():
         f.flush()
         f.close()
 
+        logging.info(f'FTP: END\n')
+
     def _get_mask_and_export(self, masks_grp):
         masks_grp_annulus = masks_grp.create_dataset('annulus',
                                                      shape=self.img_resolution,
@@ -431,7 +433,7 @@ class FTP():
         img_per_chunk = self.output_chunks_shape[2]
         n_chunks = np.ceil(self.n_deformed_images/img_per_chunk).astype(int)
 
-        logging.info(f'Calculando {n_chunks} chunks')
+        logging.info(f'FTP: Inicio del proceso')
 
         for i in range(n_chunks):
             chunk = (img_per_chunk*i, img_per_chunk*(i+1))
@@ -441,14 +443,13 @@ class FTP():
             height_field_chunk = self.chunk_ftp(deformed_chunk)
 
             height_grp['annulus'][:, :, chunk[0]:chunk[1]] = height_field_chunk
-            logging.info(f'{i+1}/{n_chunks} chunks guardados')
-        logging.info(f'END\n')
+            logging.info(f'FTP: {i+1}/{n_chunks} chunks guardados')
+        logging.info(f'END')
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
 
-    med_folder = '../../Mediciones_FaradayWaves/MED5 - 0716/'
-    #  med_folder = '../../Mediciones_FaradayWaves/MED666 - Test - 0721/'
+    med_folder = '../../Mediciones_FaradayWaves/MED11 - 0730/'
     hdf5_folder = med_folder+'HDF5/'
 
     ftp = FTP(hdf5_folder)
