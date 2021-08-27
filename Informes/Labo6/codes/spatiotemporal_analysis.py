@@ -31,7 +31,7 @@ def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
     return new_cmap
 
 def get_st_diagram(med_folder_name):
-    hdf5_path = f'../../../Mediciones_FaradayWaves/{med_folder_name}/HDF5/ST.hdf5'
+    hdf5_path = f'../../../Mediciones/{med_folder_name}/HDF5/ST.hdf5'
     f = h5py.File(hdf5_path, 'r')
 
     st_diagram = np.array(f['spatiotemporal_diagram'])

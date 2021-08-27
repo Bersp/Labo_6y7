@@ -1,8 +1,0 @@
---- # Sample of ftp_processing_parameters.yaml file.
-
-FTP_PROCESSING:
-    n: 3
-    th: 0.9
-
-FRINGE_EXTRAPOLATION:
-    N_iter_max: 100

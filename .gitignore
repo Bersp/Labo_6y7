@@ -1,3 +1,8 @@
+__pycache__/
+*.py[cod]
+*.tiff
+*.tif
+*.hdf5
 Mediciones_FaradayWaves/MED*/deformed/*
 Mediciones_FaradayWaves/MED*/gray/*
 Mediciones_FaradayWaves/MED*/reference/*

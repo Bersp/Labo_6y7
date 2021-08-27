@@ -1,17 +1,39 @@
-from typing import Tuple
 import logging
+from typing import Tuple
 
 import h5py
 import numpy as np
+from unwrap import unwrap
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s | %(message)s',
                     datefmt = '%H:%M:%S')
 
 def get_polar_strip(image: np.ndarray,
-                    center: Tuple[float, float],
-                    radius_limits: Tuple[float, float],
+                    center: Tuple[int, int],
+                    radius_limits: Tuple[int, int],
                     strip_resolution: int):
+    """
+    Funcion para pasar de anillo en cartesianas a banda en coordenadas polares.
+    Esta banda tiene un ancho igual a la diferencia entre dos radios límites dados.
+    
+    Parameters
+    ----------
+    image : 2-D array
+        La imagen a procesar.
+    center : tuple of ints.
+        Centro del anillo e.g., (512, 512).
+    radius_limits : tuple of ints.
+        Radio menor y radio mayor del anillo. e.g., (420, 470).
+    strip_resolution : int.
+        Cantidad de puntos de la primera dimensión de la banda (strip).
+        
+    
+    Returns
+    -------
+    image_strip : 2-D array
+        Banda de dimensiones (strip_resolution, diff(radius_limits)).
+    """
 
     initial_radius, final_radius = radius_limits
 
@@ -25,15 +47,24 @@ def get_polar_strip(image: np.ndarray,
     return image_strip
 
 def find_annulus_region(annulus_mask, center, annulus_radii, strip_resolution):
+    """
+    TODO: Docstring.
+    
+    Parameters
+    ----------
+    annulus_mask :  TODO
+    
+    Returns
+    -------
+    TODO
+    
+    """
 
     half_width = annulus_mask.shape[0]//2
     annulus_mask_strip = get_polar_strip(annulus_mask,
                                          center=center,
                                          radius_limits=(0, half_width),
                                          strip_resolution=strip_resolution)
-
-    #  initial_radius = int(half_width-np.max(annulus_mask_strip.sum(0)))
-    #  final_radius = half_width
 
     initial_radius, final_radius = annulus_radii
 
@@ -54,8 +85,23 @@ def get_polar_strip_average(annulus: np.ndarray,
 
     return strip_average
 
-def get_st_diagram(ftp_hdf5_path: str,
-                               strip_resolution: int=3000):
+def vertical_unwraping(st_diagram):
+    """
+    TODO: Hacer un promedio de muchas lineas verticales.
+    Actualmente solo toma una (la 100).
+    """
+    gap = st_diagram[:, 100] - np.unwrap(st_diagram[:, 100])
+    
+    gap = np.expand_dims(gap, 1)
+    st_diagram = st_diagram - gap
+    
+    st_diagram = unwrap(st_diagram)
+    
+    st_diagram -= np.expand_dims(st_diagram.mean(1), 1)
+
+    return st_diagram
+
+def get_st_diagram(ftp_hdf5_path: str, strip_resolution: int=3000):
     """
     Toma un HDF5 con dos grupos: uno con las imagenes ya procesadas
     por ftp y otro con la máscara utilizada.
@@ -93,11 +139,11 @@ def get_st_diagram(ftp_hdf5_path: str,
                                            annulus_region_mask=annulus_region_mask,
                                            strip_resolution=strip_resolution)
 
+
             #  annulus_strip_average -= annulus_strip_average.mean()
             st_diagram[i*img_per_chunk+j, :] = annulus_strip_average
 
         logging.info(f'ST: {i+1}/{n_chunks} chunks calculados')
-    logging.info('ST: END')
 
     # Guardo el último chunk aparte porque podría ser más corto
     annulus_chunk = annulus_array[:, :, (n_chunks-1)*img_per_chunk:n_images]
@@ -111,6 +157,12 @@ def get_st_diagram(ftp_hdf5_path: str,
         #  annulus_strip_average -= annulus_strip_average.mean()
         st_diagram[(n_chunks-1)*img_per_chunk+j, :] = annulus_strip_average
 
+
+    # Unwraping vertical
+    logging.info(f'ST: Calculando unwraping vertical')
+    st_diagram = vertical_unwraping(st_diagram)
+
+    logging.info('ST: END')
     return st_diagram
 
 def create_st_hdf5(hdf5_folder):
