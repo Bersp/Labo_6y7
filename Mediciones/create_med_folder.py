@@ -7,8 +7,8 @@ from datetime import datetime
 
 fps = 250
 
-folder_comment = ''
-MEDN = 15
+folder_comment = 'Oscilones a full'
+MEDN = 'auto'
 
 today_date = datetime.today()
 info = {
@@ -22,7 +22,7 @@ info = {
                    },
         'DATE': today_date.strftime('%m-%d-%y'),
         'FUNCTION_GENERATOR': {'hz': 20,
-                               'vpp': 11,
+                               'vpp': 20,
                                'freq_modulation': None},
         'CALIBRATION': {'d': 21.0, # distancia entre el proyector y la cámara
                         'L': 103.0}, # altura de la camara al disco

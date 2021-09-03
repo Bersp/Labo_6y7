@@ -3,8 +3,8 @@ import re
 
 import yaml
 
-MEDN = 15
-accelerometer_n_points = 5_000
+MEDN = 40
+accelerometer_n_points = 3_000
 
 MED_folder_name, = [x for x in os.listdir('.') if f'MED{MEDN} - ' in x]
 

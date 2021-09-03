@@ -1,0 +1,6 @@
+- Limpiar el anillo
+- Mezclar 200ml de agua y una cucharada de dióxido de titanio
+- Deslizar la aguja para aumentar la linea de contacto del agua
+- 33 ml para llenar el anillo.
+- Enfocar proyector a ojo. 
+- 
