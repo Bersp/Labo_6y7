@@ -1,5 +1,6 @@
 import json
 import logging
+import sys
 
 import h5py
 import numpy as np
@@ -14,14 +15,15 @@ from unwrap import unwrap
 
 from itertools import repeat
 
+# Parallel
+from mpi4py import MPI
+num_processes = MPI.COMM_WORLD.size
+rank = MPI.COMM_WORLD.rank
+
 # Logger config
 logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s | %(message)s',
+                    format=f'%(asctime)s (CORE: {rank}) | %(message)s',
                     datefmt = '%H:%M:%S')
-
-from numba import njit
-
-from multiprocessing import Pool, cpu_count
 
 def calculate_phase_diff_map_1d(dY, dY0, th, ns, mask_for_unwrapping=None):
     """
@@ -55,6 +57,7 @@ def calculate_phase_diff_map_1d(dY, dY0, th, ns, mask_for_unwrapping=None):
         W=2*HW
         win=signal.tukey(int(W),ns)
 
+
         gaussfilt1D= np.zeros(nx)
         gaussfilt1D[int(ifmax-HW-1):int(ifmax-HW+W-1)]=win
 
@@ -77,9 +80,6 @@ def calculate_phase_diff_map_1d(dY, dY0, th, ns, mask_for_unwrapping=None):
         mphase = unwrap(mphase)
 
     dphase = (mphase-mphase0);
-    plt.imshow(dphase)
-    plt.colorbar()
-    plt.show()
     return dphase
 
 def individual_ftp(deformed, gray, filled_ref,
@@ -282,10 +282,10 @@ class FTP():
             dphase = individual_ftp(deformed_chunk[:, :, i], *ftp_args)
             dphase_chunk[:, :, i] = dphase
 
-            if i == 0:
-                logging.info(f'FTP: {1}/{n_images} imágenes del chunk calculadas')
-            elif i > 1 and i % 20 == 0:
-                logging.info(f'FTP: {i}/{n_images} imágenes del chunk calculadas')
+            # if i == 0:
+                # logging.info(f'FTP: {1}/{n_images} imágenes del chunk calculadas')
+            # elif i > 1 and i % 100 == 0:
+                # logging.info(f'FTP: {i}/{n_images} imágenes del chunk calculadas')
 
 
         return dphase_chunk
@@ -362,9 +362,9 @@ class FTP():
         *_, r_inner = self._taubin_svd(XY)
 
         XY = np.vstack(np.where(labeled==label_circ2)).T
-        v0, h0, r_outer = self._taubin_svd(XY)
+        x0, y0, r_outer = self._taubin_svd(XY)
 
-        self._annulus_center = (int(v0), int(h0))
+        self._annulus_center = (int(x0), int(y0))
         self._annulus_radii = (int(r_inner), int(r_outer))
         return self._annulus_center, self._annulus_radii
 
@@ -400,31 +400,37 @@ class FTP():
     # Export functions
 
     def export(self):
-        f = h5py.File(self.hdf5_folder+'FTP.hdf5', 'w')
+        f = h5py.File(self.hdf5_folder+'FTP.hdf5', 'w',
+                      driver='mpio', comm=MPI.COMM_WORLD)
 
         height_grp = f.create_group('height_fields')
         masks_grp = f.create_group('masks')
 
         self._get_mask_and_export(masks_grp)
+        f.flush()
         self._do_ftp_and_export_height_fields(height_grp)
 
-        f.flush()
+        logging.info(f'FTP: Esperando para cerrar el HDF5')
         f.close()
-
-        logging.info(f'FTP: END\n')
+        logging.info(f'FTP: END')
 
     def _get_mask_and_export(self, masks_grp):
         masks_grp_annulus = masks_grp.create_dataset('annulus',
                                                      shape=self.img_resolution,
                                                      dtype='float64')
-        masks_grp_annulus[:, :] = self.annulus_mask
-        masks_grp_annulus.attrs['center'] = self.annulus_center
-        masks_grp_annulus.attrs['annulus_radii'] = self.annulus_radii
 
         masks_grp_square = masks_grp.create_dataset('square',
                                                     shape=self.img_resolution,
                                                     dtype='float64')
-        masks_grp_square[:, :] = self.square_mask
+
+        logging.info(f'FTP: Guardando atributos del centro y los radios del anillo')
+        masks_grp_annulus.attrs['center'] = self.annulus_center
+        masks_grp_annulus.attrs['annulus_radii'] = self.annulus_radii
+
+        if rank == 0:
+            logging.info(f'FTP: Guardando mascara del anillo y el cuadrado')
+            masks_grp_annulus[:, :] = self.annulus_mask
+            masks_grp_square[:, :] = self.square_mask
 
     def _do_ftp_and_export_height_fields(self, height_grp):
 
@@ -435,53 +441,34 @@ class FTP():
         img_per_chunk = self.output_chunks_shape[2]
         n_chunks = np.ceil(self.n_deformed_images/img_per_chunk).astype(int)
 
-        logging.info(f'FTP: Inicio del proceso')
+        logging.info(f'FTP: Inicio del procesado de chunks')
 
         for i in range(n_chunks):
-            chunk = (img_per_chunk*i, img_per_chunk*(i+1))
+            if i % num_processes == rank:
+                chunk = (img_per_chunk*i, img_per_chunk*(i+1))
 
-            deformed_chunk = self.deformed[:, :, chunk[0]:chunk[1]]
+                deformed_chunk = self.deformed[:, :, chunk[0]:chunk[1]]
 
-            height_field_chunk = self.chunk_ftp(deformed_chunk)
+                height_field_chunk = self.chunk_ftp(deformed_chunk)
 
-            height_grp['annulus'][:, :, chunk[0]:chunk[1]] = height_field_chunk
-            logging.info(f'FTP: {i+1}/{n_chunks} chunks guardados')
-        logging.info(f'END')
+                height_grp['annulus'][:, :, chunk[0]:chunk[1]] = height_field_chunk
+                logging.info(f'FTP: {i+1}/{n_chunks} chunks guardados')
 
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
 
-    med_folder = '../../Mediciones/MED40 - Test/'
-    # med_folder = '../../Mediciones/MED41 - Mod de fase - 0909/'
+def main():
+    med_folder = sys.argv[1]
     hdf5_folder = med_folder+'HDF5/'
 
     ftp = FTP(hdf5_folder)
-    mask = ftp.annulus_mask
 
-    img = ftp.deformed[:, :, 0].astype('float')
+    ftp.export()
 
-    img[mask] = np.nan
+if __name__ == '__main__':
+    main()
 
-    img = img.astype('float')
-    img[1-mask] = np.nan
-    plt.imshow(img, cmap='gray', interpolation=None)
-    plt.colorbar()
-    plt.show()
-
-
-    # ir, ar = ftp.annulus_radii
-    # v0, h0 = ftp.annulus_center
-
-    # plt.imshow(mask)
-    # plt.plot(h0 + ir, v0, 'r.')
-    # plt.plot(h0 + ar, v0, 'r.')
-    # plt.show()
-
-    # ftp.export()
-
+    # import matplotlib.pyplot as plt
+    # med_folder = '../../Mediciones/MED40 - Oscilones a full - 0902/'
     # f = h5py.File(hdf5_folder+'FTP.hdf5', 'r')
-    # img = f['height_fields']['annulus'][:, :, 10]
-    # img -= np.nanmean(img)
-    # plt.imshow(img, clim=(-1.5, 1.5))
-    # plt.colorbar()
+    # img = f['height_fields']['annulus'][:, :, 99]
+    # plt.imshow(img)
     # plt.show()

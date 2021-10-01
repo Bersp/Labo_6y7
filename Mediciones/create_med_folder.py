@@ -7,7 +7,7 @@ from datetime import datetime
 
 fps = 250
 
-folder_comment = 'Oscilones a full'
+folder_comment = 'Mod de fase'
 MEDN = 'auto'
 
 today_date = datetime.today()
@@ -22,8 +22,8 @@ info = {
                    },
         'DATE': today_date.strftime('%m-%d-%y'),
         'FUNCTION_GENERATOR': {'hz': 20,
-                               'vpp': 20,
-                               'freq_modulation': None},
+                               'vpp': 18,
+                               'freq_modulation': 2},
         'CALIBRATION': {'d': 21.0, # distancia entre el proyector y la cámara
                         'L': 103.0}, # altura de la camara al disco
         'PROJECTOR': {'image_to_proyect': 'Sin01.BMP'},

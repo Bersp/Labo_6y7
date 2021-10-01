@@ -128,5 +128,5 @@ def create_raw_hdf5(med_folder: str, chunks: tuple=(64, 64, 100)):
     logging.info('RAW: END\n')
 
 if __name__ == '__main__':
-    med_folder = '../../Mediciones_FaradayWaves/MED12 - 0730/'
+    med_folder = '../../Mediciones/MED40 - Oscilones a full - 0902/'
     create_raw_hdf5(med_folder)
