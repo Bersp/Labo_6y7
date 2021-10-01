@@ -10,13 +10,16 @@
 
 NOTE: Si no existe una tarea en el TODO es porque está completada. Se puede ver el historial de git para ver las tareas completadas.
 
+# Para hablar
+- Filtrar puntos en el st si están a más de 5 sigmas de la media del error
+- Hacer que st exporte ya con la transformación de altura.
+- Hablar del 1500
+
+
 # TODO
 
-- [N,+] Re-exportar los datos de 0909 y analizar problema en 1500
-- [N,+] Hacer que st exporte ya con la transformación.
+- [R,+] Hacer que st exporte ya con la transformación de altura.
 - [N,+] Analizar datos de subida (envonlvente) (meds del 0902)
-- [N,+] Poner lo de la altura.
-- [N,/] Guardar en la metadata del ST.hdf5 la dev standar asociada a hacer la media radial. Guardar el sigma global y el sigma en función de theta
 - [N,-] Analizar diagramas de energía
 - [N,-] Clasear el spatiotemporal.
 - [N,-] Analizar los datos de transición (meds del 0826).

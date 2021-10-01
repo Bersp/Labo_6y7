@@ -81,9 +81,12 @@ def get_polar_strip_average(annulus: np.ndarray,
     annulus_strip = get_polar_strip(annulus, center=center,
                                   radius_limits=radius_limits,
                                   strip_resolution=strip_resolution)
-    strip_average = np.nanmean(np.where(annulus_region_mask, annulus_strip, np.nan), 0)
+    masked_annulus_strip = np.where(annulus_region_mask, annulus_strip, np.nan)
 
-    return strip_average
+    strip_average = np.nanmean(masked_annulus_strip, 0)
+    strip_std = np.nanstd(masked_annulus_strip, 0)
+
+    return strip_average, strip_std
 
 def vertical_unwraping(st_diagram):
     """
@@ -126,6 +129,7 @@ def get_st_diagram(ftp_hdf5_path: str, strip_resolution: int=3000):
     n_chunks = np.ceil(n_images/img_per_chunk).astype(int)
 
     st_diagram = np.zeros(shape=(n_images, strip_resolution))
+    st_error = np.zeros(shape=(n_images, strip_resolution))
 
     logging.info('ST: Inicio del cálculo del diagrama espacio-temporal')
 
@@ -133,22 +137,23 @@ def get_st_diagram(ftp_hdf5_path: str, strip_resolution: int=3000):
 
         annulus_chunk = annulus_array[:, :, i*img_per_chunk: (i+1)*img_per_chunk]
         for j in range(img_per_chunk):
-            annulus_strip_average = get_polar_strip_average(
-                                           annulus_chunk[:, :, j], center=center,
-                                           radius_limits=annulus_radii,
-                                           annulus_region_mask=annulus_region_mask,
-                                           strip_resolution=strip_resolution)
+            annulus_strip_average, annulus_strip_std = get_polar_strip_average(
+                                       annulus_chunk[:, :, j], center=center,
+                                       radius_limits=annulus_radii,
+                                       annulus_region_mask=annulus_region_mask,
+                                       strip_resolution=strip_resolution)
 
 
             #  annulus_strip_average -= annulus_strip_average.mean()
             st_diagram[i*img_per_chunk+j, :] = annulus_strip_average
+            st_error[i*img_per_chunk+j, :] = annulus_strip_std
 
         logging.info(f'ST: {i+1}/{n_chunks} chunks calculados')
 
     # Guardo el último chunk aparte porque podría ser más corto
     annulus_chunk = annulus_array[:, :, (n_chunks-1)*img_per_chunk:n_images]
     for j in range(annulus_chunk.shape[-1]):
-        annulus_strip_average = get_polar_strip_average(
+        annulus_strip_average, annulus_strip_std = get_polar_strip_average(
                                        annulus_chunk[:, :, j], center=center,
                                        radius_limits=annulus_radii,
                                        annulus_region_mask=annulus_region_mask,
@@ -156,6 +161,7 @@ def get_st_diagram(ftp_hdf5_path: str, strip_resolution: int=3000):
 
         #  annulus_strip_average -= annulus_strip_average.mean()
         st_diagram[(n_chunks-1)*img_per_chunk+j, :] = annulus_strip_average
+        st_error[(n_chunks-1)*img_per_chunk+j, :] = annulus_strip_std
 
 
     # Unwraping vertical
@@ -163,26 +169,63 @@ def get_st_diagram(ftp_hdf5_path: str, strip_resolution: int=3000):
     st_diagram = vertical_unwraping(st_diagram)
 
     logging.info('ST: END')
-    return st_diagram
+    return st_diagram, st_error
+
+# TODO: Buscar qué es p
+def phase_to_height(st_diagram, L, p, D):
+    """
+    TODO: Docstring for phase_to_height.
+
+    Parameters
+    ----------
+    st_diagram : Diagrama espacio-temporal
+    L : Distancia entre el plano de referencia y la cámara
+    D : Distancia entre el proyector y la cámara
+    p : Longitud de onda del patrón proyectado
+
+    Returns
+    -------
+    El diagrama en unidades de altura (mm)
+    """
+    dphase = st_diagram
+    return -L*dphase / (2*np.pi*D/p - dphase)
 
 def create_st_hdf5(hdf5_folder):
-    st_diagram = get_st_diagram(hdf5_folder+'FTP.hdf5')
+    st_diagram, st_error = get_st_diagram(hdf5_folder+'FTP.hdf5')
+    # st_diagram = phase_to_height(st_diagram)
+    # st_error = phase_to_height(st_error)
 
     f = h5py.File(hdf5_folder+'ST.hdf5', 'w')
     f.create_dataset('spatiotemporal_diagram', data=st_diagram)
+    f.create_dataset('spatiotemporal_diagram_error', data=st_error)
     f.close()
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
-
-    med_folder = '../../Mediciones_FaradayWaves/MED11 - 0730/'
+    import matplotlib
+    cmap = matplotlib.cm.viridis
+    cmap.set_bad('red')
+    med_folder = '../../Mediciones/MED5 - 0716/'
     hdf5_folder = med_folder+'HDF5/'
 
-    #  create_st_hdf5(hdf5_folder)
+    # create_st_hdf5(hdf5_folder)
 
     f = h5py.File(hdf5_folder+'ST.hdf5', 'r')
     st_diagram = np.array(f['spatiotemporal_diagram'])
     st_diagram = (st_diagram.T - st_diagram.mean(1)).T
 
-    plt.imshow(st_diagram)
+    st_error = np.array(f['spatiotemporal_diagram_error'])
+
+    fig, axes = plt.subplots(2, 3, figsize=(12, 8), sharex=True, sharey=True)
+    axes = axes.flatten()
+    for i in range(2, 8):
+        st_diagram_tmp = st_diagram.copy()
+        st_diagram_tmp[st_error > np.mean(st_error)+np.std(st_error)*i] = np.nan
+
+        axes[i-2].set_title(i)
+        axes[i-2].imshow(st_diagram_tmp, cmap=cmap)
+        # axes[i].colorbar()
+    # plt.figure()
+    # plt.imshow(st_error)
+    # plt.colorbar()
     plt.show()

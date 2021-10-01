@@ -52,6 +52,7 @@ def new_med_folder(folder_comment=None, MEDN='auto'):
 
     # Creo la carpeta MEDN y las accelerometer, deformed, gray y reference
     os.mkdir(MED_folder_name)
+    os.mkdir(MED_folder_name + '/HDF5')
 
     # Escribo el archivo info
     with open(f'{MED_folder_name}/info.yaml', 'w') as f:
