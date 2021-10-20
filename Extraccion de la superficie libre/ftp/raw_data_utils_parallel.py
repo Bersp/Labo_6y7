@@ -1,28 +1,30 @@
 import glob
+import json
 import logging
 import os
 import sys
 import warnings
-import json
 
 import h5py
+from mpi4py import MPI
 import numpy as np
 import skimage.io as sio
 import yaml
-
-# Parallel
-from mpi4py import MPI
 num_processes = MPI.COMM_WORLD.size
 rank = MPI.COMM_WORLD.rank
 
 # Logger config
 logging.basicConfig(level=logging.INFO,
                     format=f'%(asctime)s (CORE: {rank}) | %(message)s',
-                    datefmt = '%H:%M:%S')
+                    datefmt='%H:%M:%S')
 
 
-def get_images_array(images_folder: str, subset: tuple=None):
-    images_iterator = sio.imread_collection(images_folder+'*.tif*', conserve_memory=True)
+def get_images_array(images_folder: str, subset: tuple = None):
+    """
+    TODO: Docstring for get_images_array
+    """
+    images_iterator = sio.imread_collection(
+        images_folder+'*.tif*', conserve_memory=True)
     n = len(images_iterator)
 
     if subset == None:
@@ -38,13 +40,18 @@ def get_images_array(images_folder: str, subset: tuple=None):
                                0, 2)
     return images_array
 
-def create_raw_hdf5(med_folder: str, chunks: tuple=(64, 64, 100)):
 
-    # Creamos la carpeta HDF5 si no existe (la crea el primer nucleo que llega)
+def create_raw_hdf5(med_folder: str, chunks: tuple = (64, 64, 100)):
+    """
+    TODO: Docstring for create_raw_hdf5
+    """
+
     hdf5_folder = med_folder + 'HDF5/'
-    if not os.path.isdir(hdf5_folder):
-        logging.info(f'RAW: Creando {hdf5_folder}')
-        os.mkdir(hdf5_folder)
+    # TODO: Eliminar esta parte. Las carpetas HDF5 se crean desde antes.
+    # Creamos la carpeta HDF5 si no existe (la crea el primer nucleo que llega)
+    # if not os.path.isdir(hdf5_folder):
+    # logging.info(f'RAW: Creando {hdf5_folder}')
+    # os.mkdir(hdf5_folder)
 
     # Creamos el RAW.HDF5 (h5py se encarga de paralelizar bien)
     logging.info(f"RAW: Abriendo {hdf5_folder+'RAW.hdf5'}")
@@ -68,7 +75,8 @@ def create_raw_hdf5(med_folder: str, chunks: tuple=(64, 64, 100)):
     # NOTE: El proceso de guardado de info.yaml, accelerometer, white, gray y reference
     #       se repite para cada nucleo, esto es necesario dado que h5py necesita conocer
     #       el total de datasets creados
-    logging.info(f'RAW: Guardando info.yaml, accelerometer, white, gray y reference')
+    logging.info(
+        f'RAW: Guardando info.yaml, accelerometer, white, gray y reference')
 
     # Guardo la información de info.yaml
     for k, v in info.items():
@@ -109,7 +117,6 @@ def create_raw_hdf5(med_folder: str, chunks: tuple=(64, 64, 100)):
     else:
         logging.info(f'RAW: No se encontró la carpeta {reference_folder}')
 
-
     # Deformed. Todos los nucleos saben de la creación del dataset
     #           pero cada uno escribre chunks de forma independiente
     logging.info(f'RAW: Guardando imágenes de la superficie deformada')
@@ -124,7 +131,7 @@ def create_raw_hdf5(med_folder: str, chunks: tuple=(64, 64, 100)):
         n_chunks = np.ceil(n_images/img_per_chunk).astype(int)
 
         for i in range(n_chunks-1):
-            if i % num_processes == rank:   
+            if i % num_processes == rank:
                 chunk = (img_per_chunk*i, img_per_chunk*(i+1))
                 image_chunk = get_images_array(deformed_folder, chunk),
                 deformed_dset[:, :, chunk[0]:chunk[1]] = image_chunk
@@ -133,7 +140,8 @@ def create_raw_hdf5(med_folder: str, chunks: tuple=(64, 64, 100)):
         # Guardo el último chunk aparte porque podría ser más corto
         if rank == 0:
             chunk = (img_per_chunk*(n_chunks-1), n_images)
-            deformed_dset[:, :, chunk[0]:chunk[1]] = get_images_array(deformed_folder, chunk)
+            deformed_dset[:, :, chunk[0]:chunk[1]
+                          ] = get_images_array(deformed_folder, chunk)
             logging.info(f'RAW: {n_chunks}/{n_chunks} chunks guardados')
     else:
         logging.info(f'RAW: No se encontró la carpeta {deformed_folder}')
@@ -142,10 +150,12 @@ def create_raw_hdf5(med_folder: str, chunks: tuple=(64, 64, 100)):
     f.close()
     logging.info(f'RAW: END')
 
+
 def main():
     # med_folder = '../../Mediciones/MED40 - Oscilones a full - 0902/'
     med_folder = sys.argv[1]
     create_raw_hdf5(med_folder, chunks=(64, 64, 20))
+
 
 if __name__ == "__main__":
     main()

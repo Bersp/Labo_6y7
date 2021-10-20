@@ -5,12 +5,16 @@ import numpy as np
 from scipy.ndimage import uniform_filter1d
 from mpl_utils import *
 
-def get_st_diagram(med_folder_name):
-    hdf5_path = f'../../Mediciones_FaradayWaves/{med_folder_name}/HDF5/ST.hdf5'
+def get_st_diagram(med_folder_name, error_filter=None):
+    hdf5_path = f'../../Mediciones/{med_folder_name}/HDF5/ST.hdf5'
     f = h5py.File(hdf5_path, 'r')
 
     st_diagram = np.array(f['spatiotemporal_diagram'])
-    st_diagram = (st_diagram.T - st_diagram.mean(1)).T
+    st_error = np.array(f['spatiotemporal_diagram_error'])
+
+    if error_filter != None:
+        st_diagram[st_error > np.mean(st_error)+np.std(st_error)*error_filter] = np.nan
+    # st_diagram = (st_diagram.T - st_diagram.mean(1)).T
 
     return st_diagram
 
@@ -96,9 +100,41 @@ def point_through_time(med_folder_name, point):
     ax.grid()
     plt.show()
 
+def error_filter_analysis(med_folder_name, start=3, interval=1):
+    import matplotlib
+    cmap = matplotlib.cm.viridis
+
+    hdf5_folder = f'../../Mediciones/{med_folder_name}/HDF5/ST.hdf5'
+    f = h5py.File(hdf5_folder, 'r')
+    st_diagram = np.array(f['spatiotemporal_diagram'])
+    st_error = np.array(f['spatiotemporal_diagram_error'])
+
+    fig, axes = plt.subplots(2, 3, figsize=(12, 8), sharex=True, sharey=True)
+    axes = axes.flatten()
+    cmap.set_bad('red')
+    axes[0].set_title('Completa')
+    axes[0].imshow(st_diagram, cmap=cmap)
+    for i in range(start, start+5, interval):
+        st_diagram_tmp = st_diagram.copy()
+        st_diagram_tmp[st_error > np.mean(st_error)+np.std(st_error)*i] = np.nan
+
+        axes[i-start+1].set_title('NaN si $ err > \\overline{err} +'+str(i)+'\sigma $')
+        axes[i-start+1].imshow(st_diagram_tmp, cmap=cmap)
+
+    # plt.savefig('error_filter_analysis.pdf', dpi=300, bbox_inches='tight')
+    plt.show()
+
+
 if __name__ == "__main__":
-    med_folder_name = 'MED11 - 0730'
-    st(med_folder_name)
-    #  animate_st(ylim=(-5, 5))
-    #  some_frames(med_folder_name, start_frame=20, interval=30)
-    #  point_through_time(med_folder_name, point=300)
+    med_folder_name = 'MED41 - Mod de fase - 0909'
+    error_filter_analysis(med_folder_name, start=2)
+    # st_diagram = get_st_diagram(med_folder_name, error_filter=5)
+    # plt.imshow(st_diagram)
+    # plt.colorbar()
+    # plt.show()
+
+    # st(med_folder_name)
+    # animate_st(ylim=(-5, 5))
+    # some_frames(med_folder_name, start_frame=20, interval=30)
+    # point_through_time(med_folder_name, point=300)
+

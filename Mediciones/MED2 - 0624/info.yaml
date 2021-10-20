@@ -2,8 +2,8 @@ ACCELEROMETER:
   n_points: 15000
   used: true
 CALIBRATION:
-  L: 103.0
-  d: 21.0
+  L: 1030.0
+  d: 210.0
 CAMERA:
   fps: 250
   n_images_deformed: 3072

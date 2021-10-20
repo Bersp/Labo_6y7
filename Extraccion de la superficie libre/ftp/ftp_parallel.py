@@ -211,6 +211,9 @@ class FTP():
         self.img_resolution = camera_attrs['resolution']
         self.n_deformed_images = camera_attrs['n_deformed_images']
 
+        calibration_attrs = json.loads(f.attrs['CALIBRATION'])
+        self._L, self._d = calibration_attrs['L'], calibration_attrs['d']
+
         self._annulus_mask = None
         self._square_mask = None
 
@@ -397,11 +400,44 @@ class FTP():
         return a,b,r
 
     # -------------------------------------------------------------------------
+    # Reference fringe data
+    def get_fringes_physical_size(self, mm_d_inner=205, mm_d_outer=215):
+        """
+        Parameters
+        ----------
+        mm_d_inner : Diámetro interno del anillo en mm
+        mm_d_outer : Diámetro externo del anillo en mm
+        
+        Returns
+        -------
+        p : Longitud de onda del patrón proyectado en mm
+        """
+
+        ref_masked = self.reference*self.square_mask
+
+        ref_masked[ref_masked == 0] = np.nan
+        ref_line = np.nanmean(ref_masked, 0)
+        ref_line = ref_line[~np.isnan(ref_line)]
+
+        peaks, _ = signal.find_peaks(ref_line)
+        peaks_distance = np.diff(peaks[1:-2]).mean() # sin los de las puntas
+
+        px_r_inner, px_r_outer = self.annulus_radii
+        mm_px_rate = np.mean([mm_d_inner/(2*px_r_inner), mm_d_outer/(2*px_r_outer)])
+
+        p = peaks_distance*mm_px_rate
+        return p
+
+    # -------------------------------------------------------------------------
     # Export functions
 
     def export(self):
         f = h5py.File(self.hdf5_folder+'FTP.hdf5', 'w',
                       driver='mpio', comm=MPI.COMM_WORLD)
+
+        f.attrs.create('p', self.get_fringes_physical_size())
+        f.attrs.create('L', self._L)
+        f.attrs.create('d', self._d)
 
         height_grp = f.create_group('height_fields')
         masks_grp = f.create_group('masks')
@@ -413,6 +449,7 @@ class FTP():
         logging.info(f'FTP: Esperando para cerrar el HDF5')
         f.close()
         logging.info(f'FTP: END')
+
 
     def _get_mask_and_export(self, masks_grp):
         masks_grp_annulus = masks_grp.create_dataset('annulus',

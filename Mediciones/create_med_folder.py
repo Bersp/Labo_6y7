@@ -7,7 +7,7 @@ from datetime import datetime
 
 fps = 250
 
-folder_comment = 'Mod de fase'
+folder_comment = 'Bajada en voltaje'
 MEDN = 'auto'
 
 today_date = datetime.today()
@@ -22,10 +22,10 @@ info = {
                    },
         'DATE': today_date.strftime('%m-%d-%y'),
         'FUNCTION_GENERATOR': {'hz': 20,
-                               'vpp': 18,
-                               'freq_modulation': 2},
-        'CALIBRATION': {'d': 21.0, # distancia entre el proyector y la cámara
-                        'L': 103.0}, # altura de la camara al disco
+                               'vpp': 7,
+                               'freq_modulation': None},
+        'CALIBRATION': {'d': 210, # distancia entre el proyector y la cámara en mm
+                        'L': 1030}, # altura de la camara al disco en mm
         'PROJECTOR': {'image_to_proyect': 'Sin01.BMP'},
         'NOTES': ''
         }
