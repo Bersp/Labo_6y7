@@ -18,7 +18,8 @@ NOTE: Si no existe una tarea en el TODO es porque está completada. Se puede ver
 
 # TODO
 
-- [R,+] Hacer que st exporte ya con la transformación de altura (usar diámetro).
+- [N,+] Analizar mediciones viejas a ver si están rotas
+- [N,+] MAX - MIN datos de subida
 - [R,+] Analizar datos de subida (envonlvente) (meds del 0902)
 - [N,+] Exportar muchas cosas
 - [N,/] Ver el cuadradito y cómo mide la altura

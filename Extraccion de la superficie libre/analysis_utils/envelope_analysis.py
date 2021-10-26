@@ -1,11 +1,19 @@
+import os
+import re
 import h5py
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.interpolate import CubicSpline
-from scipy.signal import find_peaks
-from scipy.ndimage.filters import uniform_filter1d
-from scipy.interpolate import interp1d
 import scipy.fft as fft
+from scipy.interpolate import CubicSpline
+from scipy.interpolate import interp1d
+from scipy.ndimage.filters import uniform_filter1d
+from scipy.signal import find_peaks
+import seaborn as sns
+
+import plotly.graph_objects as go
+from spatiotemporal_analysis import get_st_diagram
+sns.set_palette(sns.color_palette("rocket", 5))
+
 
 def get_zeros(signal):
     a = np.isclose(signal, 0, atol=5*np.mean(np.abs(np.diff(signal))))
@@ -28,6 +36,9 @@ def get_envelope(signal):
     max_0dist = np.max(np.diff(
         np.where(np.isclose(signal, 0, atol=1.1*np.abs(np.min(np.diff(signal)))))))
 
+    if max_0dist == 1:
+        max_0dist += 1
+
     signal = uniform_filter1d(signal, size=signal.size//1000)
     peaks, _ = find_peaks(signal, distance=max_0dist*0.8, height=0)
 
@@ -38,6 +49,8 @@ def get_envelope(signal):
     envelope = CubicSpline(xp_ext, yp_ext, bc_type='periodic')
 
     x = dom_signal
+    # plt.plot(xp, yp, 'ro')
+    # plt.plot(dom_signal, signal, '--k')
     y = envelope(x)
 
     # y = np.concatenate((y, y))
@@ -58,6 +71,7 @@ def get_envelope(signal):
     # plt.show()
 
     return y
+
 
 def get_st_spatial_envelope(st_diagram):
     """
@@ -80,6 +94,7 @@ def get_st_spatial_envelope(st_diagram):
 
     return st_envelope
 
+
 def get_st_envelope(st_diagram):
     """
     TODO: Docstring for get_st_envelope.
@@ -98,21 +113,24 @@ def get_st_envelope(st_diagram):
 
     return st_envelope
 
+
 def plot_st_envelope(st_diagram):
     st_spatial_envelope = get_st_spatial_envelope(st_diagram)
     st_envelope = get_st_envelope(st_diagram)
 
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(12, 8), sharex=True, sharey=True)
+    fig, (ax1, ax2, ax3) = plt.subplots(
+        1, 3, figsize=(16, 8), sharex=True, sharey=True)
 
     img = ax1.imshow(st_diagram)
-    fig.colorbar(img, ax=ax1)
+    # fig.colorbar(img, ax=ax1)
 
     img = ax2.imshow(st_spatial_envelope)
-    fig.colorbar(img, ax=ax2)
+    # fig.colorbar(img, ax=ax2)
 
     img = ax3.imshow(st_envelope)
-    fig.colorbar(img, ax=ax3)
+    # fig.colorbar(img, ax=ax3)
     plt.show()
+
 
 def get_st_left_right(st_diagram):
     """
@@ -127,14 +145,16 @@ def get_st_left_right(st_diagram):
     TODO
 
     """
-    st_envelope = get_st_envelope(st_diagram)
-    
+    # st_envelope = get_st_envelope(st_diagram)
+    st_envelope = st_diagram
+
     N, M = st_envelope.shape
 
     st_fft = fft.fft2(st_envelope)
     st_fft_shifted = fft.fftshift(st_fft)
 
-    st_fft_left_filter, st_fft_right_filter = np.zeros_like(st_fft_shifted), np.zeros_like(st_fft_shifted)
+    st_fft_left_filter, st_fft_right_filter = np.zeros_like(
+        st_fft_shifted), np.zeros_like(st_fft_shifted)
 
     st_fft_left_filter[N//2:, M//2:] = 1
     st_fft_right_filter[N//2:, :M//2] = 1
@@ -143,36 +163,72 @@ def get_st_left_right(st_diagram):
     st_fft_right = fft.ifftshift(st_fft_right_filter*st_fft_shifted)
     st_left, st_right = fft.ifft2(st_fft_left), fft.ifft2(st_fft_right)
 
-    a = st_fft_shifted*(st_fft_left_filter + st_fft_right_filter)
-    plt.imshow(np.log(np.abs(a)))
-    plt.colorbar()
-    plt.show()
+    # Cosa de energía
+    # a = st_fft_shifted*(st_fft_left_filter + st_fft_right_filter)
+    # plt.imshow(np.log(np.abs(a)))
+    # plt.colorbar()
+    # plt.show()
 
-    # fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 8), sharex=True, sharey=True)
+    return np.real(st_left), np.real(st_right)
 
-    # img = ax1.imshow(np.real(st_left))
+    # fig, (ax1, ax2) = plt.subplots(
+        # 1, 2, figsize=(12, 8), sharex=True, sharey=True)
+
+    # vmax = np.max(np.real(st_left))
+    # img = ax1.imshow(np.real(st_left), cmap='coolwarm', vmin=-vmax, vmax=vmax)
     # fig.colorbar(img, ax=ax1)
 
-    # ax2.imshow(np.real(st_right))
+    # vmax = np.max(np.real(st_right))
+    # ax2.imshow(np.real(st_right), cmap='coolwarm', vmin=-vmax, vmax=vmax)
     # fig.colorbar(img, ax=ax2)
 
     # plt.show()
 
 
 def main():
-    med_folder = '../../Mediciones/MED41 - Mod de fase - 0909/'
-    hdf5_folder = med_folder+'HDF5/'
-    f = h5py.File(hdf5_folder+'ST.hdf5', 'r')
+    med_folder = 'MED29 - Subida en voltaje - 0902/'
+    st_diagram = get_st_diagram(med_folder)
 
-    st_diagram = -np.array(f['spatiotemporal_diagram'])
-    get_st_left_right(st_diagram)
+    # -- Plot 3D --
+    # fig = go.Figure(data=[go.Surface(z=st_left[::10, ::10])])
+    # fig.update_layout(title='ST')
+    # fig.show()
 
-    # plot_st_envelope(st_diagram)
+    # -- Plot 2D --
+    # st_lines = st_diagram[:100]
+    # plt.plot(st_lines)
+    # plt.colorbar()
+    # plt.show()
+    vmax = np.nanmax(st_diagram)
+    plt.imshow(st_diagram, cmap='coolwarm', vmin=-vmax, vmax=vmax)
+    plt.colorbar()
+    plt.show()
 
-    # st_error = np.array(f['spatiotemporal_diagram_error'])
+    # -- Funciones --
+    # med_start, med_end = 28, 39
+    # meds_folder = '../../Mediciones/'
+    # meds_to_process = [
+        # p for p in sorted(os.listdir(meds_folder)) if 'MED' in p and
+        # med_start <= int(re.findall(r'MED(\d+) - ', p)[0]) <= med_end
+    # ]
+    
+    # amps = np.zeros(len(meds_to_process))
+    # for i, med_folder in enumerate(meds_to_process):
+        # st_diagram = get_st_diagram(med_folder, error_filter=5)
+        # envelope = get_st_spatial_envelope(st_diagram)
+        # print(i)
+        # amps[i] = np.mean(envelope.max(0)) - np.mean(envelope)
 
-    # line = st_diagram[2500, :]
-    # get_envelope(line)
+    # plt.plot(amps, 'o')
+    # plt.show()
+    # vmax = np.max(st_diagram)
+    # plt.imshow(envelope, cmap='coolwarm', vmin=-vmax, vmax=vmax)
+    # plt.colorbar()
+    # plt.show()
+
+    # get_st_left_right(st_diagram)
+
+
 
 if __name__ == "__main__":
     main()

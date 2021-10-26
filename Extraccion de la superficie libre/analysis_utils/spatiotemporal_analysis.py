@@ -2,8 +2,22 @@ import h5py
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.ndimage import uniform_filter1d
+from scipy import ndimage as nd
 from mpl_utils import *
+
+# -----------------------------------------------------------------
+# Funciones auxiliares
+
+def fill_nans(data):
+    """
+    Rellena una los np.nan de un array de cualquier dimensión
+    con los valores más cercanos distintos de nan
+    """
+    ind = nd.distance_transform_edt(np.isnan(data), return_distances=False,
+                                    return_indices=True)
+    return data[tuple(ind)]
+
+# -----------------------------------------------------------------
 
 def get_st_diagram(med_folder_name, error_filter=None):
     hdf5_path = f'../../Mediciones/{med_folder_name}/HDF5/ST.hdf5'
@@ -14,6 +28,8 @@ def get_st_diagram(med_folder_name, error_filter=None):
 
     if error_filter != None:
         st_diagram[st_error > np.mean(st_error)+np.std(st_error)*error_filter] = np.nan
+        st_diagram = fill_nans(st_diagram)
+
     # st_diagram = (st_diagram.T - st_diagram.mean(1)).T
 
     return st_diagram
@@ -48,7 +64,7 @@ def animate_st(ylim=None):
 
     def update(frame):
         st_instance = st_diagram[frame]
-        #  st_instance = uniform_filter1d(st_instance, 10)
+        #  st_instance = nd.uniform_filter1d(st_instance, 10)
         line.set_data(x, st_instance)
         point.set_data(x[300], st_instance[300])
 
@@ -87,7 +103,7 @@ def point_through_time(med_folder_name, point):
     theta_point = point * 2*np.pi/ st_diagram[0].size
 
     data = st_diagram[:, point]
-    data = uniform_filter1d(data, 10)
+    data = nd.uniform_filter1d(data, 10)
     time = np.arange(data.size)/250 # domain in s
 
 
@@ -126,7 +142,7 @@ def error_filter_analysis(med_folder_name, start=3, interval=1):
 
 
 if __name__ == "__main__":
-    med_folder_name = 'MED41 - Mod de fase - 0909'
+    med_folder_name = 'MED36 - Subida en voltaje - 0902'
     error_filter_analysis(med_folder_name, start=2)
     # st_diagram = get_st_diagram(med_folder_name, error_filter=5)
     # plt.imshow(st_diagram)
