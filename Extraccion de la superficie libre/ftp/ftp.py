@@ -44,21 +44,21 @@ def calculate_phase_diff_map_1d(dY, dY0, th, ns, mask_for_unwrapping=None):
         fY0 = np.fft.fft(dY0[lin, :])
         fY = np.fft.fft(dY[lin, :])
 
-        dfy = 1./ny
+        dfy = 1. / ny
         fy = np.arange(dfy, 1, dfy)
 
-        imax = np.argmax(np.abs(fY0[9:nx//2]))
-        ifmax = imax+9
+        imax = np.argmax(np.abs(fY0[9:nx // 2]))
+        ifmax = imax + 9
 
-        HW = np.round(ifmax*th)
-        W = 2*HW
+        HW = np.round(ifmax * th)
+        W = 2 * HW
         win = signal.tukey(int(W), ns)
 
         gaussfilt1D = np.zeros(nx)
-        gaussfilt1D[int(ifmax-HW-1):int(ifmax-HW+W-1)] = win
+        gaussfilt1D[int(ifmax - HW - 1):int(ifmax - HW + W - 1)] = win
 
-        Nfy0 = fY0*gaussfilt1D
-        Nfy = fY*gaussfilt1D
+        Nfy0 = fY0 * gaussfilt1D
+        Nfy = fY * gaussfilt1D
 
         Ny0 = np.fft.ifft(Nfy0)
         Ny = np.fft.ifft(Nfy)
@@ -71,19 +71,19 @@ def calculate_phase_diff_map_1d(dY, dY0, th, ns, mask_for_unwrapping=None):
         mphase = unwrap(phase)
     else:
         mphase0 = ma.masked_array(phase0, mask=mask_for_unwrapping)
-        mphase = ma.masked_array(phase,  mask=mask_for_unwrapping)
+        mphase = ma.masked_array(phase, mask=mask_for_unwrapping)
         mphase0 = unwrap(mphase0)
         mphase = unwrap(mphase)
 
-    dphase = (mphase-mphase0)
+    dphase = (mphase - mphase0)
     plt.imshow(dphase)
     plt.colorbar()
     plt.show()
     return dphase
 
 
-def individual_ftp(deformed, gray, filled_ref,
-                   annulus_mask, annulus_center, annulus_radii):
+def individual_ftp(deformed, gray, filled_ref, annulus_mask, annulus_center,
+                   annulus_radii):
     """
     TODO: Docstring for individual_ftp
     """
@@ -94,16 +94,16 @@ def individual_ftp(deformed, gray, filled_ref,
     r_inner, r_outer = annulus_radii
     x0, y0 = annulus_center
     width = r_outer - r_inner
-    r_middle = (r_outer + r_inner)//2
-    mask_out = tukey_2d(x0, y0, 1024, r_middle, width*2, int(width))
+    r_middle = (r_outer + r_inner) // 2
+    mask_out = tukey_2d(x0, y0, 1024, r_middle, width * 2, int(width))
     mask_in = tukey_2d(x0, y0, 1024, r_middle, width, int(width))
-    frankestein = deformed*(mask_in) + filled_ref*(1-mask_out)
+    frankestein = deformed * (mask_in) + filled_ref * (1 - mask_out)
 
-    dphase = calculate_phase_diff_map_1d(
-        frankestein, filled_ref,
-        th=0.9, ns=3,
-        mask_for_unwrapping=1-annulus_mask
-    )
+    dphase = calculate_phase_diff_map_1d(frankestein,
+                                         filled_ref,
+                                         th=0.9,
+                                         ns=3,
+                                         mask_for_unwrapping=1 - annulus_mask)
 
     #  for i in range(8): annulus_mask = binary_erosion(annulus_mask)
     dphase[annulus_mask == 0] = np.nan
@@ -112,7 +112,7 @@ def individual_ftp(deformed, gray, filled_ref,
 
 
 def _gauss(x, a, x0, sigma):
-    return a*np.exp(-(x-x0)**2/(2*sigma**2))
+    return a * np.exp(-(x - x0)**2 / (2 * sigma**2))
 
 
 def gerchberg2d(interferogram, mask_where_fringes_are, N_iter_max):
@@ -121,7 +121,7 @@ def gerchberg2d(interferogram, mask_where_fringes_are, N_iter_max):
     """
 
     ref = interferogram
-    refh = interferogram*mask_where_fringes_are
+    refh = interferogram * mask_where_fringes_are
     interf = mask_where_fringes_are
 
     ft_ref = np.fft.rfft2(ref)
@@ -131,36 +131,39 @@ def gerchberg2d(interferogram, mask_where_fringes_are, N_iter_max):
     S = S[0]
 
     y = (np.abs(ft_refh[0, :]))
-    y = y/np.max(y)
-    x = np.linspace(0, (len(y)-1), len(y))
+    y = y / np.max(y)
+    x = np.linspace(0, (len(y) - 1), len(y))
     maxInd = signal.argrelextrema(y, np.greater)
     x, y = x[maxInd], y[maxInd]
     n = len(x)
     w = signal.hann(n)
-    y = y*w
+    y = y * w
     index_mean = np.argwhere(y == np.max(y))[0, 0]
     mean = maxInd[0][index_mean]
-    sigma = np.sum(y*(x-mean)**2)/n
+    sigma = np.sum(y * (x - mean)**2) / n
     try:
-        popt, pcov = curve_fit(
-            _gauss, x, y, p0=[y[index_mean], mean, sigma], maxfev=1100)
+        popt, pcov = curve_fit(_gauss,
+                               x,
+                               y,
+                               p0=[y[index_mean], mean, sigma],
+                               maxfev=1100)
     except:
         popt, pcov = curve_fit(_gauss, x, y, maxfev=1100)
 
     k0x, k0y = popt[1], 0
     R_in_k_space = popt[2]  # *2.5
 
-    kx, ky = np.meshgrid(range(int(S/2+1)), range(S))
+    kx, ky = np.meshgrid(range(int(S / 2 + 1)), range(S))
 
-    cuarto_superior = ((kx-k0x)**2 + (ky-(S-k0y))**2 <= R_in_k_space**2)
-    cuarto_inferior = ((kx-k0x)**2 + (ky-(0-k0y))**2 <= R_in_k_space**2)
+    cuarto_superior = ((kx - k0x)**2 + (ky - (S - k0y))**2 <= R_in_k_space**2)
+    cuarto_inferior = ((kx - k0x)**2 + (ky - (0 - k0y))**2 <= R_in_k_space**2)
     lugar_a_conservar = cuarto_inferior + cuarto_superior
-    lugar_a_anular = 1-lugar_a_conservar
+    lugar_a_anular = 1 - lugar_a_conservar
 
     lugar_a_anular = lugar_a_anular.nonzero()
     interf = interf.nonzero()
 
-    En = np.zeros(N_iter_max+1)
+    En = np.zeros(N_iter_max + 1)
 
     ii = 0
     while ii <= N_iter_max:
@@ -169,7 +172,7 @@ def gerchberg2d(interferogram, mask_where_fringes_are, N_iter_max):
         refhc[interf] = refh[interf]
         ft_refh = np.fft.rfft2(refhc)
         En[ii] = np.sum(np.abs(ft_refh))
-        if ii > 0 and En[ii-1] < En[ii]:
+        if ii > 0 and En[ii - 1] < En[ii]:
             break
         ii += 1
     En = En[0:ii]
@@ -191,15 +194,18 @@ def tukey_2d(x0, y0, L, R, A, D):
     """
     output = np.zeros((L, L))
     x, y = np.meshgrid(np.arange(L), np.arange(L))
-    x -= x0 - L//2
-    y -= y0 - L//2
-    r = np.sqrt((x-L//2)**2 + (y-L//2)**2)
-    region_plateau = (r >= (R-A//2)) * (r <= (R+A//2))
-    region_subida = (r >= (R-A//2-D)) * (r < (R-A//2))
-    region_bajada = (r >= (R+A//2)) * (r < (R+A//2+D))
+    x -= x0 - L // 2
+    y -= y0 - L // 2
+    r = np.sqrt((x - L // 2)**2 + (y - L // 2)**2)
+    region_plateau = (r >= (R - A // 2)) * (r <= (R + A // 2))
+    region_subida = (r >= (R - A // 2 - D)) * (r < (R - A // 2))
+    region_bajada = (r >= (R + A // 2)) * (r < (R + A // 2 + D))
     output[region_plateau] = 1
-    output[region_subida] = 0.5*(1-np.cos(np.pi/D*(r[region_subida]-R-A//2-D)))
-    output[region_bajada] = 0.5*(1+np.cos(np.pi/D*(r[region_bajada]-R+A//2)))
+    output[region_subida] = 0.5 * (1 -
+                                   np.cos(np.pi / D *
+                                          (r[region_subida] - R - A // 2 - D)))
+    output[region_bajada] = 0.5 * (1 + np.cos(np.pi / D *
+                                              (r[region_bajada] - R + A // 2)))
 
     return output
 
@@ -208,12 +214,11 @@ class FTP():
     """
     TODO: Docstring for FTP
     """
-
     def __init__(self, hdf5_folder):
 
         self.hdf5_folder = hdf5_folder
 
-        f = h5py.File(hdf5_folder+'RAW.hdf5')
+        f = h5py.File(hdf5_folder + 'RAW.hdf5')
 
         self.deformed = f['deformed']
         self.gray = np.asarray(f['gray'])
@@ -278,19 +283,16 @@ class FTP():
         else:
             mask_where_fringes_are = self.annulus_mask + self.square_mask
             reference = self.reference - self.gray
-            self._filled_ref = gerchberg2d(reference,
-                                           mask_where_fringes_are, 100)
+            self._filled_ref = gerchberg2d(reference, mask_where_fringes_are,
+                                           100)
             return self._filled_ref
 
     def chunk_ftp(self, deformed_chunk):
         dphase_chunk = np.zeros(deformed_chunk.shape)
         n_images = deformed_chunk.shape[2]
 
-        ftp_args = (self.gray,
-                    self.filled_ref,
-                    self.annulus_mask,
-                    self.annulus_center,
-                    self.annulus_radii)
+        ftp_args = (self.gray, self.filled_ref, self.annulus_mask,
+                    self.annulus_center, self.annulus_radii)
 
         for i in range(n_images):
 
@@ -327,18 +329,22 @@ class FTP():
 
         # Busco el cuadradito adentro del radio externo del annulus
         filled_annulus = ndimage.binary_fill_holes(annulus_mask)
-        inner_annulus_area = imth*filled_annulus*(1-annulus_mask)
+        inner_annulus_area = imth * filled_annulus * (1 - annulus_mask)
 
         labeled = skm.label(inner_annulus_area, connectivity=1)
+
         objects = skm.regionprops(labeled)
         props = [(object.label, object.area, object.bbox)
                  for object in objects]
 
         def sort_key_function(p):
             min_row, min_col, max_row, max_col = p[2]
-            return abs((max_row-min_row)/(max_col-min_col) - 1.2/1.9)
+            return abs((max_row - min_row) / (max_col - min_col) - 1.2 / 1.9)
 
-        label_square = sorted(props, key=sort_key_function)[0][0]
+        aspect_relation_filter = sorted(props, key=sort_key_function)[:10]
+        label_square = sorted(aspect_relation_filter,
+                              key=lambda p: p[1],
+                              reverse=True)[0][0]
 
         self._annulus_mask = annulus_mask
         self._square_mask = labeled == label_square
@@ -347,7 +353,7 @@ class FTP():
     def _get_image_thresholded(self, image):
 
         y, bins = np.histogram(image.flatten(), bins='doane')
-        x = (bins[1:] + bins[:-1])/2
+        x = (bins[1:] + bins[:-1]) / 2
 
         y_diff = np.gradient(y)
         # determina los máximos locales
@@ -357,7 +363,7 @@ class FTP():
         idx_max = [y[i] if i in idx_max else 0 for i in range(len(y))]
         idx_max2, idx_max1 = np.argsort(idx_max)[-2:]
 
-        y_diff = y_diff[idx_max1: idx_max2]
+        y_diff = y_diff[idx_max1:idx_max2]
 
         idx_min = np.argsort(np.abs(y_diff))[0]
         image_threshold = image > x[idx_min]
@@ -372,7 +378,8 @@ class FTP():
         labeled = skm.label(filtered_annulus, connectivity=2)
         objects = skm.regionprops(labeled)
         props = [(object.label, object.area) for object in objects]
-        (label_circ1, _), (label_circ2, _) = sorted(props, key=lambda p: p[1],
+        (label_circ1, _), (label_circ2, _) = sorted(props,
+                                                    key=lambda p: p[1],
                                                     reverse=False)[:2]
 
         XY = np.vstack(np.where(labeled == label_circ1)).T
@@ -396,7 +403,9 @@ class FTP():
                       Applications To Edge And Range Image Segmentation",
           IEEE Trans. PAMI, Vol. 13, pages 1115-1138, (1991)
         """
-        def old_div(a, b): return a/b
+        def old_div(a, b):
+            return a / b
+
         X = XY[:, 0] - np.mean(XY[:, 0])  # norming points by x avg
         Y = XY[:, 1] - np.mean(XY[:, 1])  # norming points by y avg
         centroid = [np.mean(XY[:, 0]), np.mean(XY[:, 1])]
@@ -410,7 +419,8 @@ class FTP():
         A[0] = old_div(A[0], (2. * np.sqrt(Zmean)))
         A = np.concatenate([A, [(-1. * Zmean * A[0])]], axis=0)
         a, b = (-1 * A[1:3]) / A[0] / 2 + centroid
-        r = np.sqrt(A[1]*A[1]+A[2]*A[2]-4*A[0]*A[3])/abs(A[0])/2
+        r = np.sqrt(A[1] * A[1] + A[2] * A[2] - 4 * A[0] * A[3]) / abs(
+            A[0]) / 2
         return a, b, r
 
     # -------------------------------------------------------------------------
@@ -427,7 +437,7 @@ class FTP():
         p : Longitud de onda del patrón proyectado en mm
         """
 
-        ref_masked = self.reference*self.square_mask
+        ref_masked = self.reference * self.square_mask
 
         ref_masked[ref_masked == 0] = np.nan
         ref_line = np.nanmean(ref_masked, 0)
@@ -438,16 +448,16 @@ class FTP():
 
         px_r_inner, px_r_outer = self.annulus_radii
         mm_px_rate = np.mean(
-            [mm_d_inner/(2*px_r_inner), mm_d_outer/(2*px_r_outer)])
+            [mm_d_inner / (2 * px_r_inner), mm_d_outer / (2 * px_r_outer)])
 
-        p = peaks_distance*mm_px_rate
+        p = peaks_distance * mm_px_rate
         return p
 
     # -------------------------------------------------------------------------
     # Export functions
 
     def export(self):
-        f = h5py.File(self.hdf5_folder+'FTP.hdf5', 'w')
+        f = h5py.File(self.hdf5_folder + 'FTP.hdf5', 'w')
 
         f.attrs.create('p', self.get_fringes_physical_size())
         f.attrs.create('L', self._L)
@@ -481,15 +491,16 @@ class FTP():
         height_grp.create_dataset('annulus',
                                   shape=(*self.img_resolution,
                                          self.n_deformed_images),
-                                  chunks=self.output_chunks_shape, dtype='float64')
+                                  chunks=self.output_chunks_shape,
+                                  dtype='float64')
 
         img_per_chunk = self.output_chunks_shape[2]
-        n_chunks = np.ceil(self.n_deformed_images/img_per_chunk).astype(int)
+        n_chunks = np.ceil(self.n_deformed_images / img_per_chunk).astype(int)
 
         logging.info(f'FTP: Inicio del proceso')
 
         for i in range(n_chunks):
-            chunk = (img_per_chunk*i, img_per_chunk*(i+1))
+            chunk = (img_per_chunk * i, img_per_chunk * (i + 1))
 
             deformed_chunk = self.deformed[:, :, chunk[0]:chunk[1]]
 
@@ -504,11 +515,12 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
 
     med_folder = '../../Mediciones/MED44 - Bajada en voltaje - 1007/'
-    hdf5_folder = med_folder+'HDF5/'
+    hdf5_folder = med_folder + 'HDF5/'
 
     ftp = FTP(hdf5_folder)
+    square_mask = ftp.square_mask
 
-    plt.imshow(ftp.square_mask)
+    plt.imshow(square_mask)
     plt.colorbar()
     plt.show()
 

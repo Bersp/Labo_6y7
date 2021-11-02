@@ -51,7 +51,7 @@ def get_polar_strip(image: np.ndarray, center: Tuple[int, int],
     theta, r = np.meshgrid(np.linspace(0, 2 * np.pi, strip_resolution),
                            np.arange(initial_radius, final_radius))
 
-    theta = theta - np.pi / 2
+    theta = theta - np.pi/2
     xcart = -(r * np.cos(theta) + center[0]).astype(int)
     ycart = (r * np.sin(theta) + center[1]).astype(int)
 
@@ -102,7 +102,7 @@ def get_polar_strip_average(annulus: np.ndarray, center: Tuple[float, float],
     strip_average = np.nanmean(masked_annulus_strip, 0)
     strip_std = np.nanstd(masked_annulus_strip, 0)
 
-    return strip_average, strip_std
+    return annulus_strip, strip_std
 
 
 def vertical_unwraping(st_diagram):
@@ -124,7 +124,7 @@ def vertical_unwraping(st_diagram):
 
 
 def get_st_diagram(ftp_hdf5_path: str,
-                   transform_to_mm=True,
+                   transform_to_mm=False,
                    strip_resolution: int = 3000):
     """
     TODO: Doctring for get_st_diagram
@@ -224,9 +224,8 @@ def phase_to_height(st_diagram, L, d, p):
     El diagrama en unidades de altura (mm)
     """
 
-    # dphase = st_diagram
-    # return -L*dphase / (2*np.pi*d/p - dphase)
-    return st_diagram
+    dphase = st_diagram
+    return -L*dphase / (2*np.pi*d/p - dphase)
 
 
 def create_st_hdf5(hdf5_folder):
@@ -263,6 +262,45 @@ def main():
     plt.colorbar()
     plt.show()
 
+def delete():
+    import matplotlib.pyplot as plt
+    import h5py
+
+    hdf5_folder = '/home/bersp/Documents/Labo_6y7/Mediciones/MED62 - Bajada en voltaje - 1007/HDF5/'
+    # st_diagram, st_error = get_st_diagram(hdf5_folder + 'FTP.hdf5')
+    # create_st_hdf5(hdf5_folder)
+
+    f = h5py.File(hdf5_folder + 'FTP.hdf5', 'r')
+    f2 = h5py.File(hdf5_folder + 'RAW.hdf5', 'r')
+
+    image = f2['deformed'][:,:,0]
+    annulus_mask_info = f['masks/annulus'].attrs
+    center = annulus_mask_info['center']
+    annulus_radii = annulus_mask_info['annulus_radii']
+
+    annulus_region_mask = get_polar_strip(f['masks/annulus'][:,:],
+                                          center,
+                                          (0, annulus_radii[1]),
+                                          strip_resolution=3000)
+
+    # line = get_polar_strip_average(annulus=image, center=center,
+                                # radius_limits=(0, annulus_radii[1]),
+                                # annulus_region_mask=annulus_region_mask,
+                                # strip_resolution=3000)[0]
+
+    annulus_strip = get_polar_strip(image,
+                                    center=center,
+                                    radius_limits=(0, annulus_radii[1]),
+                                    strip_resolution=3000)
+
+    # plt.plot(line)
+    plt.imshow(image)
+    plt.figure()
+    plt.imshow(annulus_strip)
+    plt.colorbar()
+    plt.show()
+    
 
 if __name__ == '__main__':
-    main()
+    # main()
+    delete()

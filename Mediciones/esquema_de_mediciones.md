@@ -1,6 +1,7 @@
-- Limpiar el anillo
-- Mezclar 200ml de agua y una cucharada de dióxido de titanio
-- Deslizar la aguja para aumentar la linea de contacto del agua
+- Limpiar el anillo.
+- Mezclar 200ml de agua y una cucharada de dióxido de titanio.
 - 33 ml para llenar el anillo.
+- Deslizar la aguja para aumentar la linea de contacto del agua.
 - Enfocar proyector a ojo. 
-- 
+- Enfocar cámara usando histograma.
+- Seteamos el generador de funciones.

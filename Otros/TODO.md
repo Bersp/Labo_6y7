@@ -11,15 +11,13 @@
 NOTE: Si no existe una tarea en el TODO es porque está completada. Se puede ver el historial de git para ver las tareas completadas.
 
 # Para hablar
-- Filtrar puntos en el st si están a más de 5 sigmas de la media del error
-- Hacer que st exporte ya con la transformación de altura.
 - Hablar del 1500
+- Square mask
 
 
 # TODO
 
-- [N,+] Ver el 1500 y la orientación de la transformación
-- [N,+] Ver square mask del 0909 y de los datos de bajada (1007)
+- [R,+] Ver el 1500 y la orientación de la transformación
 - [N,+] MAX - MIN datos de subida
 - [N,/] Ver el cuadradito y cómo mide la altura
 - [N,-] Analizar diagramas de energía
