@@ -1,8 +1,10 @@
 import os
 import re
+
 import h5py
 import matplotlib.pyplot as plt
 import numpy as np
+import plotly.graph_objects as go
 import scipy.fft as fft
 from scipy.interpolate import CubicSpline
 from scipy.interpolate import interp1d
@@ -10,7 +12,6 @@ from scipy.ndimage.filters import uniform_filter1d
 from scipy.signal import find_peaks
 import seaborn as sns
 
-import plotly.graph_objects as go
 from spatiotemporal_analysis import get_st_diagram
 sns.set_palette(sns.color_palette("rocket", 5))
 
@@ -49,26 +50,24 @@ def get_envelope(signal):
     envelope = CubicSpline(xp_ext, yp_ext, bc_type='periodic')
 
     x = dom_signal
-    # plt.plot(xp, yp, 'ro')
-    # plt.plot(dom_signal, signal, '--k')
     y = envelope(x)
 
-    # y = np.concatenate((y, y))
-    # x = np.arange(y.size)
+    fig, ax = plt.subplots(1, figsize=(14, 8), sharex=True, sharey=True)
 
-    # x = np.arange(ext_signal.size)
-    # y = envelope(x)
+    ax.plot(xp, yp, 'ok', label='Máximos')
+    ax.plot(x, y, '-', c='indianred', label='Envolvente')
 
-    # fig, ax = plt.subplots(1, figsize=(12, 8), sharex=True, sharey=True)
+    ax.plot(dom_signal, signal, '--k', zorder=0, label='Señal original')
 
-    # ax.plot(xp_ext, yp_ext, 'or')
-    # ax.plot(xp, yp, 'ok')
-    # ax.plot(x, y, '-g')
+    ax.set_xlabel('Longitud de arco [u. a.]', fontsize=16)
+    ax.set_ylabel('Amplitud [mm]', fontsize=16)
 
-    # ax.plot(dom_signal, signal, '-r', zorder=0)
+    ax.grid()
+    ax.legend(fontsize=14, loc='upper center', ncol=3, framealpha=0.2)
 
-    # ax.grid()
-    # plt.show()
+    plt.savefig('/home/bersp/env_1sample.pdf', dpi=300,
+                bbox_inches='tight', transparent=True)
+    plt.show()
 
     return y
 
@@ -115,20 +114,29 @@ def get_st_envelope(st_diagram):
 
 
 def plot_st_envelope(st_diagram):
+    def plot_aux(ax, diag, title):
+        img = ax.imshow(diag, cmap='coolwarm')
+        ax.set_title(title, fontsize=16)
+        # fig.colorbar(img, ax=ax1)
+
     st_spatial_envelope = get_st_spatial_envelope(st_diagram)
     st_envelope = get_st_envelope(st_diagram)
 
     fig, (ax1, ax2, ax3) = plt.subplots(
-        1, 3, figsize=(16, 8), sharex=True, sharey=True)
+        1, 3, figsize=(16, 8), sharex=True, sharey=True
+    )
 
-    img = ax1.imshow(st_diagram)
-    # fig.colorbar(img, ax=ax1)
+    plot_aux(ax1, st_diagram, 'Diagrama original')
 
-    img = ax2.imshow(st_spatial_envelope)
-    # fig.colorbar(img, ax=ax2)
+    plot_aux(ax2, st_spatial_envelope, 'Envolvente espacial')
 
-    img = ax3.imshow(st_envelope)
-    # fig.colorbar(img, ax=ax3)
+    plot_aux(ax3, st_envelope, 'Envolvente espacio-temporal')
+
+    ax1.set_xticks([])
+    ax1.set_yticks([])
+    plt.savefig('/home/bersp/st_envelopes.pdf', dpi=300,
+                bbox_inches='tight', transparent=True)
+
     plt.show()
 
 
@@ -169,25 +177,35 @@ def get_st_left_right(st_diagram):
     # plt.colorbar()
     # plt.show()
 
-    return np.real(st_left), np.real(st_right)
-
     # fig, (ax1, ax2) = plt.subplots(
-        # 1, 2, figsize=(12, 8), sharex=True, sharey=True)
+    # 1, 2, figsize=(12, 8), sharex=True, sharey=True
+    # )
 
-    # vmax = np.max(np.real(st_left))
+    # vmax = np.max(np.real(st_left))*.5
     # img = ax1.imshow(np.real(st_left), cmap='coolwarm', vmin=-vmax, vmax=vmax)
+    # ax1.set_title('Izquierda', fontsize=16)
     # fig.colorbar(img, ax=ax1)
 
-    # vmax = np.max(np.real(st_right))
+    # vmax = np.max(np.real(st_right))*.5
     # ax2.imshow(np.real(st_right), cmap='coolwarm', vmin=-vmax, vmax=vmax)
+    # ax2.set_title('Derecha', fontsize=16)
     # fig.colorbar(img, ax=ax2)
 
+    # ax1.set_xticks([])
+    # ax1.set_yticks([])
+
+    # plt.savefig('/home/bersp/st_left_right.pdf', dpi=300, bbox_inches='tight', transparent=True)
     # plt.show()
+
+    return np.real(st_left), np.real(st_right)
 
 
 def main():
-    med_folder = 'MED29 - Subida en voltaje - 0902/'
+    med_folder = 'MED35 - Subida en voltaje - 0902/'
     st_diagram = get_st_diagram(med_folder)
+    get_envelope(st_diagram[300])
+    # plot_st_envelope(st_diagram)
+    # st_left, st_right = get_st_left_right(st_diagram)
 
     # -- Plot 3D --
     # fig = go.Figure(data=[go.Surface(z=st_left[::10, ::10])])
@@ -199,25 +217,25 @@ def main():
     # plt.plot(st_lines)
     # plt.colorbar()
     # plt.show()
-    vmax = np.nanmax(st_diagram)
-    plt.imshow(st_diagram, cmap='coolwarm', vmin=-vmax, vmax=vmax)
-    plt.colorbar()
-    plt.show()
+    # vmax = np.nanmax(st_diagram)
+    # plt.imshow(st_diagram, cmap='coolwarm', vmin=-vmax, vmax=vmax)
+    # plt.colorbar()
+    # plt.show()
 
     # -- Funciones --
     # med_start, med_end = 28, 39
     # meds_folder = '../../Mediciones/'
     # meds_to_process = [
-        # p for p in sorted(os.listdir(meds_folder)) if 'MED' in p and
-        # med_start <= int(re.findall(r'MED(\d+) - ', p)[0]) <= med_end
+    # p for p in sorted(os.listdir(meds_folder)) if 'MED' in p and
+    # med_start <= int(re.findall(r'MED(\d+) - ', p)[0]) <= med_end
     # ]
-    
+
     # amps = np.zeros(len(meds_to_process))
     # for i, med_folder in enumerate(meds_to_process):
-        # st_diagram = get_st_diagram(med_folder, error_filter=5)
-        # envelope = get_st_spatial_envelope(st_diagram)
-        # print(i)
-        # amps[i] = np.mean(envelope.max(0)) - np.mean(envelope)
+    # st_diagram = get_st_diagram(med_folder, error_filter=5)
+    # envelope = get_st_spatial_envelope(st_diagram)
+    # print(i)
+    # amps[i] = np.mean(envelope.max(0)) - np.mean(envelope)
 
     # plt.plot(amps, 'o')
     # plt.show()
@@ -227,7 +245,6 @@ def main():
     # plt.show()
 
     # get_st_left_right(st_diagram)
-
 
 
 if __name__ == "__main__":

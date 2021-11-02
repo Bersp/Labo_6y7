@@ -206,8 +206,9 @@ def phase_to_height(st_diagram, L, d, p):
     El diagrama en unidades de altura (mm)
     """
 
-    dphase = st_diagram
-    return -L*dphase / (2*np.pi*d/p - dphase)
+    # dphase = st_diagram
+    # return -L*dphase / (2*np.pi*d/p - dphase)
+    return st_diagram
 
 
 def create_st_hdf5(hdf5_folder):

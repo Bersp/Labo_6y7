@@ -503,12 +503,16 @@ class FTP():
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
 
-    med_folder = '../../Mediciones/MED40 - Oscilones a full - 0902/'
+    med_folder = '../../Mediciones/MED44 - Bajada en voltaje - 1007/'
     hdf5_folder = med_folder+'HDF5/'
 
     ftp = FTP(hdf5_folder)
 
-    print(ftp.get_fringes_physical_size())
+    plt.imshow(ftp.square_mask)
+    plt.colorbar()
+    plt.show()
+
+    # print(ftp.get_fringes_physical_size())
 
     # ir, ar = ftp.annulus_radii
     # v0, h0 = ftp.annulus_center

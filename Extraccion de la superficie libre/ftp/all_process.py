@@ -68,22 +68,22 @@ def multiple_all_process_parallel(meds_folder, med_start, med_end):
         p for p in sorted(os.listdir(meds_folder)) if 'MED' in p and
         med_start <= int(re.findall(r'MED(\d+) - ', p)[0]) <= med_end
     ]
-    print(meds_to_process)
 
-    # for med_folder in meds_to_process:
-    # med_folder = meds_folder + med_folder + '/'
+    for med_folder in meds_to_process:
+        med_folder = meds_folder + med_folder + '/'
 
-    # logging.info(f'ALL_PROCESS: COMENZANDO MEDICIÓN PARA {med_folder}')
-    # all_process_parallel(med_folder)
-    # os.remove(med_folder+'HDF5/RAW.hdf5')
-    # os.remove(med_folder+'HDF5/FTP.hdf5')
+        logging.info(f'ALL_PROCESS: COMENZANDO MEDICIÓN PARA {med_folder}')
+        all_process_parallel(med_folder)
+        os.remove(med_folder+'HDF5/RAW.hdf5')
+        os.remove(med_folder+'HDF5/FTP.hdf5')
 
 
 def main():
     meds_folder = '../../Mediciones/'
-    multiple_all_process_parallel(meds_folder, 19, 38)
+    # multiple_all_process_parallel(meds_folder, 44, 62)
 
-    # med_folder = meds_folder + 'MED39 - Subida en voltaje - 0902/'
+    med_folder = meds_folder + 'MED62 - Bajada en voltaje - 1007/'
+    all_process_parallel(med_folder)
 
     # # Plot ST diagram
     # import h5py

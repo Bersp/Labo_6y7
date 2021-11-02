@@ -18,14 +18,14 @@ NOTE: Si no existe una tarea en el TODO es porque está completada. Se puede ver
 
 # TODO
 
-- [N,+] Analizar mediciones viejas a ver si están rotas
+- [N,+] Ver el 1500 y la orientación de la transformación
+- [N,+] Ver square mask del 0909 y de los datos de bajada (1007)
 - [N,+] MAX - MIN datos de subida
-- [R,+] Analizar datos de subida (envonlvente) (meds del 0902)
-- [N,+] Exportar muchas cosas
 - [N,/] Ver el cuadradito y cómo mide la altura
-- [N,/] Ver square mask del 0909
 - [N,-] Analizar diagramas de energía
 - [N,-] Clasear el spatiotemporal.
-- [N,-] Analizar los datos de transición (meds del 0826).
-- [N,-] Analizar los datos de transición (meds del 0826).
+- [N,-] Analizar los datos de transición (meds del 0826)
+- [N,-] Analizar los datos de transición (meds del 0826)
 
+# TODO LABO
+- Terminar de medir la bajada y mod de fase

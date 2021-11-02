@@ -3,10 +3,12 @@ import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import ndimage as nd
+
 from mpl_utils import *
 
 # -----------------------------------------------------------------
 # Funciones auxiliares
+
 
 def fill_nans(data):
     """
@@ -19,6 +21,7 @@ def fill_nans(data):
 
 # -----------------------------------------------------------------
 
+
 def get_st_diagram(med_folder_name, error_filter=None):
     hdf5_path = f'../../Mediciones/{med_folder_name}/HDF5/ST.hdf5'
     f = h5py.File(hdf5_path, 'r')
@@ -27,12 +30,14 @@ def get_st_diagram(med_folder_name, error_filter=None):
     st_error = np.array(f['spatiotemporal_diagram_error'])
 
     if error_filter != None:
-        st_diagram[st_error > np.mean(st_error)+np.std(st_error)*error_filter] = np.nan
+        st_diagram[st_error > np.mean(
+            st_error)+np.std(st_error)*error_filter] = np.nan
         st_diagram = fill_nans(st_diagram)
 
     # st_diagram = (st_diagram.T - st_diagram.mean(1)).T
 
     return st_diagram
+
 
 def st(med_folder_name):
     st_diagram = get_st_diagram(med_folder_name)
@@ -47,6 +52,7 @@ def st(med_folder_name):
     ax.set_ylabel('time [frames]', fontsize=16)
     plt.show()
 
+
 def animate_st(ylim=None):
     st_instance0 = st_diagram[0]
     x = np.linspace(0, 2*np.pi, st_instance0.size)
@@ -54,7 +60,6 @@ def animate_st(ylim=None):
     fig, ax = plt.subplots(figsize=(16, 8))
     ax.set_xlabel('x [rad]', fontsize=16)
     ax.set_ylabel('"Altura"', fontsize=16)
-
 
     line, = plt.plot(x, st_instance0)
     point, = plt.plot(x[300], st_instance0[300], 'ro')
@@ -85,6 +90,7 @@ def animate_st(ylim=None):
 
     plt.show()
 
+
 def some_frames(med_folder_name, start_frame, interval):
     st_diagram = get_st_diagram(med_folder_name)
     frames = range(start_frame, start_frame+8*interval, interval)
@@ -97,15 +103,15 @@ def some_frames(med_folder_name, start_frame, interval):
         axes[i].set_ylim(-3, 2.5)
     plt.show()
 
+
 def point_through_time(med_folder_name, point):
     st_diagram = get_st_diagram(med_folder_name)
 
-    theta_point = point * 2*np.pi/ st_diagram[0].size
+    theta_point = point * 2*np.pi / st_diagram[0].size
 
     data = st_diagram[:, point]
     data = nd.uniform_filter1d(data, 10)
-    time = np.arange(data.size)/250 # domain in s
-
+    time = np.arange(data.size)/250  # domain in s
 
     fig, ax = plt.subplots()
     ax.plot(time, data, c=DARK_GRAY_NORD)
@@ -116,41 +122,70 @@ def point_through_time(med_folder_name, point):
     ax.grid()
     plt.show()
 
+
 def error_filter_analysis(med_folder_name, start=3, interval=1):
     import matplotlib
-    cmap = matplotlib.cm.viridis
+    cmap = matplotlib.cm.coolwarm
+    cmap.set_bad('black')
 
     hdf5_folder = f'../../Mediciones/{med_folder_name}/HDF5/ST.hdf5'
     f = h5py.File(hdf5_folder, 'r')
     st_diagram = np.array(f['spatiotemporal_diagram'])
-    st_error = np.array(f['spatiotemporal_diagram_error'])
+    st_error = np.abs(np.array(f['spatiotemporal_diagram_error']))
+
+    # fig, (ax1, ax2) = plt.subplots(
+    # 1, 2, figsize=(12, 8), sharex=True, sharey=True)
+
+    # st_diagram_tmp = st_diagram.copy()
+    # st_diagram_tmp[st_error > np.mean(st_error)+np.std(st_error)*3] = np.nan
+    # ax1.set_title('Diagrama filtrado a $3 \sigma$', fontsize=16)
+    # ax1.imshow(st_diagram_tmp, cmap=cmap)
+
+    # ax2.set_title('Diagrama con interpolación', fontsize=16)
+    # ax2.imshow(fill_nans(st_diagram), cmap=cmap)
+
+    # ax1.set_xlim(600, 1000)
+    # ax1.set_ylim(1300, 1700)
+    # ax1.set_xticks([])
+    # ax1.set_yticks([])
+    # plt.savefig('/home/bersp/error_interp.pdf', dpi=300, bbox_inches='tight',
+    # transparent=True)
+    # plt.show()
 
     fig, axes = plt.subplots(2, 3, figsize=(12, 8), sharex=True, sharey=True)
     axes = axes.flatten()
-    cmap.set_bad('red')
+    cmap.set_bad('black')
     axes[0].set_title('Completa')
     axes[0].imshow(st_diagram, cmap=cmap)
     for i in range(start, start+5, interval):
         st_diagram_tmp = st_diagram.copy()
-        st_diagram_tmp[st_error > np.mean(st_error)+np.std(st_error)*i] = np.nan
+        st_diagram_tmp[st_error > np.mean(
+            st_error)+np.std(st_error)*i] = np.nan
 
-        axes[i-start+1].set_title('NaN si $ err > \\overline{err} +'+str(i)+'\sigma $')
+        axes[i-start +
+             1].set_title('NaN si $ err > \\overline{err} +'+str(i)+'\sigma $')
         axes[i-start+1].imshow(st_diagram_tmp, cmap=cmap)
 
-    # plt.savefig('error_filter_analysis.pdf', dpi=300, bbox_inches='tight')
+    axes[0].set_xlim(600, 1000)
+    axes[0].set_ylim(1300, 1700)
+    axes[0].set_xticks([])
+    axes[0].set_yticks([])
+    # plt.savefig('/home/bersp/error_analysis.pdf', dpi=300,
+                # bbox_inches='tight', transparent=True)
     plt.show()
 
 
 if __name__ == "__main__":
-    med_folder_name = 'MED36 - Subida en voltaje - 0902'
-    error_filter_analysis(med_folder_name, start=2)
-    # st_diagram = get_st_diagram(med_folder_name, error_filter=5)
+    med_folder_name = 'MED62 - Subida en voltaje - 1007/'
+    # st_diagram = get_st_diagram(med_folder_name)
     # plt.imshow(st_diagram)
     # plt.colorbar()
     # plt.show()
+
+    # error_filter_analysis(med_folder_name, start=3)
+    # plt.colorbar()
 
     # st(med_folder_name)
     # animate_st(ylim=(-5, 5))
     # some_frames(med_folder_name, start_frame=20, interval=30)
     # point_through_time(med_folder_name, point=300)
-
