@@ -325,7 +325,10 @@ class FTP():
             min_row, min_col, max_row, max_col = p[2]
             return abs((max_row-min_row)/(max_col-min_col) - 1.2/1.9)
 
-        label_square = sorted(props, key=sort_key_function)[0][0]
+        aspect_relation_filter = sorted(props, key=sort_key_function)[:10]
+        label_square = sorted(aspect_relation_filter,
+                              key=lambda p: p[1],
+                              reverse=True)[0][0]
 
         self._annulus_mask = annulus_mask
         self._square_mask = labeled == label_square

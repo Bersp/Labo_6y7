@@ -21,7 +21,7 @@ def get_polar_strip(image: np.ndarray, center: Tuple[int, int],
     image : 2-D array
         La imagen a procesar.
     center : tuple of ints.
-        Centro del anillo e.g., (512, 512).
+        Centro del anillo (vertical, horizonatal). e.g. (512, 512).
     radius_limits : tuple of ints.
         Radio menor y radio mayor del anillo. e.g., (420, 470).
     strip_resolution : int.
@@ -39,8 +39,8 @@ def get_polar_strip(image: np.ndarray, center: Tuple[int, int],
            0 
           o  o          
        o        o                           
-      o          o 3            0     1     2     3
-    1 o          o     ---->     o o o o o o o o o o o o
+      o          o 3              o o o o o o o o o o o o
+    1 o          o     ---->     0     1     2     3
        o        o   
           o  o     
             2                          
@@ -51,7 +51,7 @@ def get_polar_strip(image: np.ndarray, center: Tuple[int, int],
     theta, r = np.meshgrid(np.linspace(0, 2 * np.pi, strip_resolution),
                            np.arange(initial_radius, final_radius))
 
-    theta = theta - np.pi/2
+    theta = theta - np.pi / 2
     xcart = -(r * np.cos(theta) + center[0]).astype(int)
     ycart = (r * np.sin(theta) + center[1]).astype(int)
 
@@ -102,7 +102,7 @@ def get_polar_strip_average(annulus: np.ndarray, center: Tuple[float, float],
     strip_average = np.nanmean(masked_annulus_strip, 0)
     strip_std = np.nanstd(masked_annulus_strip, 0)
 
-    return annulus_strip, strip_std
+    return strip_average, strip_std
 
 
 def vertical_unwraping(st_diagram):
@@ -225,7 +225,7 @@ def phase_to_height(st_diagram, L, d, p):
     """
 
     dphase = st_diagram
-    return -L*dphase / (2*np.pi*d/p - dphase)
+    return -L * dphase / (2 * np.pi * d / p - dphase)
 
 
 def create_st_hdf5(hdf5_folder):
@@ -244,7 +244,7 @@ def main():
     import matplotlib.pyplot as plt
     import matplotlib
     cmap = matplotlib.cm.viridis
-    med_folder = '../../Mediciones/MED39 - Subida en voltaje - 0902/'
+    med_folder = '../../Mediciones/MED44 - Bajada en voltaje - 1007/'
     hdf5_folder = med_folder + 'HDF5/'
 
     create_st_hdf5(hdf5_folder)
@@ -262,6 +262,7 @@ def main():
     plt.colorbar()
     plt.show()
 
+
 def delete():
     import matplotlib.pyplot as plt
     import h5py
@@ -273,34 +274,80 @@ def delete():
     f = h5py.File(hdf5_folder + 'FTP.hdf5', 'r')
     f2 = h5py.File(hdf5_folder + 'RAW.hdf5', 'r')
 
-    image = f2['deformed'][:,:,0]
-    annulus_mask_info = f['masks/annulus'].attrs
-    center = annulus_mask_info['center']
-    annulus_radii = annulus_mask_info['annulus_radii']
+    # image = f2['deformed'][:, :, 0]
+    # image = f['height_fields']['annulus'][:,:,0]
+    fig, axes = plt.subplots(2, figsize=(12, 8), sharex=True, sharey=False)
+    for ax, image in zip(
+            axes,
+        [f2['reference'][:, :], f['height_fields']['annulus'][:, :, 0]]):
+        annulus_mask_info = f['masks/annulus'].attrs
+        center = annulus_mask_info['center']
+        annulus_radii = annulus_mask_info['annulus_radii']
 
-    annulus_region_mask = get_polar_strip(f['masks/annulus'][:,:],
+        annulus_region_mask = get_polar_strip(f['masks/annulus'][:, :],
+                                              center,
+                                              annulus_radii,
+                                              strip_resolution=3000)
+
+        line = get_polar_strip_average(annulus=image,
+                                       center=center,
+                                       radius_limits=annulus_radii,
+                                       annulus_region_mask=annulus_region_mask,
+                                       strip_resolution=3000)[0]
+
+        annulus_strip = get_polar_strip(image,
+                                        center=center,
+                                        radius_limits=annulus_radii,
+                                        strip_resolution=3000)
+        ax.plot(line)
+        # plt.imshow(image)
+        # ax.imshow(annulus_strip)
+        # ax.colorbar()
+    plt.show()
+
+
+def delete2():
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    xx, yy = np.meshgrid(np.arange(1024), np.arange(1024))
+    zz = np.arctan2(xx - 512, yy - 512)
+    zz = np.cos(2*np.pi/20 * xx)
+
+    center = (512, 512)
+    rr = np.sqrt((xx - center[0])**2 + (yy - center[1])**2)
+    radii = (480, 510)
+
+    image = zz
+    image_mask = np.ones_like(image)
+    image_mask[radii[1] < rr] = np.nan
+    image_mask[rr < radii[0]] = np.nan
+
+    # strip = get_polar_strip(image*image_mask, center, radii, strip_resolution=3000)
+
+    annulus_region_mask = get_polar_strip(image_mask,
                                           center,
-                                          (0, annulus_radii[1]),
+                                          radii,
                                           strip_resolution=3000)
 
-    # line = get_polar_strip_average(annulus=image, center=center,
-                                # radius_limits=(0, annulus_radii[1]),
-                                # annulus_region_mask=annulus_region_mask,
-                                # strip_resolution=3000)[0]
+    line = get_polar_strip_average(annulus=image,
+                                   center=center,
+                                   radius_limits=radii,
+                                   annulus_region_mask=annulus_region_mask,
+                                   strip_resolution=3000)[0]
 
-    annulus_strip = get_polar_strip(image,
-                                    center=center,
-                                    radius_limits=(0, annulus_radii[1]),
-                                    strip_resolution=3000)
+    strip = get_polar_strip(image, center, radii, strip_resolution=3000)
 
-    # plt.plot(line)
     plt.imshow(image)
     plt.figure()
-    plt.imshow(annulus_strip)
+    plt.plot(line)
+    plt.figure()
+    plt.imshow(strip, aspect='auto')
     plt.colorbar()
-    plt.show()
     
+    plt.show()
+
 
 if __name__ == '__main__':
     # main()
-    delete()
+    delete2()

@@ -8,7 +8,7 @@ from datetime import datetime
 fps = 250
 
 folder_comment = 'Bajada en voltaje'
-MEDN = 'auto'
+MEDN = 68
 
 today_date = datetime.today()
 info = {
@@ -22,7 +22,7 @@ info = {
                    },
         'DATE': today_date.strftime('%m-%d-%y'),
         'FUNCTION_GENERATOR': {'hz': 20,
-                               'vpp': 7,
+                               'vpp': 4,
                                'freq_modulation': None},
         'CALIBRATION': {'d': 210, # distancia entre el proyector y la cámara en mm
                         'L': 1030}, # altura de la camara al disco en mm

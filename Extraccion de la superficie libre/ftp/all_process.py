@@ -80,7 +80,7 @@ def multiple_all_process_parallel(meds_folder, med_start, med_end):
 
 def main():
     meds_folder = '../../Mediciones/'
-    # multiple_all_process_parallel(meds_folder, 44, 62)
+    # multiple_all_process_parallel(meds_folder, 45, 62)
 
     med_folder = meds_folder + 'MED62 - Bajada en voltaje - 1007/'
     all_process_parallel(med_folder)
