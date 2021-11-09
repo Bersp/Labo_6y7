@@ -12,12 +12,13 @@ NOTE: Si no existe una tarea en el TODO es porque está completada. Se puede ver
 
 # Para hablar
 - Hablar del 1500
-- Square mask
+- Mediciones del 1104 con strip horrible
+- MAX - MIN datos de subida
 
 
 # TODO
 
-- [R,+] Ver el 1500 y la orientación de la transformación
+- [R,+] Ver mediciones de 1104 (la de diversion se calcula mal)
 - [N,+] MAX - MIN datos de subida
 - [N,/] Ver el cuadradito y cómo mide la altura
 - [N,-] Analizar diagramas de energía

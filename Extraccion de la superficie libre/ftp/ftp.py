@@ -50,12 +50,14 @@ def calculate_phase_diff_map_1d(dY, dY0, th, ns, mask_for_unwrapping=None):
         imax = np.argmax(np.abs(fY0[9:nx // 2]))
         ifmax = imax + 9
 
+
         HW = np.round(ifmax * th)
         W = 2 * HW
         win = signal.tukey(int(W), ns)
 
         gaussfilt1D = np.zeros(nx)
         gaussfilt1D[int(ifmax - HW - 1):int(ifmax - HW + W - 1)] = win
+
 
         Nfy0 = fY0 * gaussfilt1D
         Nfy = fY * gaussfilt1D
@@ -76,9 +78,6 @@ def calculate_phase_diff_map_1d(dY, dY0, th, ns, mask_for_unwrapping=None):
         mphase = unwrap(mphase)
 
     dphase = (mphase - mphase0)
-    plt.imshow(dphase)
-    plt.colorbar()
-    plt.show()
     return dphase
 
 
@@ -511,18 +510,21 @@ class FTP():
         logging.info(f'END')
 
 
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
+# if __name__ == '__main__':
+import matplotlib.pyplot as plt
 
-    med_folder = '../../Mediciones/MED44 - Bajada en voltaje - 1007/'
-    hdf5_folder = med_folder + 'HDF5/'
+med_folder = '../../Mediciones/MED69 - Diversion - 1104/'
+hdf5_folder = med_folder + 'HDF5/'
 
-    ftp = FTP(hdf5_folder)
-    square_mask = ftp.square_mask
+ftp = FTP(hdf5_folder)
 
-    plt.imshow(square_mask)
-    plt.colorbar()
-    plt.show()
+# ftp_args = (ftp.gray, ftp.filled_ref, ftp.annulus_mask,
+            # ftp.annulus_center, ftp.annulus_radii)
+# dphase = individual_ftp(ftp.deformed[:,:,10], *ftp_args)
+
+plt.imshow(ftp.annulus_mask)
+plt.colorbar()
+plt.show()
 
     # print(ftp.get_fringes_physical_size())
 
@@ -537,8 +539,8 @@ if __name__ == '__main__':
     # ftp.export()
 
     # f = h5py.File(hdf5_folder+'FTP.hdf5', 'r')
-    # img = f['height_fields']['annulus'][:, :, 10]
+    # img = f['height_fields']['annulus'][:, :, 0]
     # img -= np.nanmean(img)
-    # plt.imshow(img, clim=(-1.5, 1.5))
+    # plt.imshow(img, clim=(-10, -30))
     # plt.colorbar()
     # plt.show()

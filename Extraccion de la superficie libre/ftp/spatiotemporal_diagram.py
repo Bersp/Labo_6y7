@@ -194,6 +194,7 @@ def get_st_diagram(ftp_hdf5_path: str,
 
     # Unwraping vertical
     logging.info(f'ST: Calculando unwraping vertical')
+    st_diagram = st_diagram[:, 1000:]
     st_diagram = vertical_unwraping(st_diagram)
 
     if transform_to_mm:
@@ -244,30 +245,33 @@ def main():
     import matplotlib.pyplot as plt
     import matplotlib
     cmap = matplotlib.cm.viridis
-    med_folder = '../../Mediciones/MED44 - Bajada en voltaje - 1007/'
+    med_folder = '../../Mediciones/MED63 - Bajada en voltaje - NOTE - 1104/'
     hdf5_folder = med_folder + 'HDF5/'
 
-    create_st_hdf5(hdf5_folder)
+    # create_st_hdf5(hdf5_folder)
 
-    f = h5py.File(hdf5_folder + 'ST.hdf5', 'r')
-    st_diagram = np.array(f['spatiotemporal_diagram'])
-    st_error = np.array(f['spatiotemporal_diagram_error'])
+    # f = h5py.File(hdf5_folder + 'ST.hdf5', 'r')
+    # st_diagram = np.array(f['spatiotemporal_diagram'])
+    # st_error = np.array(f['spatiotemporal_diagram_error'])
+
+    # st_diagram -= np.mean(st_diagram, 0)
 
     # f = h5py.File(hdf5_folder+'FTP.hdf5', 'r')
     # L, d, p = f.attrs['L'], f.attrs['d'], f.attrs['p']
     # st_diagram = phase_to_height(st_diagram, L, d, p)
     # st_error = phase_to_height(st_error, L, d, p)
 
-    plt.imshow(st_diagram)
-    plt.colorbar()
-    plt.show()
+    # plt.imshow(st_diagram)
+    # plt.colorbar()
+    # plt.plot(st_diagram[2200])
+    # plt.show()
 
 
 def delete():
     import matplotlib.pyplot as plt
     import h5py
 
-    hdf5_folder = '/home/bersp/Documents/Labo_6y7/Mediciones/MED62 - Bajada en voltaje - 1007/HDF5/'
+    hdf5_folder = '/home/bersp/Documents/Labo_6y7/Mediciones/MED63 - Bajada en voltaje - NOTE - 1104/HDF5/'
     # st_diagram, st_error = get_st_diagram(hdf5_folder + 'FTP.hdf5')
     # create_st_hdf5(hdf5_folder)
 
@@ -312,7 +316,7 @@ def delete2():
 
     xx, yy = np.meshgrid(np.arange(1024), np.arange(1024))
     zz = np.arctan2(xx - 512, yy - 512)
-    zz = np.cos(2*np.pi/20 * xx)
+    zz = np.cos(2 * np.pi / 20 * xx)
 
     center = (512, 512)
     rr = np.sqrt((xx - center[0])**2 + (yy - center[1])**2)
@@ -344,10 +348,44 @@ def delete2():
     plt.figure()
     plt.imshow(strip, aspect='auto')
     plt.colorbar()
-    
+
     plt.show()
 
+def delete3():
+    import matplotlib.pyplot as plt
+
+    hdf5_folder = '/home/bersp/Documents/Labo_6y7/Mediciones/MED63 - Bajada en voltaje - NOTE - 1104/HDF5/'
+
+    f_ftp = h5py.File(hdf5_folder + 'FTP.hdf5', 'r')
+    f_raw = h5py.File(hdf5_folder + 'RAW.hdf5', 'r')
+
+    annulus_mask_info = f_ftp['masks/annulus'].attrs
+    center = annulus_mask_info['center']
+    annulus_radii = annulus_mask_info['annulus_radii']
+
+    image_mask = f_ftp['masks/annulus'][:,:]
+
+    annulus_region_mask = get_polar_strip(image_mask,
+                                          center,
+                                          annulus_radii,
+                                          strip_resolution=3000)
+
+    # line = get_polar_strip_average(annulus=image,
+                                   # center=center,
+                                   # radius_limits=annulus_radii,
+                                   # annulus_region_mask=annulus_region_mask,
+                                   # strip_resolution=3000)[0]
+
+    # annulus_strip = get_polar_strip(image,
+                                    # center=center,
+                                    # radius_limits=annulus_radii,
+                                    # strip_resolution=3000)
+    fig, ax = plt.subplots(figsize=(12, 8))
+    ax.imshow(annulus_region_mask)
+    plt.show()
 
 if __name__ == '__main__':
     # main()
-    delete2()
+    # delete()
+    # delete2()
+    delete3()

@@ -52,22 +52,22 @@ def get_envelope(signal):
     x = dom_signal
     y = envelope(x)
 
-    fig, ax = plt.subplots(1, figsize=(14, 8), sharex=True, sharey=True)
+    # fig, ax = plt.subplots(1, figsize=(14, 8), sharex=True, sharey=True)
 
-    ax.plot(xp, yp, 'ok', label='Máximos')
-    ax.plot(x, y, '-', c='indianred', label='Envolvente')
+    # ax.plot(xp, yp, 'ok', label='Máximos')
+    # ax.plot(x, y, '-', c='indianred', label='Envolvente')
 
-    ax.plot(dom_signal, signal, '--k', zorder=0, label='Señal original')
+    # ax.plot(dom_signal, signal, '--k', zorder=0, label='Señal original')
 
-    ax.set_xlabel('Longitud de arco [u. a.]', fontsize=16)
-    ax.set_ylabel('Amplitud [mm]', fontsize=16)
+    # ax.set_xlabel('Longitud de arco [u. a.]', fontsize=16)
+    # ax.set_ylabel('Amplitud [mm]', fontsize=16)
 
-    ax.grid()
-    ax.legend(fontsize=14, loc='upper center', ncol=3, framealpha=0.2)
+    # ax.grid()
+    # ax.legend(fontsize=14, loc='upper center', ncol=3, framealpha=0.2)
 
-    plt.savefig('/home/bersp/env_1sample.pdf', dpi=300,
-                bbox_inches='tight', transparent=True)
-    plt.show()
+    # plt.savefig('/home/bersp/env_1sample.pdf', dpi=300,
+                # bbox_inches='tight', transparent=True)
+    # plt.show()
 
     return y
 
@@ -201,9 +201,13 @@ def get_st_left_right(st_diagram):
 
 
 def main():
-    med_folder = 'MED35 - Subida en voltaje - 0902/'
+    med_folder = 'MED54 - Bajada en voltaje - 1007/'
     st_diagram = get_st_diagram(med_folder)
-    get_envelope(st_diagram[300])
+    # plt.imshow(st_diagram)
+    # plt.colorbar()
+    # plt.show()
+    
+    # get_envelope(st_diagram[300])
     # plot_st_envelope(st_diagram)
     # st_left, st_right = get_st_left_right(st_diagram)
 
@@ -213,17 +217,16 @@ def main():
     # fig.show()
 
     # -- Plot 2D --
-    # st_lines = st_diagram[:100]
-    # plt.plot(st_lines)
-    # plt.colorbar()
-    # plt.show()
+    st_lines = -st_diagram[:100].T
+    plt.plot(st_lines)
+    plt.show()
     # vmax = np.nanmax(st_diagram)
     # plt.imshow(st_diagram, cmap='coolwarm', vmin=-vmax, vmax=vmax)
     # plt.colorbar()
     # plt.show()
 
     # -- Funciones --
-    # med_start, med_end = 28, 39
+    # med_start, med_end = 44, 62
     # meds_folder = '../../Mediciones/'
     # meds_to_process = [
     # p for p in sorted(os.listdir(meds_folder)) if 'MED' in p and
@@ -232,12 +235,13 @@ def main():
 
     # amps = np.zeros(len(meds_to_process))
     # for i, med_folder in enumerate(meds_to_process):
-    # st_diagram = get_st_diagram(med_folder, error_filter=5)
-    # envelope = get_st_spatial_envelope(st_diagram)
-    # print(i)
-    # amps[i] = np.mean(envelope.max(0)) - np.mean(envelope)
+        # st_diagram = -get_st_diagram(med_folder, error_filter=5)
+        # envelope = get_st_spatial_envelope(st_diagram)
+        # print(i)
+        # amps[i] = envelope.max() - envelope.min()
+        
 
-    # plt.plot(amps, 'o')
+    # plt.plot(amps**2, 'o')
     # plt.show()
     # vmax = np.max(st_diagram)
     # plt.imshow(envelope, cmap='coolwarm', vmin=-vmax, vmax=vmax)

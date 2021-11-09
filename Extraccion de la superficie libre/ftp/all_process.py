@@ -82,7 +82,7 @@ def main():
     meds_folder = '../../Mediciones/'
     # multiple_all_process_parallel(meds_folder, 45, 62)
 
-    med_folder = meds_folder + 'MED62 - Bajada en voltaje - 1007/'
+    med_folder = meds_folder + 'MED40 - Oscilones a full - 0902/'
     all_process_parallel(med_folder)
 
     # # Plot ST diagram
