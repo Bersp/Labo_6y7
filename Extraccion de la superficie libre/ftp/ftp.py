@@ -52,11 +52,13 @@ def calculate_phase_diff_map_1d(dY, dY0, th, ns, mask_for_unwrapping=None):
 
 
         HW = np.round(ifmax * th)
+        HW*=0.5 # TODO
         W = 2 * HW
         win = signal.tukey(int(W), ns)
 
         gaussfilt1D = np.zeros(nx)
         gaussfilt1D[int(ifmax - HW - 1):int(ifmax - HW + W - 1)] = win
+
 
 
         Nfy0 = fY0 * gaussfilt1D
@@ -89,14 +91,29 @@ def individual_ftp(deformed, gray, filled_ref, annulus_mask, annulus_center,
 
     deformed = deformed - gray
 
+
     # Frankestein
     r_inner, r_outer = annulus_radii
-    x0, y0 = annulus_center
+    y0, x0 = annulus_center
     width = r_outer - r_inner
     r_middle = (r_outer + r_inner) // 2
     mask_out = tukey_2d(x0, y0, 1024, r_middle, width * 2, int(width))
     mask_in = tukey_2d(x0, y0, 1024, r_middle, width, int(width))
+
+    annulus_mask_f = annulus_mask.astype(float)
+    annulus_mask_f[annulus_mask_f == 0] = np.nan
+    deformed -= np.nanmean(deformed*annulus_mask_f)
+
     frankestein = deformed * (mask_in) + filled_ref * (1 - mask_out)
+
+    plt.plot(frankestein[400])
+    # annulus_mask[0] = np.nan
+    # print(frankestein*annulus_mask)
+    # plt.imshow(frankestein)
+    # plt.colorbar()
+    plt.show()
+    
+
 
     dphase = calculate_phase_diff_map_1d(frankestein,
                                          filled_ref,
@@ -513,18 +530,18 @@ class FTP():
 # if __name__ == '__main__':
 import matplotlib.pyplot as plt
 
-med_folder = '../../Mediciones/MED69 - Diversion - 1104/'
+med_folder = '../../Mediciones/MED62 - Bajada en voltaje - 1007/'
 hdf5_folder = med_folder + 'HDF5/'
 
 ftp = FTP(hdf5_folder)
 
-# ftp_args = (ftp.gray, ftp.filled_ref, ftp.annulus_mask,
-            # ftp.annulus_center, ftp.annulus_radii)
-# dphase = individual_ftp(ftp.deformed[:,:,10], *ftp_args)
+ftp_args = (ftp.gray, ftp.filled_ref, ftp.annulus_mask,
+            ftp.annulus_center, ftp.annulus_radii)
+dphase = individual_ftp(ftp.deformed[:,:,0], *ftp_args)
 
-plt.imshow(ftp.annulus_mask)
-plt.colorbar()
-plt.show()
+# plt.imshow(dphase)
+# plt.colorbar()
+# plt.show()
 
     # print(ftp.get_fringes_physical_size())
 

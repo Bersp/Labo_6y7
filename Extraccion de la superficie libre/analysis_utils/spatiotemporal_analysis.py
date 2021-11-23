@@ -176,12 +176,15 @@ def error_filter_analysis(med_folder_name, start=3, interval=1):
 
 
 if __name__ == "__main__":
-    med_folder_name = 'MED63 - Bajada en voltaje - NOTE - 1104/'
+    # med_folder_name = 'MED63 - Bajada en voltaje - NOTE - 1104/'
+    med_folder_name = 'MED62 - Bajada en voltaje - 1007/'
     st_diagram = get_st_diagram(med_folder_name)
-    # st_diagram = st_diagram[:,1000:]
+    # st_diagram = st_diagram[:,1000:1100]
+    # plt.plot(st_diagram)
     plt.imshow(st_diagram)
     plt.colorbar()
     plt.show()
+    
 
     # error_filter_analysis(med_folder_name, start=3)
     # plt.colorbar()

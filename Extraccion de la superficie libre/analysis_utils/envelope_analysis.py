@@ -161,9 +161,8 @@ def get_st_left_right(st_diagram):
     st_fft = fft.fft2(st_envelope)
     st_fft_shifted = fft.fftshift(st_fft)
 
-    st_fft_left_filter, st_fft_right_filter = np.zeros_like(
-        st_fft_shifted), np.zeros_like(st_fft_shifted)
-
+    st_fft_left_filter = np.zeros_like(st_fft_shifted)
+    st_fft_right_filter = np.zeros_like(st_fft_shifted)
     st_fft_left_filter[N//2:, M//2:] = 1
     st_fft_right_filter[N//2:, :M//2] = 1
 
@@ -172,22 +171,22 @@ def get_st_left_right(st_diagram):
     st_left, st_right = fft.ifft2(st_fft_left), fft.ifft2(st_fft_right)
 
     # Cosa de energía
-    # a = st_fft_shifted*(st_fft_left_filter + st_fft_right_filter)
-    # plt.imshow(np.log(np.abs(a)))
-    # plt.colorbar()
-    # plt.show()
+    a = st_fft_shifted*(st_fft_left_filter + st_fft_right_filter)
+    plt.imshow(np.log(np.abs(a)))
+    plt.colorbar()
+    plt.show()
 
     # fig, (ax1, ax2) = plt.subplots(
     # 1, 2, figsize=(12, 8), sharex=True, sharey=True
     # )
 
     # vmax = np.max(np.real(st_left))*.5
-    # img = ax1.imshow(np.real(st_left), cmap='coolwarm', vmin=-vmax, vmax=vmax)
+    # img = ax1.imshow(np.real(st_left), cmap='coolwarm')#, vmin=-vmax, vmax=vmax)
     # ax1.set_title('Izquierda', fontsize=16)
     # fig.colorbar(img, ax=ax1)
 
     # vmax = np.max(np.real(st_right))*.5
-    # ax2.imshow(np.real(st_right), cmap='coolwarm', vmin=-vmax, vmax=vmax)
+    # ax2.imshow(np.real(st_right), cmap='coolwarm')#, vmin=-vmax, vmax=vmax)
     # ax2.set_title('Derecha', fontsize=16)
     # fig.colorbar(img, ax=ax2)
 
@@ -201,7 +200,7 @@ def get_st_left_right(st_diagram):
 
 
 def main():
-    med_folder = 'MED54 - Bajada en voltaje - 1007/'
+    med_folder = 'MED44 - Bajada en voltaje - 1007/'
     st_diagram = get_st_diagram(med_folder)
     # plt.imshow(st_diagram)
     # plt.colorbar()
@@ -209,7 +208,7 @@ def main():
     
     # get_envelope(st_diagram[300])
     # plot_st_envelope(st_diagram)
-    # st_left, st_right = get_st_left_right(st_diagram)
+    st_left, st_right = get_st_left_right(st_diagram)
 
     # -- Plot 3D --
     # fig = go.Figure(data=[go.Surface(z=st_left[::10, ::10])])
@@ -217,9 +216,9 @@ def main():
     # fig.show()
 
     # -- Plot 2D --
-    st_lines = -st_diagram[:100].T
-    plt.plot(st_lines)
-    plt.show()
+    # st_lines = -st_diagram[:100].T
+    # plt.plot(st_lines)
+    # plt.show()
     # vmax = np.nanmax(st_diagram)
     # plt.imshow(st_diagram, cmap='coolwarm', vmin=-vmax, vmax=vmax)
     # plt.colorbar()

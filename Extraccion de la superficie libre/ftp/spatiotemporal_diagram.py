@@ -47,13 +47,17 @@ def get_polar_strip(image: np.ndarray, center: Tuple[int, int],
     """
 
     initial_radius, final_radius = radius_limits
+    initial_radius -= initial_radius//3
+    final_radius = 512
+
+    v0, h0 = center
 
     theta, r = np.meshgrid(np.linspace(0, 2 * np.pi, strip_resolution),
                            np.arange(initial_radius, final_radius))
 
     theta = theta - np.pi / 2
-    xcart = -(r * np.cos(theta) + center[0]).astype(int)
-    ycart = (r * np.sin(theta) + center[1]).astype(int)
+    xcart = -(r * np.cos(theta) - h0).astype(int)
+    ycart = (r * np.sin(theta) + v0).astype(int)
 
     image_strip = image[ycart, xcart].reshape(final_radius - initial_radius,
                                               strip_resolution)
@@ -194,7 +198,6 @@ def get_st_diagram(ftp_hdf5_path: str,
 
     # Unwraping vertical
     logging.info(f'ST: Calculando unwraping vertical')
-    st_diagram = st_diagram[:, 1000:]
     st_diagram = vertical_unwraping(st_diagram)
 
     if transform_to_mm:
@@ -245,14 +248,17 @@ def main():
     import matplotlib.pyplot as plt
     import matplotlib
     cmap = matplotlib.cm.viridis
-    med_folder = '../../Mediciones/MED63 - Bajada en voltaje - NOTE - 1104/'
+    med_folder = '../../Mediciones/MED44 - Bajada en voltaje - 1007/'
     hdf5_folder = med_folder + 'HDF5/'
 
     # create_st_hdf5(hdf5_folder)
 
-    # f = h5py.File(hdf5_folder + 'ST.hdf5', 'r')
-    # st_diagram = np.array(f['spatiotemporal_diagram'])
-    # st_error = np.array(f['spatiotemporal_diagram_error'])
+    fig, axes = plt.subplots(1,2, figsize=(12, 8), sharex=True, sharey=True)
+
+    for ax, cosa in zip(axes, ['ST.hdf5', 'ST_mal.hdf5']):
+        f = h5py.File(hdf5_folder + cosa, 'r')
+        st_diagram = np.array(f['spatiotemporal_diagram'])
+        st_error = np.array(f['spatiotemporal_diagram_error'])
 
     # st_diagram -= np.mean(st_diagram, 0)
 
@@ -261,17 +267,17 @@ def main():
     # st_diagram = phase_to_height(st_diagram, L, d, p)
     # st_error = phase_to_height(st_error, L, d, p)
 
-    # plt.imshow(st_diagram)
+        ax.imshow(st_diagram)
     # plt.colorbar()
-    # plt.plot(st_diagram[2200])
-    # plt.show()
+        # ax.plot(st_diagram[:,700:800])
+    plt.show()
 
 
 def delete():
     import matplotlib.pyplot as plt
     import h5py
 
-    hdf5_folder = '/home/bersp/Documents/Labo_6y7/Mediciones/MED63 - Bajada en voltaje - NOTE - 1104/HDF5/'
+    hdf5_folder = '/home/bersp/Documents/Labo_6y7/Mediciones/MED62 - Bajada en voltaje - 1007//HDF5/'
     # st_diagram, st_error = get_st_diagram(hdf5_folder + 'FTP.hdf5')
     # create_st_hdf5(hdf5_folder)
 
@@ -280,33 +286,35 @@ def delete():
 
     # image = f2['deformed'][:, :, 0]
     # image = f['height_fields']['annulus'][:,:,0]
-    fig, axes = plt.subplots(2, figsize=(12, 8), sharex=True, sharey=False)
-    for ax, image in zip(
-            axes,
-        [f2['reference'][:, :], f['height_fields']['annulus'][:, :, 0]]):
-        annulus_mask_info = f['masks/annulus'].attrs
-        center = annulus_mask_info['center']
-        annulus_radii = annulus_mask_info['annulus_radii']
+    # fig, axes = plt.subplots(2, figsize=(12, 8), sharex=True, sharey=False)
+    # for ax, image in zip(
+            # axes,
+        # [f2['reference'][:, :], f['height_fields']['annulus'][:, :, 0]]
+        # ):
+    image = f['height_fields']['annulus'][:, :, 0]
+    annulus_mask_info = f['masks/annulus'].attrs
+    center = annulus_mask_info['center']
+    annulus_radii = annulus_mask_info['annulus_radii']
 
-        annulus_region_mask = get_polar_strip(f['masks/annulus'][:, :],
-                                              center,
-                                              annulus_radii,
-                                              strip_resolution=3000)
+    annulus_region_mask = get_polar_strip(f['masks/annulus'][:, :],
+                                          center,
+                                          annulus_radii,
+                                          strip_resolution=3000)
 
-        line = get_polar_strip_average(annulus=image,
-                                       center=center,
-                                       radius_limits=annulus_radii,
-                                       annulus_region_mask=annulus_region_mask,
-                                       strip_resolution=3000)[0]
+    line = get_polar_strip_average(annulus=image,
+                                   center=center,
+                                   radius_limits=annulus_radii,
+                                   annulus_region_mask=annulus_region_mask,
+                                   strip_resolution=3000)[0]
 
-        annulus_strip = get_polar_strip(image,
-                                        center=center,
-                                        radius_limits=annulus_radii,
-                                        strip_resolution=3000)
-        ax.plot(line)
-        # plt.imshow(image)
-        # ax.imshow(annulus_strip)
-        # ax.colorbar()
+    annulus_strip = get_polar_strip(image,
+                                    center=center,
+                                    radius_limits=annulus_radii,
+                                    strip_resolution=3000)
+    plt.plot(annulus_strip.T)
+    # plt.imshow(image)
+    # plt.imshow(annulus_strip)
+    # plt.colorbar()
     plt.show()
 
 
@@ -380,12 +388,18 @@ def delete3():
                                     # center=center,
                                     # radius_limits=annulus_radii,
                                     # strip_resolution=3000)
+    # Genero un circulo
+    # th = np.linspace(0, 2*np.pi)
+    # r = annulus_radii[1]
+    # x = r * np.cos(th) + center[1]
+    # y = r * np.sin(th) + center[0]
+
     fig, ax = plt.subplots(figsize=(12, 8))
     ax.imshow(annulus_region_mask)
     plt.show()
 
 if __name__ == '__main__':
-    # main()
+    main()
     # delete()
     # delete2()
-    delete3()
+    # delete3()
