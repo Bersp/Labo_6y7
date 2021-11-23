@@ -1,0 +1,26 @@
+\usepackage[most]{tcolorbox}
+
+% framed
+\newtcolorbox{framed}[1]{standard jigsaw,
+	arc=0pt, outer arc=0pt,
+	fonttitle=\bfseries, title=#1, coltitle=nwhite,
+	colback=nwhite, colframe=nblack, coltext=nblack,
+	opacityback=0}
+
+% a-framed
+\newtcolorbox{a-framed}[1]{
+	arc=0pt, outer arc=0pt,
+	fonttitle=\bfseries, title=#1, coltitle=nwhite,
+	colback=nwhite, colframe=nblue, coltext=nblack}
+
+% b-framed
+\newtcolorbox{b-framed}[1]{
+	arc=0pt, outer arc=0pt,
+	fonttitle=\bfseries, title=#1, coltitle=nwhite,
+	colback=nwhite, colframe=ngreen, coltext=nblack}
+
+% alert-framed
+\newtcolorbox{alert-framed}[1]{
+	arc=0pt, outer arc=0pt,
+	fonttitle=\bfseries, title=#1, coltitle=nwhite,
+	colback=nwhite, colframe=nred, coltext=nblack}
