@@ -510,21 +510,24 @@ class FTP():
                                   chunks=self.output_chunks_shape,
                                   dtype='float64')
 
-        img_per_chunk = self.output_chunks_shape[2]
-        n_chunks = np.ceil(self.n_deformed_images / img_per_chunk).astype(int)
+        logging.info(f'FTP: Inicio del procesado de chunks')
 
-        logging.info(f'FTP: Inicio del proceso')
+        annulus_dataset = height_grp['annulus']
 
-        for i in range(n_chunks):
-            chunk = (img_per_chunk * i, img_per_chunk * (i + 1))
+        # Tomamos slices del tipo [:, :, i*n_img:(i+1)*n_img]
+        sel = (slice(0, 1), slice(0, 1), slice(0, self.n_deformed_images))
+        chunks = [(slice(0, self.img_resolution[0],
+                         1), slice(0, self.img_resolution[1], 1), c)
+                  for (_, _, c) in annulus_dataset.iter_chunks(sel=sel)]
 
-            deformed_chunk = self.deformed[:, :, chunk[0]:chunk[1]]
+        n_chunks = len(chunks)
+        for i, chunk in enumerate(chunks):
+            deformed_chunk = self.deformed[chunk]
 
             height_field_chunk = self.chunk_ftp(deformed_chunk)
 
-            height_grp['annulus'][:, :, chunk[0]:chunk[1]] = height_field_chunk
+            annulus_dataset[chunk] = height_field_chunk
             logging.info(f'FTP: {i+1}/{n_chunks} chunks guardados')
-        logging.info(f'END')
 
 
 # if __name__ == '__main__':

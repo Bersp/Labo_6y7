@@ -520,17 +520,6 @@ class FTP():
                 annulus_dataset[chunk] = height_field_chunk
                 logging.info(f'FTP: {i+1}/{n_chunks} chunks guardados')
 
-        # for i in range(n_chunks):
-        # if i % num_processes == rank:
-        # chunk = (img_per_chunk*i, img_per_chunk*(i+1))
-
-        # deformed_chunk = self.deformed[:, :, chunk[0]:chunk[1]]
-
-        # height_field_chunk = self.chunk_ftp(deformed_chunk)
-
-        # height_grp['annulus'][:, :, chunk[0]:chunk[1]] = height_field_chunk
-        # logging.info(f'FTP: {i+1}/{n_chunks} chunks guardados')
-
 
 def main():
     med_folder = sys.argv[1]

@@ -103,6 +103,7 @@ def get_polar_strip_average(annulus: np.ndarray, center: Tuple[float, float],
                                     strip_resolution=strip_resolution)
     masked_annulus_strip = np.where(annulus_region_mask, annulus_strip, np.nan)
 
+    
     strip_average = np.nanmean(masked_annulus_strip, 0)
     strip_std = np.nanstd(masked_annulus_strip, 0)
 
@@ -153,48 +154,76 @@ def get_st_diagram(ftp_hdf5_path: str,
                                           strip_resolution=3000)
 
     n_images = annulus_array.shape[-1]
-    img_per_chunk = annulus_array.chunks[-1]
+    # img_per_chunk = annulus_array.chunks[-1]
 
-    n_chunks = np.ceil(n_images / img_per_chunk).astype(int)
+    # n_chunks = np.ceil(n_images / img_per_chunk).astype(int)
 
     st_diagram = np.zeros(shape=(n_images, strip_resolution))
     st_error = np.zeros(shape=(n_images, strip_resolution))
 
     logging.info('ST: Inicio del cálculo del diagrama espacio-temporal')
 
-    for i in range(n_chunks - 1):
+    # Tomamos slices del tipo [:, :, i*n_img:(i+1)*n_img]
+    sel = (slice(0, 1), slice(0, 1), slice(0, n_images))
+    chunks = [(slice(0, annulus_array.shape[0], 1),
+               slice(0, annulus_array.shape[1], 1),
+               c)
+              for (_, _, c) in annulus_array.iter_chunks(sel=sel)]
 
-        annulus_chunk = annulus_array[:, :, i * img_per_chunk:(i + 1) *
-                                      img_per_chunk]
-        for j in range(img_per_chunk):
+    n_chunks = len(chunks)
+    for i, chunk in enumerate(chunks):
+
+        annulus_chunk = annulus_array[chunk]
+
+        img_per_chunk = annulus_chunk.shape[2]
+
+        # Imgs dentro de cada chunk
+        for j in range(chunk[2].start, chunk[2].stop, chunk[2].step):
             annulus_strip_average, annulus_strip_std = get_polar_strip_average(
-                annulus_chunk[:, :, j],
+                annulus_chunk[:, :, j-chunk[2].start],
                 center=center,
                 radius_limits=annulus_radii,
                 annulus_region_mask=annulus_region_mask,
                 strip_resolution=strip_resolution)
 
-            #  annulus_strip_average -= annulus_strip_average.mean()
-            st_diagram[i * img_per_chunk + j, :] = annulus_strip_average
-            st_error[i * img_per_chunk + j, :] = annulus_strip_std
+            st_diagram[j, :] = annulus_strip_average
+            st_error[j, :] = annulus_strip_std
 
         logging.info(f'ST: {i+1}/{n_chunks} chunks calculados')
 
-    # Guardo el último chunk aparte porque podría ser más corto
-    annulus_chunk = annulus_array[:, :,
-                                  (n_chunks - 1) * img_per_chunk:n_images]
-    for j in range(annulus_chunk.shape[-1]):
-        annulus_strip_average, annulus_strip_std = get_polar_strip_average(
-            annulus_chunk[:, :, j],
-            center=center,
-            radius_limits=annulus_radii,
-            annulus_region_mask=annulus_region_mask,
-            strip_resolution=strip_resolution)
+    # for i in range(n_chunks - 1):
 
-        #  annulus_strip_average -= annulus_strip_average.mean()
-        st_diagram[(n_chunks - 1) * img_per_chunk +
-                   j, :] = annulus_strip_average
-        st_error[(n_chunks - 1) * img_per_chunk + j, :] = annulus_strip_std
+        # annulus_chunk = annulus_array[:, :, i * img_per_chunk:(i + 1) *
+                                      # img_per_chunk]
+        # for j in range(img_per_chunk):
+            # annulus_strip_average, annulus_strip_std = get_polar_strip_average(
+                # annulus_chunk[:, :, j],
+                # center=center,
+                # radius_limits=annulus_radii,
+                # annulus_region_mask=annulus_region_mask,
+                # strip_resolution=strip_resolution)
+
+            # #  annulus_strip_average -= annulus_strip_average.mean()
+            # st_diagram[i * img_per_chunk + j, :] = annulus_strip_average
+            # st_error[i * img_per_chunk + j, :] = annulus_strip_std
+
+        # logging.info(f'ST: {i+1}/{n_chunks} chunks calculados')
+
+    # Guardo el último chunk aparte porque podría ser más corto
+    # annulus_chunk = annulus_array[:, :,
+                                  # (n_chunks - 1) * img_per_chunk:n_images]
+    # for j in range(annulus_chunk.shape[-1]):
+        # annulus_strip_average, annulus_strip_std = get_polar_strip_average(
+            # annulus_chunk[:, :, j],
+            # center=center,
+            # radius_limits=annulus_radii,
+            # annulus_region_mask=annulus_region_mask,
+            # strip_resolution=strip_resolution)
+
+        # #  annulus_strip_average -= annulus_strip_average.mean()
+        # st_diagram[(n_chunks - 1) * img_per_chunk +
+                   # j, :] = annulus_strip_average
+        # st_error[(n_chunks - 1) * img_per_chunk + j, :] = annulus_strip_std
 
     # Unwraping vertical
     logging.info(f'ST: Calculando unwraping vertical')
@@ -236,11 +265,22 @@ def create_st_hdf5(hdf5_folder):
     """
     TODO: Doctring for create_st_hdf5
     """
-    st_diagram, st_error = get_st_diagram(hdf5_folder + 'FTP.hdf5')
+    ftp_hdf5_path = hdf5_folder + 'FTP.hdf5'
+    st_diagram, st_error = get_st_diagram(ftp_hdf5_path)
+
+    # Datos para la transformación de alturas
+    f = h5py.File(ftp_hdf5_path, 'r')
+    L, d, p = f.attrs['L'], f.attrs['d'], f.attrs['p']
+    f.close()
 
     f = h5py.File(hdf5_folder + 'ST.hdf5', 'w')
     f.create_dataset('spatiotemporal_diagram', data=st_diagram)
     f.create_dataset('spatiotemporal_diagram_error', data=st_error)
+
+    f.attrs.create('L', L)
+    f.attrs.create('d', d)
+    f.attrs.create('p', p)
+
     f.close()
 
 
@@ -248,17 +288,17 @@ def main():
     import matplotlib.pyplot as plt
     import matplotlib
     cmap = matplotlib.cm.viridis
-    med_folder = '../../Mediciones/MED44 - Bajada en voltaje - 1007/'
+    med_folder = '../../Mediciones/MED69 - Diversion - 1104/'
     hdf5_folder = med_folder + 'HDF5/'
 
-    # create_st_hdf5(hdf5_folder)
+    create_st_hdf5(hdf5_folder)
 
-    fig, axes = plt.subplots(1,2, figsize=(12, 8), sharex=True, sharey=True)
+    # fig, axes = plt.subplots(1,2, figsize=(12, 8), sharex=True, sharey=True)
 
-    for ax, cosa in zip(axes, ['ST.hdf5', 'ST_mal.hdf5']):
-        f = h5py.File(hdf5_folder + cosa, 'r')
-        st_diagram = np.array(f['spatiotemporal_diagram'])
-        st_error = np.array(f['spatiotemporal_diagram_error'])
+    # for ax, cosa in zip(axes, ['ST.hdf5', 'ST_mal.hdf5']):
+        # f = h5py.File(hdf5_folder + cosa, 'r')
+        # st_diagram = np.array(f['spatiotemporal_diagram'])
+        # st_error = np.array(f['spatiotemporal_diagram_error'])
 
     # st_diagram -= np.mean(st_diagram, 0)
 
@@ -267,10 +307,10 @@ def main():
     # st_diagram = phase_to_height(st_diagram, L, d, p)
     # st_error = phase_to_height(st_error, L, d, p)
 
-        ax.imshow(st_diagram)
+        # ax.imshow(st_diagram)
     # plt.colorbar()
         # ax.plot(st_diagram[:,700:800])
-    plt.show()
+    # plt.show()
 
 
 def delete():
