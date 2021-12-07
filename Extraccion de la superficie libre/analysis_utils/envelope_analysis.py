@@ -13,7 +13,7 @@ from scipy.signal import find_peaks
 import seaborn as sns
 
 from spatiotemporal_analysis import get_st_diagram
-sns.set_palette(sns.color_palette("rocket", 5))
+# sns.set_palette(sns.color_palette("rocket", 5))
 
 
 def get_zeros(signal):
@@ -133,9 +133,9 @@ def plot_st_envelope(st_diagram):
     plot_aux(ax3, st_envelope, 'Envolvente espacio-temporal')
 
     ax1.set_xticks([])
-    ax1.set_yticks([])
-    plt.savefig('/home/bersp/st_envelopes.pdf', dpi=300,
-                bbox_inches='tight', transparent=True)
+    # ax1.set_yticks([])
+    # plt.savefig('/home/bersp/st_envelopes.pdf', dpi=300,
+                # bbox_inches='tight', transparent=True)
 
     plt.show()
 
@@ -153,8 +153,8 @@ def get_st_left_right(st_diagram):
     TODO
 
     """
-    # st_envelope = get_st_envelope(st_diagram)
-    st_envelope = st_diagram
+    st_envelope = get_st_spatial_envelope(st_diagram)
+    # st_envelope = st_diagram
 
     N, M = st_envelope.shape
 
@@ -171,10 +171,10 @@ def get_st_left_right(st_diagram):
     st_left, st_right = fft.ifft2(st_fft_left), fft.ifft2(st_fft_right)
 
     # Cosa de energía
-    a = st_fft_shifted*(st_fft_left_filter + st_fft_right_filter)
-    plt.imshow(np.log(np.abs(a)))
-    plt.colorbar()
-    plt.show()
+    # a = st_fft_shifted*(st_fft_left_filter + st_fft_right_filter)
+    # plt.imshow(np.log(np.abs(a)))
+    # plt.colorbar()
+    # plt.show()
 
     # fig, (ax1, ax2) = plt.subplots(
     # 1, 2, figsize=(12, 8), sharex=True, sharey=True
@@ -198,17 +198,24 @@ def get_st_left_right(st_diagram):
 
     return np.real(st_left), np.real(st_right)
 
-
 def main():
-    med_folder = 'MED44 - Bajada en voltaje - 1007/'
-    st_diagram = get_st_diagram(med_folder)
-    # plt.imshow(st_diagram)
+    med_folder = 'MED69 - Diversion - 1104'
+    st_diagram = get_st_diagram(med_folder, error_filter=5)
+    plt.imshow(st_diagram)
+    # plt.figure()
+    # plt.plot(st_diagram[1067], '-r')
+    # plt.plot(st_diagram[1081,1700:1850], '-g')
+    # plt.plot(st_diagram[1095], '-b')
+    # st_diagram = get_st_spatial_envelope(st_diagram)
+    # plt.plot(st_diagram[1067], '-r')
+    # plt.plot(st_diagram[1081], '-g')
+    # plt.plot(st_diagram[1095], '-b')
     # plt.colorbar()
-    # plt.show()
+    plt.show()
     
     # get_envelope(st_diagram[300])
     # plot_st_envelope(st_diagram)
-    st_left, st_right = get_st_left_right(st_diagram)
+    # st_left, st_right = get_st_left_right(st_diagram)
 
     # -- Plot 3D --
     # fig = go.Figure(data=[go.Surface(z=st_left[::10, ::10])])
@@ -225,7 +232,7 @@ def main():
     # plt.show()
 
     # -- Funciones --
-    # med_start, med_end = 44, 62
+    # med_start, med_end = 30, 35
     # meds_folder = '../../Mediciones/'
     # meds_to_process = [
     # p for p in sorted(os.listdir(meds_folder)) if 'MED' in p and
@@ -234,8 +241,8 @@ def main():
 
     # amps = np.zeros(len(meds_to_process))
     # for i, med_folder in enumerate(meds_to_process):
-        # st_diagram = -get_st_diagram(med_folder, error_filter=5)
-        # envelope = get_st_spatial_envelope(st_diagram)
+        # st_diagram = get_st_diagram(med_folder, error_filter=False)
+        # envelope = get_st_spatial_envelope(st_diagram)[1000:2000]
         # print(i)
         # amps[i] = envelope.max() - envelope.min()
         

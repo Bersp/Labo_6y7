@@ -19,6 +19,25 @@ def fill_nans(data):
                                     return_indices=True)
     return data[tuple(ind)]
 
+def phase_to_height(st_diagram, L, d, p):
+    """
+    TODO: Docstring for phase_to_height.
+
+    Parameters
+    ----------
+    st_diagram : Diagrama espacio-temporal
+    L : Distancia entre el plano de referencia y la cámara
+    d : Distancia entre el proyector y la cámara
+    p : Longitud de onda del patrón proyectado en mm
+
+    Returns
+    -------
+    El diagrama en unidades de altura (mm)
+    """
+
+    dphase = st_diagram
+    return -L * dphase / (2 * np.pi * d / p - dphase)
+
 # -----------------------------------------------------------------
 
 
@@ -29,12 +48,14 @@ def get_st_diagram(med_folder_name, error_filter=None):
     st_diagram = np.array(f['spatiotemporal_diagram'])
     st_error = np.array(f['spatiotemporal_diagram_error'])
 
+    # Transformamos a alturas
+    L, d, p = f.attrs['L'], f.attrs['d'], f.attrs['p']
+    st_diagram = phase_to_height(st_diagram, L, d, p)
+
     if error_filter != None:
         st_diagram[st_error > np.mean(
             st_error)+np.std(st_error)*error_filter] = np.nan
         st_diagram = fill_nans(st_diagram)
-
-    # st_diagram = (st_diagram.T - st_diagram.mean(1)).T
 
     return st_diagram
 
@@ -175,21 +196,24 @@ def error_filter_analysis(med_folder_name, start=3, interval=1):
     plt.show()
 
 
-if __name__ == "__main__":
+def main():
     # med_folder_name = 'MED63 - Bajada en voltaje - NOTE - 1104/'
-    med_folder_name = 'MED62 - Bajada en voltaje - 1007/'
+    # med_folder_name = 'MED36 - Subida en voltaje - 0902/'
+    med_folder_name = 'MED69 - Diversion - 1104'
     st_diagram = get_st_diagram(med_folder_name)
-    # st_diagram = st_diagram[:,1000:1100]
-    # plt.plot(st_diagram)
-    plt.imshow(st_diagram)
+    st_diagram = np.diff(st_diagram, axis=0)
+    plt.imshow(st_diagram, clim=(-2, 2))
     plt.colorbar()
     plt.show()
     
-
+    
     # error_filter_analysis(med_folder_name, start=3)
     # plt.colorbar()
-
+    
     # st(med_folder_name)
     # animate_st(ylim=(-5, 5))
     # some_frames(med_folder_name, start_frame=20, interval=30)
     # point_through_time(med_folder_name, point=300)
+    
+if __name__ == '__main__':
+    main()
