@@ -1,5 +1,6 @@
 import logging
 from typing import Tuple
+import warnings
 
 import h5py
 import numpy as np
@@ -103,8 +104,13 @@ def get_polar_strip_average(annulus: np.ndarray, center: Tuple[float, float],
                                     strip_resolution=strip_resolution)
     masked_annulus_strip = np.where(annulus_region_mask, annulus_strip, np.nan)
 
-    
     strip_average = np.nanmean(masked_annulus_strip, 0)
+    # Cuando se hace esta media hay columnas vacías que no interesan
+    # pero numpy llora una warning
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=RuntimeWarning)
+        strip_average = np.nanmean(masked_annulus_strip, 0)
+
     strip_std = np.nanstd(masked_annulus_strip, 0)
 
     return strip_average, strip_std
@@ -191,39 +197,6 @@ def get_st_diagram(ftp_hdf5_path: str,
 
         logging.info(f'ST: {i+1}/{n_chunks} chunks calculados')
 
-    # for i in range(n_chunks - 1):
-
-        # annulus_chunk = annulus_array[:, :, i * img_per_chunk:(i + 1) *
-                                      # img_per_chunk]
-        # for j in range(img_per_chunk):
-            # annulus_strip_average, annulus_strip_std = get_polar_strip_average(
-                # annulus_chunk[:, :, j],
-                # center=center,
-                # radius_limits=annulus_radii,
-                # annulus_region_mask=annulus_region_mask,
-                # strip_resolution=strip_resolution)
-
-            # #  annulus_strip_average -= annulus_strip_average.mean()
-            # st_diagram[i * img_per_chunk + j, :] = annulus_strip_average
-            # st_error[i * img_per_chunk + j, :] = annulus_strip_std
-
-        # logging.info(f'ST: {i+1}/{n_chunks} chunks calculados')
-
-    # Guardo el último chunk aparte porque podría ser más corto
-    # annulus_chunk = annulus_array[:, :,
-                                  # (n_chunks - 1) * img_per_chunk:n_images]
-    # for j in range(annulus_chunk.shape[-1]):
-        # annulus_strip_average, annulus_strip_std = get_polar_strip_average(
-            # annulus_chunk[:, :, j],
-            # center=center,
-            # radius_limits=annulus_radii,
-            # annulus_region_mask=annulus_region_mask,
-            # strip_resolution=strip_resolution)
-
-        # #  annulus_strip_average -= annulus_strip_average.mean()
-        # st_diagram[(n_chunks - 1) * img_per_chunk +
-                   # j, :] = annulus_strip_average
-        # st_error[(n_chunks - 1) * img_per_chunk + j, :] = annulus_strip_std
 
     # Unwraping vertical
     logging.info(f'ST: Calculando unwraping vertical')
@@ -233,9 +206,6 @@ def get_st_diagram(ftp_hdf5_path: str,
         L, d, p = f.attrs['L'], f.attrs['d'], f.attrs['p']
         st_diagram = phase_to_height(st_diagram, L, d, p)
         st_error = phase_to_height(st_error, L, d, p)
-        print(f'{L = }')
-        print(f'{d = }')
-        print(f'{p = }')
 
     logging.info('ST: END')
     return st_diagram, st_error
