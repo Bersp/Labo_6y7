@@ -6,7 +6,7 @@
 
 
 \title{Modulación de fase en ondas de Faraday}
-\subtitle{Charla de avance de Laboratorio 7}
+\subtitle{Laboratorio 6 y 7}
 \author{
 	Bernardo Español \and Melisa Vinograd
 	\texorpdfstring{\\ \vspace{0.1cm} Dirección: Dr. Pablo Cobelli}{}
@@ -21,7 +21,28 @@
 	\titlepage
 \end{frame}
 
-\section{Recapitulación}
+\begin{frame}{Índice}
+	\tableofcontents
+\end{frame}
+
+
+\section{Motivación}
+
+\begin{frame}{Ondas de Faraday} % TODO
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=1\textwidth]{figs/ss1.png}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Oscilones en 1D} % TODO
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=1\textwidth]{figs/ss3.png}
+	\end{figure}
+\end{frame}
+
+\section{Montaje experimental}
 
 \begin{frame}{Montaje experimental}
 	\begin{figure}[ht]
@@ -30,7 +51,30 @@
 	\end{figure}
 \end{frame}
 
-\begin{frame}{Extracción de la superficie libre}
+\section{Extracción de la superficie libre}
+
+\begin{frame}{FTP}
+	\begin{minipage}{0.7\textwidth}
+	  \begin{figure}
+		\includegraphics[width=1\textwidth]{figs/ftp_experimental.pdf}
+	  \end{figure}
+	\end{minipage} \hfill
+	\begin{minipage}{0.29\textwidth}
+	  \begin{figure}
+	    \includegraphics[width=0.56\textwidth]{figs/synthetic_ftp.png}
+	  \end{figure}
+	\end{minipage}
+\end{frame}
+
+\begin{frame}{Extracción de la superficie libre} % TODO (4 diapos)
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=1\textwidth]{figs/ss4.png}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}{Extracción de la superficie libre} % TODO
 	\begin{minipage}{0.49\textwidth}
 	  \begin{figure}
 	    \includegraphics[width=0.8\linewidth]{figs/anillo_a_strip.png}
@@ -44,33 +88,71 @@
 	% TODO[meli]: Volver a exportar
 \end{frame}
 
-\section{Avances}
-
-\begin{frame}{Avances en el código}
-	\begin{itemize} 
-		\item Paralelización
-			\vspace{0.8cm}
-		\item Transformación de fase a alturas
-			\vspace{0.8cm}
-		\item Unwrapping temporal
-			\vspace{0.8cm}
-		\item Herramientas de visualización
+\begin{frame}{Algunas métricas} % TODO
+	\begin{itemize}
+		\item 70 mediciones
+		\item Videos de $12\text{s}$ de medición a $250\text{fps}$ 
+		\item Fotogramas de $(1024\cross1024)\text{px}$
+		\item Espacio en memoria 
+			\begin{itemize}
+				\item $4\text{GB}$ (mediciones crudas)
+				\item $40\text{GB}$ (mediciones procesadas)
+				\item $100\text{MB}$ (espacio-temporal)
+			\end{itemize}
+		\item Tiempo de ejecución: $1\text{h} \rightarrow 10\text{min}$
 	\end{itemize}
 \end{frame}
+
 
 \begin{frame}{Corrección de errores en los diagramas espacio-temporales}
 	\begin{figure}[ht]
 		\includegraphics[width=0.75\linewidth]{figs/error_analysis.pdf}
 	\end{figure}
 \end{frame}
+
 \begin{frame}{Corrección de errores en los diagramas espacio-temporales}
 	\begin{figure}[ht]
 		\includegraphics[width=0.8\linewidth]{figs/error_interp.pdf}
 	\end{figure}
-	% TODO[berna]: Exportar con 3 sigmas
 \end{frame}
 
-\begin{frame}{Envolvente de la superficie libre}
+\section{Resultados}
+
+\begin{frame}{Zoología de resultados}
+	\begin{itemize}
+		\item Simple faraday
+		\item Expansión/Compresión
+		\item Oscilones suaves
+		\item Oscilones violentos
+		\item Modulación de fase
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Ondas propagativas} % TODO: Ponerle alturas?
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=0.8\textwidth]{figs/st_left_right.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Detección de la velocidad de los oscilones} % TODO
+	
+\end{frame}
+
+\begin{frame}{Ajuste de oscilones} % TODO (2 diapos): Un solo oscilón y todos juntos
+	
+\end{frame}
+
+\begin{frame}{Relación de dispersión} % TODO: Las que vimos lineales y ver las de modulación de fase
+	
+\end{frame}
+
+\begin{frame}{Inestabilidad de Taylor-Couete} % TODO
+	
+\end{frame}
+
+
+\begin{frame}{Envolvente de la superficie libre} % TODO: Quizás otra diapo?
 	\begin{figure}[ht]
 		\includegraphics[width=0.9\textwidth]{figs/env_1sample.pdf}
 	\end{figure}
@@ -81,13 +163,6 @@
 	\begin{figure}[ht]
 		\centering
 		\includegraphics[width=\textwidth]{figs/st_envelopes.pdf}
-	\end{figure}
-\end{frame}
-
-\begin{frame}{Ondas propagativas}
-	\begin{figure}[ht]
-		\centering
-		\includegraphics[width=0.8\textwidth]{figs/st_left_right.pdf}
 	\end{figure}
 \end{frame}
 
@@ -105,5 +180,30 @@
 \end{frame}
 
 \section*{Gracias.}
+
+\section{Diapos que probablemente no usemos}
+
+\begin{frame}{Manejo de archivos y HDF5}
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=1\textwidth]{figs/med_folder_to_hdf5.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Manejo de archivos y HDF5}
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=1\textwidth]{figs/med_folder_infoyaml.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{HDF5}
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=0.7\textwidth]{figs/hdf5_chunk.pdf}
+	\end{figure}
+\end{frame}
+
+
 
 \end{document}

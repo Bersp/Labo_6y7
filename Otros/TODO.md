@@ -11,9 +11,8 @@
 NOTE: Si no existe una tarea en el TODO es porque está completada. Se puede ver el historial de git para ver las tareas completadas.
 
 # Para hablar
-- Mediciones del 1104 con strip horrible
-- MAX - MIN datos de subida
-- Solucionamos el problema con el `iter_chunks` y el [3600:]
+
+- Ajuste de la velocidad épico med 69 (y probablemente la única). Trabajamos la 44 pero mhe porque hay velocidad para ambos lados.
 
 
 # TODO
