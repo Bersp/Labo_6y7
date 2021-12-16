@@ -26,13 +26,13 @@
 	- Paper con el método para calibrar.
 
 - Chapter 3 - Autocalibration of MEMS Accelerometers
-	- El mismo método que el paper anterior, pero en un capítulo de un libro. 
+	- El mismo método que el paper anterior, pero en un capítulo de un libro.
 
 - Datasheet_ADXL345
 
 - Utilization of the First In, First Out (FIFO) Buffer in Analog Devices, Inc.Digital Accelerometers
 	- Application note 1025.
-	- Correcto uso del buffer. 
+	- Correcto uso del buffer.
 
 # Papers
 
@@ -41,7 +41,7 @@
 - Benjamin y Ursell - The stability of the plane free surface of a liquid in vertical periodic motion
 	- REF 65 de la Tesis de Samantha.
 	- Desarrollo de análisis de estabilidad de las ecuaciones de Mathieu.
-	
+
 - Cobelli - Global measurement of water waves by Fourier trans
 	- Método de medición desarrollado por Pablo.
 	- Técnica explicada.
@@ -54,11 +54,11 @@
 - Maurel - Experimental and theoretical inspection of the pha
 	- Cuentas desarrolladas del método de medición FTP.
 	- Paper de Pablo.
-	
+
 - Moisy - A synthetic Schlieren method for the measurement o
 	- Método FCD (que no usamos).
 	- Sólo para conocer otra técnica posible.
-	
+
 - Shats - Parametrically excited water surface ripples as ensembles of oscillons
 	- Es el PRL que muestra que la superficie está formada por oscilones y no por superposición de ondas.
 
@@ -70,7 +70,9 @@
 
 ## Análisis de datos
 
-	
+- Cobelli - 2011 - Different Regimes for Water Wave Turbulence.
+	- Paper para ejemplificar la relación de dispersión para fenómenos no lineales.
+
 # Tesis
 
 - Tesis de Alonso
