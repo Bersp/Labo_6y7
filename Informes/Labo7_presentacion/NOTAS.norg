@@ -1,0 +1,62 @@
+@document.meta
+  title: NOTAS
+@end
+
+* Presentación
+  - El objetivo es caracterizar los estructuras que emergen sobre ondas de Faraday en un sistema 1D periódico.
+
+* Índice
+  - Motivación: Cuál es el fenómeno y cómo proponemos estudiarlo nosotros.
+  - Montaje experimental: Mostramos el montaje que pusimos a punto en nuestro laboratorio 6 que nos permitió estudiar el fenómeno.
+  - Extracción de la superficie libre: Fue el trabajo principal de la primera parte del laboratorio donde mejoramos el método de extracción de la superficie libre.
+  - Resultados: Comentamos los disferentes resultados que obtuvimos y analizamos a lo largo de la segunda parte del laboratorio.
+  - Perspectivas: Concluímos con alguras reflexiones sobre el trabajo hecho y propuestas de cara al futuro.
+
+* Motivación
+  - Exitación vertical, patrón emergente luego de aceleración umbral, patrones periódicos.
+  - En nuestro caso vamos a estudiar 1D: las estructuras también aparecen, es más simple de modelar y se pueden estudiar oscilones por separado.
+
+* Montaje experimental
+  - Usamos agua con titanio arriba.
+  - El anillo es finito para 1D.
+  - Acelerómetro (que calibramos).
+  - Consideraciones experimentales molestas: que esté lleno y equilibrado.
+  - De forma general el objetivo el obtener la altura del fluído punto a punto de las imágenes tomadas de un patrón proyectado.
+
+* Extracción de la superficie libre
+  - Proyectamos un patrón con una longitud de onda conocida.
+  - Cuando se deforma la superficie también los hace el patrón.
+  - Transformando Fourier esta deformación podemos ver la diferencia de fase y con ella calcular la diferencia de altura.
+  - Paso a paso:
+    - Tomamos una máscara en las regiones de interés: el anillo y el cuadradito para saber la altura del disco en todo tiempo.
+    - Tomamos un fotograma inicial antes de deformar para tener como referencia.
+    - Completamos este patrón mediante grenchberg porque los bordes son una basura.
+    - Habría que hacer grenchberg para cada fotograma pero cambiamos el algoritmo para hacerlo solo una vez y pegarlo en todas.
+    - Con la referencia y las alturas listas para transformar fourier ya podemos extraer las alturas relativas. Además usamos una gris para tener una noción de la luz ambiente.
+  - Una vez tenemos la alura para cada fotograma podemos apilarlos y hacer un diagrama espacio-temporal.
+
+  - En resumen, una medición implica una carpeta como la que se muestra en este ejemplo. Y aprovechamos para mencionar que cada medición tiene la información de cómo fue tomada anidada a ella.
+  - En total tomamos alrededor de 70 mediciones... blablabla.
+
+* Resultados
+  - Zoología de resultados. Depende de la exitación del sistema (monitoriado con acelerómetro)
+    - Oscilones suaves: estacionarios.
+    - Oscilones fuertes: hay deriva de oscilones.
+    - Modulación de fase: diagrama más diluído poruqe no hay frecuencias características.
+  - Lo primero que queremos hacer es caracterizar los oscilones. Los ajustamos por lo que precide la teoría: una sech.
+    Esto, además de permitirnos caracterizar los oscilones también nos sirve a modo de comprobación de el método de extracción de la superficie libre permite resolver el fenómeno.
+  - Una vez caracterizada la geometría de los oscilones podemos ver su dinámica. Utilizando la correlación entre dos frames separados a la frecuencia característica del sistema, podemos detectar la velocidad a la que se propagan.
+    Si hacemos un histograma de las velocidades halladas podemos ver que tiene una media bien definida sobre una distribución simétrica no gaussiana.
+
+  - Luego de caracterizar oscilones individuales, nos enfocamos en fenómenos de grupo. Buscamos fenómenos con longitudes de onda comparables con la periodicidad del anillo.
+  Para ello para cada frame detectamos los máximos de los oscilones y los interpolamos con un splain cúbico. Obteniendo la envolvente.
+  - Redefiniendo cada frame con su envolvente obtenemos la segunda imagen. Realizando esto nuevamente, pero en la dirección temporal, obtenemos la tercera. Esto nos permite ver fenómenos que no son evidentes en el diagrama original, tal como la estructura que se visualiza en la tercera imagen.
+  En particular en el ejemplo que estamos viendo se ve un comportamiento que recuerda a otro fenómenos conocido en el campo. La inestabilidad de Taylor-Couette
+  - Sin explayarnos mucho en esto, un setup tradicional en el que se visualiza esta inestabilidad es el de dos cilindros coaxiales rotando en direcciones opuestas. A partir de cierto umbral el fluído en su interior pierde su simetría de traslación en la dirección de la gravedad y genera estos glóbulos caractrísticos.
+  - Comparando este resultado con nuestros datos podemos ver que las estructuras formadas son muy similares. Es importante tener en cuenta que donde la simetría que se rompe en el primer sistema es espacial, en nuestro caso es temporal.
+  Este es uno de los resultados más novedosos que obtuvimos y que da terrenos a mucha exploración. El tiempo de separación de estos glóbulos característico coincide con lo que tarda un oscilón en dar una vuelta.
+  - Un primer acercamiento que hicimos fue el de buscar qué da origen a esta estructura. Descomponiendo Fourier, separando las ondas propagativas en cara dirección y reconstruyendo la imagen, podemos ver que el fenómenos emergente es resultado estacionario formado por ondas viajeras derecha + izquierda.
+  - Este mismo tipo de análsis nos sirve de forma más general para separar las ondas que viajan en direcciones opuestas. En este caso, por ejemplo, tenemos una zona el anillo que tiene estructuras girando en una dirección y otra zona con estructuras girando en la otra.
+  - Por último, estudiamos la ditribución de energía en el sistema. Como se ve ne la imagen la energía se concentra en los modos asociados a las frecuencias características esperadas (que son 10hz, 20hz...). Además, superpusimos a este resultado la relación de dispersión analítica a primer orden. 
+  - Vemos que esta relación no coincide con el resultado ya que nuestro fenómeno es fuertemente no lineal por lo que las correcciones a órdenes más altos no son despreciables. Un resultado que apoya esta hipótesis es el encontrado en el trabajo citado en el que muestra que en regímenes no lineales la relación analítica predice frecuencias espaciales más altas.
+

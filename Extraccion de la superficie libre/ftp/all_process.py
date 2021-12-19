@@ -43,8 +43,8 @@ def all_process_parallel(med_folder, n_cores=16):
     hdf5_folder = med_folder+'HDF5/'
 
     # RAW
-    # os.system(
-        # f'mpiexec -n {n_cores} --oversubscribe python raw_data_utils_parallel.py "{med_folder}"')
+    os.system(
+        f'mpiexec -n {n_cores} --oversubscribe python raw_data_utils_parallel.py "{med_folder}"')
 
     # FTP
     os.system(
@@ -83,7 +83,7 @@ def main():
     # multiple_all_process_parallel(meds_folder, 45, 62)
 
     # med_folder = meds_folder + 'MED40 - Oscilones a full - 0902/'
-    med_folder = meds_folder + 'MED44 - Bajada en voltaje - 1007/'
+    med_folder = meds_folder + 'MED64 - Bajada en voltaje - 1104/'
     all_process_parallel(med_folder)
 
     # # Plot ST diagram

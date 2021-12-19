@@ -167,5 +167,5 @@ def create_raw_hdf5(med_folder: str, chunks: tuple = (64, 64, 100)):
 
 
 if __name__ == '__main__':
-    med_folder = '../../Mediciones/MED40 - Oscilones a full - 0902/'
+    med_folder = '../../Mediciones/MED64 - Bajada en voltaje  - 1104/'
     create_raw_hdf5(med_folder)
