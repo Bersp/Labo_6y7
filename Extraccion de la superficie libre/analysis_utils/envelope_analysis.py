@@ -310,7 +310,7 @@ def dispersion_relation(st_diagram):
                     'color': WHITE_NORD
                 })
 
-    ax.plot(w_gam(k), k, c=RED_NORD, lw=2, label='Relación de disperción a orden lineal')
+    ax.plot(w_gam(k), k, c=RED_NORD, lw=2, label='Relación de dispersión a orden lineal')
 
     ax.imshow(np.log(np.abs(a)).T,
               extent=[
@@ -330,7 +330,7 @@ def dispersion_relation(st_diagram):
     ax.legend(fontsize=18, framealpha=0.5, fancybox=False, loc=1)
 
     plt.savefig(
-        f'../../Informes/Labo7_presentacion/figs/dispersion_relation.pdf',
+        f'../../Informes/Labo7_presentacion/figs/dispersion_relation_mod_fase.pdf',
         bbox_inches='tight',
         transparent=True)
 
@@ -340,8 +340,8 @@ def dispersion_relation(st_diagram):
 def main():
     # med_folder = 'MED33 - Subida en voltaje - 0902'
     # med_folder = 'MED35 - Subida en voltaje - 0902'
-    # med_folder = 'MED42 - Mod de fase, oscis estacionarios - 0909'
-    med_folder = 'MED30 - Subida en voltaje, NOTA - 0902'
+    med_folder = 'MED42 - Mod de fase, oscis estacionarios - 0909'
+    # med_folder = 'MED30 - Subida en voltaje, NOTA - 0902'
     # med_folder = 'MED64 - Bajada en voltaje - 1104'
     st_diagram = get_st_diagram(med_folder, error_filter=5)
     # st_diagram = get_st_envelope(st_diagram)
